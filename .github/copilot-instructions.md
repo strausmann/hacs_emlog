@@ -17,9 +17,25 @@ This is a Home Assistant custom component for polling energy meter data from Eml
 
 ## Data Flow & API Integration
 
-**Emlog API Structure:**
+**Emlog API Structure (Complete):**
 - Endpoint: `http://{host}/pages/getinformation.php?export&meterindex={index}`
-- Returns JSON with nested structure: `{"Zaehlerstand_Bezug": {"Stand180": value}, "Wirkleistung_Bezug": {"Leistung170": value}, ...}`
+- Returns comprehensive JSON with all meter data:
+
+```json
+{
+  "product": "Emlog - Electronic Meter Log",
+  "version": 1.16,
+  "Zaehlerstand_Bezug": {"Stand180": value, "Stand181": value, "Stand182": value},
+  "Zaehlerstand_Lieferung": {"Stand280": value, "Stand281": value, "Stand282": value},
+  "Wirkleistung_Bezug": {"Leistung170": value, "Leistung171": value, "Leistung172": value, "Leistung173": value},
+  "Wirkleistung_Lieferung": {"Leistung270": value, "Leistung271": value, "Leistung272": value, "Leistung273": value},
+  "Kwh_Bezug": {"Kwh180": value, "Kwh181": value, "Kwh182": value},
+  "Kwh_Lieferung": {"Kwh280": value, "Kwh281": value, "Kwh282": value},
+  "Betrag_Bezug": {"Betrag180": value, "Betrag181": value, "Betrag182": value, "Waehrung": "EUR"},
+  "Betrag_Lieferung": {"Betrag280": value, "Betrag281": value, "Betrag282": value, "Waehrung": "EUR"},
+  "DiffBezugLieferung": {"Betrag": value}
+}
+```
 
 **Data Mapping Pattern:**
 ```python

@@ -28,7 +28,7 @@ def load_mock_data(meter_index):
     return generate_dynamic_data(meter_index)
 
 def generate_dynamic_data(meter_index):
-    """Generiert dynamische Mock-Daten"""
+    """Generiert dynamische Mock-Daten basierend auf der vollständigen Emlog API"""
     import random
     import time
 
@@ -40,36 +40,106 @@ def generate_dynamic_data(meter_index):
 
     if meter_index == 1:  # Strom
         return {
-            "product": "Emlog Strom",
-            "version": "1.2.3",
+            "product": "Emlog - Electronic Meter Log",
+            "version": 1.16,
             "Zaehlerstand_Bezug": {
-                "Stand180": base_consumption + consumption_offset
+                "Stand180": base_consumption + consumption_offset,
+                "Stand181": 0,
+                "Stand182": 0
+            },
+            "Zaehlerstand_Lieferung": {
+                "Stand280": 0,
+                "Stand281": 0,
+                "Stand282": 0
             },
             "Wirkleistung_Bezug": {
-                "Leistung170": 2.5 + random.uniform(-0.5, 0.5)
+                "Leistung170": 2.5 + random.uniform(-0.5, 0.5),
+                "Leistung171": 0,
+                "Leistung172": 0,
+                "Leistung173": 0
+            },
+            "Wirkleistung_Lieferung": {
+                "Leistung270": 0,
+                "Leistung271": 0,
+                "Leistung272": 0,
+                "Leistung273": 0
             },
             "Kwh_Bezug": {
-                "Kwh180": 15.7 + random.uniform(-2, 2)
+                "Kwh180": 15.7 + random.uniform(-2, 2),
+                "Kwh181": 0,
+                "Kwh182": 0
+            },
+            "Kwh_Lieferung": {
+                "Kwh280": 0,
+                "Kwh281": 0,
+                "Kwh282": 0
             },
             "Betrag_Bezug": {
-                "Betrag180": 3.25 + random.uniform(-0.5, 0.5)
+                "Betrag180": 3.25 + random.uniform(-0.5, 0.5),
+                "Betrag181": 0,
+                "Betrag182": 0,
+                "Waehrung": "EUR"
+            },
+            "Betrag_Lieferung": {
+                "Betrag280": 0,
+                "Betrag281": 0,
+                "Betrag282": 0,
+                "Waehrung": "EUR"
+            },
+            "DiffBezugLieferung": {
+                "Betrag": -(3.25 + random.uniform(-0.5, 0.5))
             }
         }
     else:  # Gas
         return {
-            "product": "Emlog Gas",
-            "version": "1.2.3",
+            "product": "Emlog - Electronic Meter Log",
+            "version": 1.16,
             "Zaehlerstand_Bezug": {
-                "Stand180": base_consumption + consumption_offset
+                "Stand180": base_consumption + consumption_offset,
+                "Stand181": 0,
+                "Stand182": 0
+            },
+            "Zaehlerstand_Lieferung": {
+                "Stand280": 0,
+                "Stand281": 0,
+                "Stand282": 0
             },
             "Wirkleistung_Bezug": {
-                "Leistung170": 0.8 + random.uniform(-0.1, 0.1)
+                "Leistung170": 0.8 + random.uniform(-0.1, 0.1),
+                "Leistung171": 0,
+                "Leistung172": 0,
+                "Leistung173": 0
+            },
+            "Wirkleistung_Lieferung": {
+                "Leistung270": 0,
+                "Leistung271": 0,
+                "Leistung272": 0,
+                "Leistung273": 0
             },
             "Kwh_Bezug": {
-                "Kwh180": 8.3 + random.uniform(-1, 1)
+                "Kwh180": 8.3 + random.uniform(-1, 1),
+                "Kwh181": 0,
+                "Kwh182": 0
+            },
+            "Kwh_Lieferung": {
+                "Kwh280": 0,
+                "Kwh281": 0,
+                "Kwh282": 0
             },
             "Betrag_Bezug": {
-                "Betrag180": 1.85 + random.uniform(-0.2, 0.2)
+                "Betrag180": 1.85 + random.uniform(-0.2, 0.2),
+                "Betrag181": 0,
+                "Betrag182": 0,
+                "Waehrung": "EUR"
+            },
+            "Betrag_Lieferung": {
+                "Betrag280": 0,
+                "Betrag281": 0,
+                "Betrag282": 0,
+                "Waehrung": "EUR"
+            },
+            "DiffBezugLieferung": {
+                "Betrag": -(1.85 + random.uniform(-0.2, 0.2))
             }
         }
 
