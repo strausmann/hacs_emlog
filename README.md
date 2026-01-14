@@ -1,189 +1,153 @@
-# Emlog (Electronic Meter Log) – Home Assistant Integration (HACS)
+# Emlog (Electronic Meter Log) – Home Assistant Integration
 
-Diese Integration liest Daten aus dem Emlog-Endpoint (z. B. `getinformation.php?export&meterindex=...`).
+Diese Integration liest Energie- und Gaszählerdaten direkt vom Emlog-Gerät und macht sie in Home Assistant verfügbar.
 
-## 📚 Dokumentation
+## 🚀 Installation
 
-Ausführliche Dokumentation findest du unter [docs/](docs/):
+### Schritt 1: HACS Integration hinzufügen
 
-- **[Getting Started](docs/guides/)** - Installation und erste Schritte
-- **[Architektur](docs/architecture/)** - Technisches Design und Systemübersicht
-- **[API Referenz](docs/api/)** - Emlog API und Datenstrukturen
-- **[Entwicklung](docs/guides/README-Codespaces.md)** - Setup für Entwicklung
+1. Öffne **Einstellungen → Geräte & Dienste → Integrationen**
+2. Klicke auf **Neue Integration erstellen** (Knopf rechts unten)
+3. Suche nach **"Emlog"**
+4. Klicke auf die Integration und folge dem Setup-Dialog
 
-## ⚡ Schnellstart
+Falls die Integration nicht angezeigt wird:
+- HACS → **Integrationen**
+- Klicke auf das Menü (⋮) → **Custom Repositories**
+- Trage die URL ein: `https://github.com/strausmann/hacs_emlog`
+- Kategorie: **Integration**
+- Speichern → **Installieren**
+- Home Assistant **neu starten**
 
-### Installation (HACS)
+### Schritt 2: Integration konfigurieren
 
-1. HACS → Integrationen → Menü (⋮) → **Custom Repositories**
-2. Repo-URL eintragen: `https://github.com/strausmann/hacs_emlog`
-3. Kategorie: **Integration**
-4. Installieren → Home Assistant neu starten
-5. Einstellungen → Geräte & Dienste → **Integration hinzufügen** → **Emlog**
+Nach dem Neustart öffne wieder **Einstellungen → Geräte & Dienste → Integration hinzufügen → Emlog**
 
-### Konfiguration
+Du musst folgende Angaben machen:
 
-Im UI-Setup eingeben:
-- **Host**: IP-Adresse des Emlog Geräts (z.B. 192.168.1.100)
-- **Strom Meterindex**: Normalerweise `1`
-- **Gas Meterindex**: Normalerweise `2`
-- **Scan-Intervall**: Polling-Frequenz in Sekunden (Default: 30)
+| Feld | Beschreibung | Beispiel |
+|------|-------------|---------|
+| **Host** | IP-Adresse deines Emlog-Geräts (ohne `http://`) | `192.168.1.50` |
+| **Strom Meterindex** | Meterindex für Stromdaten | `1` |
+| **Gas Meterindex** | Meterindex für Gasdaten | `2` |
+| **Scan-Intervall** | Wie oft Daten abgefragt werden (Sekunden) | `30` |
+
+### Schritt 3: Optionen konfigurieren (Optional)
+
+Nach der Einrichtung kannst du **erweiterte Optionen** im Zahnrad-Icon (⚙️) der Integration setzen:
+
+| Option | Beschreibung | Standard |
+|--------|-------------|---------|
+| **Strompreis (€/kWh)** | Strompreis für Kostenberechnung | `0,00` |
+| **Gasbrennwert** | Gasumrechnung Brennwert | `10,88` |
+| **Gaszustandszahl** | Gasumrechnung Zustandszahl | `1,0` |
+| **Grundpreis Strom (€/Monat)** | Monatlicher Grundpreis Strom | `0,00` |
+| **Grundpreis Gas (€/Monat)** | Monatlicher Grundpreis Gas | `0,00` |
+| **Hilfsenzitäten** | Verlinke `input_number` Entities für dynamische Werte | - |
+
+**💡 Tipp:** Du kannst auch `input_number` Entities erstellen und diese in den Optionen verlinken. So kannst du Preise und Faktoren jederzeit von der UI aus ändern, ohne die Integration neu zu starten!
 
 ## 📊 Verfügbare Sensoren
 
+Nach der Konfiguration werden automatisch folgende Sensoren erstellt:
+
 ### Strom (Electricity)
-- Zählerstand (kWh)
-- Tarif 1 & 2 Zählerstände
-- Aktuelle Leistung (W)
-- Tagesverbrauch (kWh)
+- 📊 **Zählerstand (kWh)** - Gesamte Stromverbrauch seit Inbetriebnahme
+- 📈 **Tarif 1 Zählerstand (kWh)** - Gesamter Verbrauch Tarif 1
+- 📈 **Tarif 2 Zählerstand (kWh)** - Gesamter Verbrauch Tarif 2
+- ⚡ **Aktuelle Leistung (W)** - Aktueller Stromverbrauch
+- 📉 **Tagesverbrauch (kWh)** - Heutiger Verbrauch
+- 💶 **Tageskosten (€)** - Heute ausgegebenes Geld
+- 💶 **Monatskosten (€)** - Diesen Monat ausgegebenes Geld
+- 💶 **Jahreskosten (€)** - Dieses Jahr ausgegebenes Geld
 
 ### Gas (Gas)
-- Zählerstand (m³)
-- Aktuelle Leistung (W)
-- Tagesverbrauch (kWh)
+- 📊 **Zählerstand (m³)** - Gesamter Gasverbrauch seit Inbetriebnahme
+- ⚡ **Aktuelle Leistung (W)** - Aktuelle Gasleistung
+- 📉 **Tagesverbrauch (kWh)** - Heutiger Gasverbrauch
+- 💶 **Tageskosten (€)** - Heute ausgegebenes Geld für Gas
+- 💶 **Monatskosten (€)** - Diesen Monat ausgegebenes Geld für Gas
+- 💶 **Jahreskosten (€)** - Dieses Jahr ausgegebenes Geld für Gas
 
-Siehe [docs/api/](docs/api/) für vollständige Sensor-Liste.
+**Kostenberechnung:** Die Kosten-Sensoren berechnen sich aus:
+- `Verbrauch × Preis/kWh + (Grundpreis ÷ Anzahl Tage/Monate)`
 
-## 🛠️ Entwicklung
+## 🎯 Praktische Verwendung
 
-### Entwicklungsumgebung starten
+### Automatisierungen erstellen
+Du kannst die Sensoren in Automatisierungen nutzen:
 
-Mit Make-Befehlen:
-
-```bash
-# Alle verfügbaren Befehle anzeigen
-make help
-
-# Vollständige Entwicklungsumgebung starten
-make dev-up
-
-# Home Assistant unter http://localhost:8123 öffnen
-# Mock Server unter http://localhost:8080 erreichbar
-
-# Tests durchführen
-make test              # Vollständige Tests
-make test-api          # Nur API Tests
-make lint              # Code-Qualität prüfen
-
-# Cleanup
-make dev-down          # Stoppe alle Services
-make full-clean        # Vollständiges Cleanup mit Volumes
+```yaml
+automation:
+  - alias: "Hoher Stromverbrauch"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.emlog_strom_leistung
+      above: 2000  # über 2000W
+    action:
+      service: notify.push_notification
+      data:
+        message: "Stromverbrauch über 2000W!"
 ```
 
-### Repository-Struktur
+### Dashboard mit Verbrauch
+Erstelle ein schönes Dashboard mit den Verbrauch-Sensoren:
 
-```
-hacs_emlog/
-├── custom_components/emlog/    # HACS Integration (Produktion)
-│   ├── coordinator.py          # Daten-Polling
-│   ├── sensor.py               # Sensor-Entities
-│   ├── config_flow.py          # Konfigurations-UI
-│   └── manifest.json           # Integration-Metadaten
-│
-├── docs/                       # 📚 Dokumentation
-│   ├── guides/                 # Getting Started & Setup
-│   ├── architecture/           # Technisches Design
-│   ├── api/                    # API Referenz
-│   └── README.md              # Dokumentations-Übersicht
-│
-├── tools/                      # 🛠️ Entwicklungswerkzeuge
-│   ├── docker/                 # Docker-Konfiguration
-│   │   ├── compose.yml         # Docker Compose Config
-│   │   └── Dockerfile.homeassistant
-│   └── scripts/                # Test & Setup Scripts
-│
-├── tests/                      # 🧪 Tests & Mock
-│   ├── mock/                   # Flask Mock Server
-│   └── config/                 # HA Test-Konfiguration
-│
-├── package/
-│   └── emlog.yaml             # Legacy YAML Package
-│
-└── Makefile                    # Development Task Runner
+```yaml
+type: glance
+title: Stromverbrauch
+entities:
+  - entity: sensor.emlog_strom_zaehlerstand
+    name: Gesamtverbrauch
+  - entity: sensor.emlog_strom_verbrauch_tag
+    name: Heute
+  - entity: sensor.emlog_strom_kosten_monat
+    name: Kosten diesen Monat
 ```
 
-### Lokale Entwicklungsumgebung
+### Mit anderen Integrationen kombinieren
+- **Energie Integration:** Verbrauchsdaten für die HA-Energie-Statistik nutzen
+- **Utility Meter:** Tägliche/monatliche/jährliche Verbrauchsmessung
+- **Lovelace Cards:** Custom Cards für Visualisierung der Daten
 
-Das Projekt enthält eine vollständige Entwicklungsumgebung:
+## 🔧 Fehlerbehebung
 
-- **Dev Container**: Vollständige Python/Home Assistant Umgebung
-- **Mock Server**: Simuliert Emlog API ohne echte Hardware ([tests/mock/](tests/mock/))
-- **Test Scripts**: Automatisierte Tests für API und Integration ([tools/scripts/](tools/scripts/))
+### Integration wird nicht angezeigt
+- Home Assistant **neu starten** (Einstellungen → Neu starten oben rechts)
+- HACS Cache leeren: Seite mit `Strg+Shift+R` neu laden
 
-### Mit Mock Server testen
+### Verbindungsfehler
+- **"Connection refused"** - Prüfe ob Emlog-IP korrekt ist (probiere `ping 192.168.x.x`)
+- **"404 Not Found"** - Meterindex prüfen (meist `1` für Strom, `2` für Gas)
+- **Timeout** - Scan-Intervall erhöhen (z.B. auf `60` Sekunden)
 
-Für Tests ohne echte Hardware:
+### Keine Sensoren sichtbar
+- Gehe in die **Optionen** der Integration (Zahnrad-Icon)
+- Überprüfe dass Hilfsenzitäten korrekt verlinkt sind
+- Integration **neu laden**: Einstellungen → Geräte & Dienste → Emlog → **Einstellungen neu laden**
 
-```bash
-# Dev-Umgebung mit Mock Server starten
-make dev-up
+## 📚 Weitere Dokumentation
 
-# Dann im Browser öffnen:
-# Home Assistant: http://localhost:8123
-# Mock API: http://localhost:8080
-```
+- **[Technische Details](docs/architecture/)** - Für fortgeschrittene Benutzer
+- **[API Referenz](docs/api/)** - Emlog Datenformat
+- **[Vollständige Sensor-Liste](docs/guides/)** - Alle verfügbaren Sensoren
 
-Integration konfigurieren:
-- **Host**: `emlog-mock`
-- **Strom Meterindex**: `1`
-- **Gas Meterindex**: `2`
-- **Scan-Intervall**: `30`
+## 🤝 Fragen & Support
 
-### Mit echter Emlog Hardware
+- **GitHub Issues:** [Bug Reports & Feature Requests](https://github.com/strausmann/hacs_emlog/issues)
+- **Diskussionen:** [GitHub Discussions](https://github.com/strausmann/hacs_emlog/discussions)
+- **Home Assistant Forum:** Stelle deine Frage im [Home Assistant Forum](https://community.home-assistant.io/)
 
-Bei echter Hardware:
-1. Stelle sicher, dass der Emlog Server im gleichen Netzwerk erreichbar ist
-2. Verwende die echte IP-Adresse in der Konfiguration
-3. Bei Bedarf Tailscale oder VPN für Remote-Zugriff einrichten
+## 🙌 Beitragen
 
-## Releases & Versionierung
+Möchtest du zur Integration beitragen? Wir freuen uns über:
+- 🐛 **Bug Reports** - Finde und melde Fehler
+- 💡 **Feature Requests** - Deine Ideen für neue Funktionen
+- 📝 **Dokumentation** - Verbessere die Dokumentation
+- 💻 **Code Contributions** - Wenn du selbst programmierst
 
-Dieses Projekt verwendet [Semantic Release](https://semantic-release.gitbook.io/) für automatisierte Versionierung und Releases:
+Schaue dir [CONTRIBUTING.md](CONTRIBUTING.md) für die detaillierten Entwicklungs-Richtlinien an.
 
-- **Automatische Releases**: Bei jedem Push zu `main` wird automatisch ein neues Release erstellt
-- **Conventional Commits**: Bitte verwenden Sie [Conventional Commits](https://www.conventionalcommits.org/) Format
-- **Versionierung**: Semantic Versioning (MAJOR.MINOR.PATCH) basierend auf Commit-Typen:
-  - `feat:` → Minor-Version erhöhen
-  - `fix:` → Patch-Version erhöhen
-  - `BREAKING CHANGE:` → Major-Version erhöhen
+## 📄 Lizenz
 
-### Interaktive Commits
-Verwenden Sie `npm run commit` für eine interaktive Commit-Erstellung mit deutschen Prompts:
-
-```bash
-npm run commit
-```
-
-Dies führt Sie durch:
-- Auswahl des Commit-Typs (feat, fix, docs, etc.)
-- Scope der Änderung
-- Betreff und Beschreibung
-- Breaking Changes
-- Issue-Referenzen
-
-### Code-Formatierung
-Das Projekt verwendet **Prettier** für konsistente Code-Formatierung:
-
-```bash
-npm run prettier      # Überprüfen der Formatierung
-npm run prettier-fix  # Automatische Formatierung
-```
-
-### Commitlint
-Alle Commits werden automatisch auf Conventional Commits Format validiert.
-
-### Changelog
-Alle Änderungen werden automatisch in der [CHANGELOG.md](CHANGELOG.md) dokumentiert.
-
-## Contributing
-
-Möchten Sie zur Weiterentwicklung beitragen? Schauen Sie sich unsere [Contributing Guidelines](docs/guides/CONTRIBUTING.md) an!
-
-Dort finden Sie:
-- Detaillierte Anleitungen für die Entwicklungsumgebung
-- Informationen zur Architektur und Datenflüssen
-- Test-Strategien und Qualitätsstandards
-- Richtlinien für Pull Requests
-
-## Support
-Issues/Feature Requests bitte über GitHub Issues.
+Diese Integration ist unter der [Apache 2.0 Lizenz](LICENSE) lizenziert.
