@@ -138,17 +138,38 @@ Format: `type(scope): description`
 - `feat:` - Neues Feature (erhöht Minor-Version)
 - `fix:` - Fehlerbehebung (erhöht Patch-Version)
 - `docs:` - Dokumentation
-- `style:` - Code-Formatierung
-- `refactor:` - Code-Refaktorierung
+- `style:` - Code-Formatierung (keine Funktionalität)
+- `refactor:` - Code-Refaktorierung (keine Funktionalität)
 - `perf:` - Performance-Verbesserung
-- `test:` - Tests
+- `test:` - Tests hinzufügen/korrigieren
 - `chore:` - Wartungsarbeiten
+- `build:` - Build-System/Dependencies
+- `ci:` - CI/CD-Konfiguration
+
+**Scopes (empfohlen):**
+- `coordinator` - Daten-Polling Logik
+- `sensor` - Sensor-Entities
+- `config` - UI-Konfiguration
+- `manifest` - Integration-Metadaten
+- `const` - Konstanten und Konfiguration
+- `translations` - UI-Übersetzungen
+- `mock` - Test-Infrastruktur
+- `test` - Tests
+- `docs` - Dokumentation
+- `ci` - CI/CD-Konfiguration
+- `deps` - Dependencies
+- `build` - Build-System
 
 **Beispiele:**
 ```
-feat: add new sensor entity for gas consumption
-fix: resolve timeout issue in coordinator
-docs: update API documentation
+feat(sensor): add new gas consumption sensor entity
+fix(coordinator): resolve timeout in API polling
+docs(readme): update installation instructions
+chore(deps): update semantic-release to v25.0.2
+ci(workflow): add automated testing to GitHub Actions
+feat(config)!: change host validation logic
+
+BREAKING CHANGE: host configuration now requires protocol prefix
 ```
 
 Alle Commits werden automatisch validiert - bei Fehlern wird der Commit abgelehnt.

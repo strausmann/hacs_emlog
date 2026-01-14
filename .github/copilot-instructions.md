@@ -55,7 +55,7 @@ self._attr_unique_id = f"emlog_{host}_{channel}_{definition.key}".replace(".", "
 
 Dieses Projekt verwendet **Semantic Release** für automatisierte Versionierung. Alle Commits müssen dem Conventional Commits Standard entsprechen:
 
-### Commit Format
+### Commit Format mit Scopes
 ```
 type(scope): description
 
@@ -63,6 +63,23 @@ type(scope): description
 
 [footer]
 ```
+
+**Scope verwenden wenn möglich!** Der Scope gibt an, welche Komponente betroffen ist.
+
+### Erlaubte Scopes für dieses Projekt
+- `coordinator:` - Änderungen an `coordinator.py` (Daten-Polling)
+- `sensor:` - Änderungen an `sensor.py` (Sensor-Entities)
+- `config:` - Änderungen an `config_flow.py` (UI-Konfiguration)
+- `manifest:` - Änderungen an `manifest.json` (Integration-Metadaten)
+- `const:` - Änderungen an `const.py` (Konstanten)
+- `translations:` - Änderungen an Übersetzungsdateien
+- `mock:` - Änderungen am Mock-Server (`mock/` Verzeichnis)
+- `test:` - Test-bezogene Änderungen
+- `docs:` - Dokumentationsänderungen
+- `ci:` - CI/CD-Konfiguration (`.github/`, `.releaserc.json`)
+- `deps:` - Dependency-Updates (`package.json`, `requirements.txt`)
+- `build:` - Build-System und Entwicklungstools (`Makefile`, Docker)
+- `chore:` - Allgemeine Wartung (Cleanup, Refactoring ohne Funktionsänderung)
 
 ### Erlaubte Commit-Typen (aus .releaserc.json)
 - `feat:` - Neue Features (erhöht MINOR version)
@@ -86,13 +103,14 @@ BREAKING CHANGE: detailed explanation
 
 ### Beispiele
 ```
-feat: add new sensor for gas consumption
-fix: resolve timeout in API polling
-docs: update installation instructions
-chore: update dependencies
-feat!: change API response format
+feat(sensor): add new gas consumption sensor entity
+fix(coordinator): resolve timeout in API polling
+docs(readme): update installation instructions
+chore(deps): update semantic-release to v25.0.2
+ci(workflow): add automated testing to GitHub Actions
+feat(config)!: change host validation logic
 
-BREAKING CHANGE: API response now uses different field names
+BREAKING CHANGE: host configuration now requires protocol prefix
 ```
 
 ### Automatische Versionierung
