@@ -1,3 +1,10 @@
+# [0.2.0](https://github.com/strausmann/hacs_emlog/compare/v0.1.0...v0.2.0) (2026-01-14)
+
+
+### Features
+
+* integrate Commitlint with German prompts for conventional commits ([be34601](https://github.com/strausmann/hacs_emlog/commit/be3460164649f4a234cd4fbb0ee6fb5533ec9943))
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
