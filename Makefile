@@ -100,9 +100,10 @@ lint: ## Führe Code-Qualitätsprüfungen durch (simuliert CI)
 	@echo "✅ Python Syntax prüfen..."
 	@find custom_components -name "*.py" -exec python3 -m py_compile {} \;
 	@echo "✅ JSON Dateien validieren..."
-	@find . -name "*.json" -not -path "./test_config/*" -exec python3 -c "import json; json.load(open('{}'))" \;
+	@find . -name "*.json" -not -path "./test_config/*" -exec sh -c 'python3 -c "import json; json.load(open(\"{}\"))" && echo "✅ {}" || echo "❌ {}: JSON Fehler"' \;
 	@echo "✅ YAML Dateien validieren..."
-	@find . -name "*.yaml" -o -name "*.yml" | xargs -I {} sh -c 'python3 -c "import yaml; yaml.safe_load(open(\"{}\"))" && echo "✅ {}" || echo "❌ {}: Fehler"'
+	@find . -name "*.yaml" -o -name "*.yml" | grep -v "test_config/blueprints" | xargs -I {} sh -c 'python3 -c "import yaml; yaml.safe_load(open(\"{}\"))" && echo "✅ {}" || echo "❌ {}: YAML Fehler"'
+	@echo "ℹ️  Blueprint-Dateien übersprungen (enthalten HA-spezifische Tags)"
 	@echo "🎉 Alle Qualitätsprüfungen bestanden!"
 
 # Hilfe für Entwickler

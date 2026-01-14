@@ -49,19 +49,3 @@
     "Betrag": -1.5
   }
 }
-  "Betrag_Bezug": {
-    "Betrag180": 0,
-    "Betrag181": 0,
-    "Betrag182": 0,
-    "Waehrung": "EUR"
-  },
-  "Betrag_Lieferung": {
-    "Betrag280": 0,
-    "Betrag281": 0,
-    "Betrag282": 0,
-    "Waehrung": "EUR"
-  },
-  "DiffBezugLieferung": {
-    "Betrag": 0
-  }
-}
