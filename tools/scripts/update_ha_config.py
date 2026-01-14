@@ -12,8 +12,8 @@ from pathlib import Path
 
 def main():
     """Main execution."""
-    script_dir = Path(__file__).parent
-    config_path = script_dir / "test_config" / "configuration.yaml"
+    script_dir = Path(__file__).parent.parent.parent
+    config_path = script_dir / "tests" / "config" / "configuration.yaml"
     
     # Determine external URL
     if os.getenv("CODESPACES") == "true":

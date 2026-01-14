@@ -3,8 +3,8 @@
 
 echo "🚀 Starte Emlog Integration Tests..."
 
-# Stelle sicher, dass wir im richtigen Verzeichnis sind
-cd "$(dirname "$0")"
+# Navigiere zum Repository Root
+cd "$(dirname "$0")/../.."
 
 # Starte Mock Server im Hintergrund
 echo "📡 Starte Emlog Mock Server..."
