@@ -99,6 +99,20 @@ Bei echter Hardware:
 2. Verwende die echte IP-Adresse in der Konfiguration
 3. Bei Bedarf Tailscale oder VPN für Remote-Zugriff einrichten
 
+## Releases & Versionierung
+
+Dieses Projekt verwendet [Semantic Release](https://semantic-release.gitbook.io/) für automatisierte Versionierung und Releases:
+
+- **Automatische Releases**: Bei jedem Push zu `main` wird automatisch ein neues Release erstellt
+- **Conventional Commits**: Bitte verwenden Sie [Conventional Commits](https://www.conventionalcommits.org/) Format
+- **Versionierung**: Semantic Versioning (MAJOR.MINOR.PATCH) basierend auf Commit-Typen:
+  - `feat:` → Minor-Version erhöhen
+  - `fix:` → Patch-Version erhöhen
+  - `BREAKING CHANGE:` → Major-Version erhöhen
+
+### Changelog
+Alle Änderungen werden automatisch in der [CHANGELOG.md](CHANGELOG.md) dokumentiert.
+
 ## Contributing
 
 Möchten Sie zur Weiterentwicklung beitragen? Schauen Sie sich unsere [Contributing Guidelines](CONTRIBUTING.md) an!
