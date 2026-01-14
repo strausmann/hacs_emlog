@@ -39,38 +39,38 @@ help:
 
 mock-up:
 	@echo "🚀 Starte Mock Server..."
-	docker-compose -f docker-compose.test.yml up -d emlog-mock
+	docker-compose -f tools/docker/compose.yml up -d emlog-mock
 	@sleep 2 && echo "✅ http://localhost:8080"
 
 mock-down:
-	docker-compose -f docker-compose.test.yml down emlog-mock
+	docker-compose -f tools/docker/compose.yml down emlog-mock
 
 mock-logs:
-	docker-compose -f docker-compose.test.yml logs -f emlog-mock
+	docker-compose -f tools/docker/compose.yml logs -f emlog-mock
 
 ha-up: update-ha-config
 	@echo "🏠 Home Assistant starten..."
-	docker-compose -f docker-compose.test.yml up homeassistant
+	docker-compose -f tools/docker/compose.yml up homeassistant
 
 ha-down:
-	docker-compose -f docker-compose.test.yml down homeassistant
+	docker-compose -f tools/docker/compose.yml down homeassistant
 
 ha-logs:
-	docker-compose -f docker-compose.test.yml logs -f homeassistant
+	docker-compose -f tools/docker/compose.yml logs -f homeassistant
 
 update-ha-config:
 	@python3 tools/scripts/update_ha_config.py
 
 dev-up: update-ha-config
 	@echo "🚀 Starte Dev-Umgebung..."
-	docker-compose -f docker-compose.test.yml up -d
+	docker-compose -f tools/docker/compose.yml up -d
 	@sleep 3 && echo "✅ HA: http://localhost:8123"
 
 dev-down:
-	docker-compose -f docker-compose.test.yml down
+	docker-compose -f tools/docker/compose.yml down
 
 dev-logs:
-	docker-compose -f docker-compose.test.yml logs -f
+	docker-compose -f tools/docker/compose.yml logs -f
 
 test:
 	@bash tools/scripts/test.sh
@@ -85,14 +85,14 @@ lint:
 
 clean:
 	@echo "🧹 Cleanup..."
-	docker-compose -f docker-compose.test.yml down
+	docker-compose -f tools/docker/compose.yml down
 
 full-clean: clean
-	docker-compose -f docker-compose.test.yml down -v --rmi local 2>/dev/null || true
+	docker-compose -f tools/docker/compose.yml down -v --rmi local 2>/dev/null || true
 	rm -rf tests/config/.storage tests/config/*.db*
 
 status:
-	docker-compose -f docker-compose.test.yml ps
+	docker-compose -f tools/docker/compose.yml ps
 
 version:
 	@echo "Version: $$(git describe --tags --abbrev=0 2>/dev/null || echo 'unreleased')"

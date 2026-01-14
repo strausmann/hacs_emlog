@@ -8,7 +8,7 @@ cd "$(dirname "$0")/../.."
 
 # Starte Mock Server im Hintergrund
 echo "📡 Starte Emlog Mock Server..."
-docker-compose -f docker-compose.test.yml up -d emlog-mock
+docker-compose -f tools/docker/compose.yml up -d emlog-mock
 
 # Warte bis Mock Server bereit ist
 echo "⏳ Warte auf Mock Server..."
@@ -27,9 +27,9 @@ read -p "🏠 Home Assistant für Integrationstests starten? (y/N): " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "🏠 Starte Home Assistant..."
-    docker-compose -f docker-compose.test.yml up homeassistant
+    docker-compose -f tools/docker/compose.yml up homeassistant
 fi
 
 # Cleanup
 echo "🧹 Räume auf..."
-docker-compose -f docker-compose.test.yml down
+docker-compose -f tools/docker/compose.yml down

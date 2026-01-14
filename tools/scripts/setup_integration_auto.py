@@ -192,7 +192,7 @@ def main():
         if args.all or args.emlog:
             print("   ✓ Emlog (Energy Meter)")
         print("\n⚠️  Note: HA requires restart for changes to take effect")
-        print("   Run: docker-compose -f docker-compose.test.yml restart homeassistant")
+        print("   Run: docker-compose -f tools/docker/compose.yml restart homeassistant")
         return 0
     else:
         print("✗ Setup failed")

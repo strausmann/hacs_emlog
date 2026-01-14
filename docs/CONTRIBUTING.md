@@ -80,7 +80,7 @@ hacs_emlog/
 ├── package/emlog.yaml          # Legacy YAML-Package
 ├── mock/                       # Test-Infrastruktur
 ├── test_config/                # HA-Testkonfiguration
-├── docker-compose.test.yml     # Test-Umgebung
+├── tools/docker/compose.yml     # Test-Umgebung
 └── Makefile                    # Entwicklungswerkzeuge
 ```
 

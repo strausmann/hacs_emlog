@@ -113,14 +113,14 @@ python3 update_ha_config.py
 
 ```bash
 # Alle Container
-docker-compose -f docker-compose.test.yml ps
+docker-compose -f tools/docker/compose.yml ps
 
 # Spezifische Logs
-docker-compose -f docker-compose.test.yml logs -f homeassistant
-docker-compose -f docker-compose.test.yml logs -f emlog-mock
+docker-compose -f tools/docker/compose.yml logs -f homeassistant
+docker-compose -f tools/docker/compose.yml logs -f emlog-mock
 
 # Container neustarten
-docker-compose -f docker-compose.test.yml restart homeassistant
+docker-compose -f tools/docker/compose.yml restart homeassistant
 ```
 
 ## 🔄 Neu in Codespaces?
@@ -142,7 +142,7 @@ docker-compose -f docker-compose.test.yml restart homeassistant
 → Oder: Nutze localhost (`http://localhost:8123`)
 
 ### HA lädt nicht richtig
-→ Container neu starten: `docker-compose -f docker-compose.test.yml restart homeassistant`
+→ Container neu starten: `docker-compose -f tools/docker/compose.yml restart homeassistant`
 
 ### Mock Server antwortet nicht
 → Prüfe ob Container läuft: `docker ps | grep emlog-mock`
@@ -150,7 +150,7 @@ docker-compose -f docker-compose.test.yml restart homeassistant
 
 ### Ports konflikt
 → Andere Prozesse auf Port 8123 oder 8080 beenden
-→ Oder Ports in `docker-compose.test.yml` anpassen
+→ Oder Ports in `tools/docker/compose.yml` anpassen
 
 ## 🎯 Next Steps
 

@@ -199,7 +199,7 @@ JSON Response (identisch zu echtem Emlog)
 
 ### Docker Integration
 ```
-docker-compose.test.yml
+tools/docker/compose.yml
     ├── homeassistant (port 8123)
     ├── emlog-mock (port 8080)
     └── hacs_emlog_test (network)
