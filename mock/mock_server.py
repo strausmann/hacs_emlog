@@ -148,7 +148,7 @@ def get_information():
     """Haupt-API-Endpunkt"""
     meter_index = int(request.args.get('meterindex', 1))
 
-    if request.args.get('export'):
+    if 'export' in request.args:
         data = load_mock_data(meter_index)
         return jsonify(data)
 
