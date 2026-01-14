@@ -1,3 +1,17 @@
+# Emlog Home Assistant Integration Change Log 📜📝
+
+All notable changes to the **Emlog Home Assistant Integration** will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+# [0.3.0](https://github.com/strausmann/hacs_emlog/compare/v0.2.0...v0.3.0) (2026-01-14)
+
+
+### Features
+
+* integrate Prettier code formatting and update changelog format ([bcdf8db](https://github.com/strausmann/hacs_emlog/commit/bcdf8dba85c1c2e9c8c93b0d29e4aaca32bb5d06))
+
 <!-- markdownlint-disable MD012 MD024 -->
 # Emlog Home Assistant Integration Change Log 📜📝
 
