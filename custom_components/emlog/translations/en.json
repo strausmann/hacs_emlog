@@ -3,15 +3,18 @@
     "step": {
       "user": {
         "title": "Emlog",
-        "description": "Configure host/IP, meter type (electricity/gas), and meter index.",
+        "description": "Configure host/IP, meter type (electricity/gas), and meter number (1-4).",
         "data": {
           "host": "Host/IP (without http://)",
           "meter_type": "Meter type",
-          "meter_index": "Meter index",
+          "strom_index": "Electricity meter (1-4)",
+          "gas_index": "Gas meter (1-4)",
           "scan_interval": "Scan interval (seconds)"
         },
         "data_description": {
-          "meter_type": "Select 'Strom' for electricity or 'Gas' for gas meter. You can add multiple services."
+          "meter_type": "Select 'Strom' for electricity or 'Gas' for gas meter. You can add multiple services.",
+          "strom_index": "Meter number in Emlog device for electricity data (usually 1 or 2).",
+          "gas_index": "Meter number in Emlog device for gas data (usually 2 or 3)."
         }
       }
     },

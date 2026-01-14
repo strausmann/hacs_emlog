@@ -3,15 +3,18 @@
     "step": {
       "user": {
         "title": "Emlog",
-        "description": "Konfiguriere Host/IP, Meter-Typ (Strom/Gas) und Meterindex.",
+        "description": "Konfiguriere Host/IP, Zähler-Typ (Strom/Gas) und Zähler-Nummer (1-4).",
         "data": {
           "host": "Host/IP (ohne http://)",
-          "meter_type": "Meter-Typ",
-          "meter_index": "Meterindex",
+          "meter_type": "Zähler-Typ",
+          "strom_index": "Strom Zähler (1-4)",
+          "gas_index": "Gas Zähler (1-4)",
           "scan_interval": "Scan-Intervall (Sekunden)"
         },
         "data_description": {
-          "meter_type": "Wähle 'Strom' für Stromzähler oder 'Gas' für Gaszähler. Du kannst mehrere Dienste hinzufügen."
+          "meter_type": "Wähle 'Strom' für Stromzähler oder 'Gas' für Gaszähler. Du kannst mehrere Dienste hinzufügen.",
+          "strom_index": "Zähler-Nummer im Emlog-Gerät für Stromdaten (normalerweise 1 oder 2).",
+          "gas_index": "Zähler-Nummer im Emlog-Gerät für Gasdaten (normalerweise 2 oder 3)."
         }
       }
     },
