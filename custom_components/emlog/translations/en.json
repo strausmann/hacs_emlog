@@ -7,14 +7,12 @@
         "data": {
           "host": "Host/IP (without http://)",
           "meter_type": "Meter type",
-          "strom_index": "Electricity meter (1-4)",
-          "gas_index": "Gas meter (1-4)",
-          "scan_interval": "Scan interval (seconds)"
+          "meter_index": "Meter (1-4)",
+          "scan_interval": "Scan Interval (seconds)"
         },
         "data_description": {
-          "meter_type": "Select 'Strom' for electricity or 'Gas' for gas meter. You can add multiple services.",
-          "strom_index": "Meter number in Emlog device for electricity data (usually 1 or 2).",
-          "gas_index": "Meter number in Emlog device for gas data (usually 2 or 3)."
+          "meter_type": "Select 'Strom' for electricity meter or 'Gas' for gas meter. You can add multiple services.",
+          "meter_index": "Meter number in the Emlog device (usually 1 or 2 for electricity, 2 or 3 for gas)."
         }
       }
     },
@@ -37,6 +35,11 @@
           "base_price_strom_helper": "Base price electricity Helper Entity (optional)",
           "base_price_gas": "Base price gas per month (EUR, fallback)",
           "base_price_gas_helper": "Base price gas Helper Entity (optional)",
+          "monthly_advance_strom": "Monthly advance electricity (EUR)",
+          "monthly_advance_strom_helper": "Monthly advance electricity Helper Entity (optional)",
+          "monthly_advance_gas": "Monthly advance gas (EUR)",
+          "monthly_advance_gas_helper": "Monthly advance gas Helper Entity (optional)",
+          "settlement_month": "Settlement month",
           "gas_brennwert_helper": "Calorific Value Helper Entity (optional)",
           "gas_brennwert": "Gas calorific value (fallback)",
           "gas_zustandszahl_helper": "Compressibility Helper Entity (optional)",
@@ -49,6 +52,11 @@
           "base_price_strom_helper": "Select an input_number for dynamic base prices.",
           "base_price_gas": "Monthly base price for gas (e.g., 10.00 EUR/month).",
           "base_price_gas_helper": "Select an input_number for dynamic base prices.",
+          "monthly_advance_strom": "Monthly advance payment for electricity (e.g., 120.00 EUR/month).",
+          "monthly_advance_strom_helper": "Select an input_number for dynamic advance payments.",
+          "monthly_advance_gas": "Monthly advance payment for gas (e.g., 80.00 EUR/month).",
+          "monthly_advance_gas_helper": "Select an input_number for dynamic advance payments.",
+          "settlement_month": "Month when the annual settlement is expected. Used for forecast calculations.",
           "gas_brennwert_helper": "Select an input_number or sensor entity for dynamic calorific value. If empty, fallback value will be used.",
           "gas_brennwert": "Calorific value for m³ → kWh conversion, used when no helper entity is configured.",
           "gas_zustandszahl_helper": "Select an input_number or sensor entity for dynamic compressibility. If empty, fallback value will be used.",
