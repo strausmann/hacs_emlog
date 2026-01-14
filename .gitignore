@@ -48,3 +48,9 @@ htmlcov/
 # Build artifacts (falls zukünftig verwendet)
 build/
 dist/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
