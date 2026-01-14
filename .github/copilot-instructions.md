@@ -118,9 +118,11 @@ except asyncio.TimeoutError as err:
 - Mock server provides realistic JSON responses for both electricity and gas meters
 - Docker Compose setup (`docker-compose.test.yml`) for isolated testing
 - Test configuration in `test_config/configuration.yaml`
+- Use `make` commands for quick development workflow management
 
 ## Key Files Reference
 
+- `Makefile`: Development workflow commands and automation
 - `custom_components/emlog/manifest.json`: Integration metadata and requirements
 - `custom_components/emlog/const.py`: All configuration constants and defaults
 - `custom_components/emlog/coordinator.py`: Core data fetching logic

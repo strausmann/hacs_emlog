@@ -24,6 +24,39 @@ Im UI-Setup:
 
 ## Entwicklung & Testen
 
+### Schnellstart mit Make-Befehlen
+
+Die Entwicklungsumgebung kann einfach mit Make-Befehlen gesteuert werden:
+
+```bash
+# Hilfe anzeigen
+make help
+
+# Vollständige Entwicklungsumgebung starten
+make dev-setup
+
+# Einzelne Services verwalten
+make mock-up          # Mock Server starten
+make ha-up           # Home Assistant starten
+make mock-down       # Mock Server stoppen
+make ha-down         # Home Assistant stoppen
+
+# Tests durchführen
+make test            # Vollständige Tests
+make test-api        # Nur API Tests
+make lint            # Code-Qualitätsprüfungen
+
+# Status und Logs
+make status          # Service Status anzeigen
+make dev-logs        # Logs beider Services
+make mock-logs       # Nur Mock Server Logs
+make ha-logs         # Nur Home Assistant Logs
+
+# Aufräumen
+make clean           # Services stoppen
+make full-clean      # Vollständiges Cleanup
+```
+
 ### Lokale Entwicklungsumgebung
 
 Das Projekt enthält eine vollständige Entwicklungsumgebung für GitHub Codespaces:
