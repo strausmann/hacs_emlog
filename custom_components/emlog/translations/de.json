@@ -3,14 +3,56 @@
     "step": {
       "user": {
         "title": "Emlog",
-        "description": "Konfiguriere Host/IP und Meterindex f\u00fcr Strom und Gas.",
+        "description": "Konfiguriere Host/IP, Meter-Typ (Strom/Gas) und Meterindex.",
         "data": {
           "host": "Host/IP (ohne http://)",
-          "strom_index": "Strom Meterindex",
-          "gas_index": "Gas Meterindex",
+          "meter_type": "Meter-Typ",
+          "meter_index": "Meterindex",
           "scan_interval": "Scan-Intervall (Sekunden)"
+        },
+        "data_description": {
+          "meter_type": "Wähle 'Strom' für Stromzähler oder 'Gas' für Gaszähler. Du kannst mehrere Dienste hinzufügen."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbindung zur Emlog API fehlgeschlagen. Bitte Host/IP und Netzwerk prüfen.",
+      "timeout_connect": "Zeitüberschreitung beim Verbinden zur Emlog API. Bitte Host/IP prüfen.",
+      "invalid_response": "Ungültige Antwort von Emlog API. Bitte prüfen, ob es sich um ein Emlog-Gerät handelt.",
+      "unknown": "Unbekannter Fehler bei der Verbindung zur Emlog API."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Emlog Einstellungen",
+        "description": "Konfiguriere Preise und Gas-Faktoren. Verwende Helper-Entities für dynamische Werte oder statische Fallback-Werte.",
+        "data": {
+          "price_helper": "Preis Helper Entity (optional)",
+          "price_kwh": "Preis pro kWh (EUR, Fallback)",
+          "base_price_strom": "Grundpreis Strom pro Monat (EUR, Fallback)",
+          "base_price_strom_helper": "Grundpreis Strom Helper Entity (optional)",
+          "base_price_gas": "Grundpreis Gas pro Monat (EUR, Fallback)",
+          "base_price_gas_helper": "Grundpreis Gas Helper Entity (optional)",
+          "gas_brennwert_helper": "Brennwert Helper Entity (optional)",
+          "gas_brennwert": "Gas Brennwert (Fallback)",
+          "gas_zustandszahl_helper": "Zustandszahl Helper Entity (optional)",
+          "gas_zustandszahl": "Gas Zustandszahl (Fallback)"
+        },
+        "data_description": {
+          "price_helper": "Wähle eine input_number oder sensor Entity für dynamische Preise. Wenn leer, wird der Fallback-Wert verwendet.",
+          "price_kwh": "Arbeitspreis pro kWh, wird verwendet wenn keine Helper Entity konfiguriert ist.",
+          "base_price_strom": "Monatlicher Grundpreis für Strom (z.B. 15,00 EUR/Monat).",
+          "base_price_strom_helper": "Wähle eine input_number für dynamische Grundpreise.",
+          "base_price_gas": "Monatlicher Grundpreis für Gas (z.B. 10,00 EUR/Monat).",
+          "base_price_gas_helper": "Wähle eine input_number für dynamische Grundpreise.",
+          "gas_brennwert_helper": "Wähle eine input_number oder sensor Entity für dynamischen Brennwert. Wenn leer, wird der Fallback-Wert verwendet.",
+          "gas_brennwert": "Brennwert für m³ → kWh Umrechnung, wird verwendet wenn keine Helper Entity konfiguriert ist.",
+          "gas_zustandszahl_helper": "Wähle eine input_number oder sensor Entity für dynamische Zustandszahl. Wenn leer, wird der Fallback-Wert verwendet.",
+          "gas_zustandszahl": "Zustandszahl für m³ → kWh Umrechnung, wird verwendet wenn keine Helper Entity konfiguriert ist."
         }
       }
     }
   }
 }
+
