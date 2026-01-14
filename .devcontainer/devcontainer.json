@@ -14,7 +14,8 @@
                 "ms-python.pylint",
                 "ms-vscode.vscode-json",
                 "redhat.vscode-yaml",
-                "ms-vscode-remote.remote-containers"
+                "ms-vscode-remote.remote-containers",
+                "ms-azuretools.vscode-docker"
             ],
             "settings": {
                 "python.defaultInterpreterPath": "/usr/local/bin/python",
