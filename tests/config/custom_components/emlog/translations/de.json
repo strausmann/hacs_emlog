@@ -1,0 +1,69 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Emlog",
+        "description": "Konfiguriere Host/IP, Zähler-Typ (Strom/Gas) und Zähler-Nummer (1-4).",
+        "data": {
+          "host": "Host/IP (ohne http://)",
+          "meter_type": "Zähler-Typ",
+          "meter_index": "Zähler (1-4)",
+          "scan_interval": "Scan-Intervall (Sekunden)"
+        },
+        "data_description": {
+          "meter_type": "Wähle 'Strom' für Stromzähler oder 'Gas' für Gaszähler. Du kannst mehrere Dienste hinzufügen.",
+          "meter_index": "Zähler-Nummer im Emlog-Gerät (normalerweise 1 oder 2 für Strom, 2 oder 3 für Gas)."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbindung zur Emlog API fehlgeschlagen. Bitte Host/IP und Netzwerk prüfen.",
+      "timeout_connect": "Zeitüberschreitung beim Verbinden zur Emlog API. Bitte Host/IP prüfen.",
+      "invalid_response": "Ungültige Antwort von Emlog API. Bitte prüfen, ob es sich um ein Emlog-Gerät handelt.",
+      "unknown": "Unbekannter Fehler bei der Verbindung zur Emlog API."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Emlog Einstellungen",
+        "description": "Konfiguriere Preise und Gas-Faktoren. Verwende Helper-Entities für dynamische Werte oder statische Fallback-Werte.",
+        "data": {
+          "price_helper": "Preis Helper Entity (optional)",
+          "price_kwh": "Preis pro kWh (EUR, Fallback)",
+          "base_price_strom": "Grundpreis Strom pro Monat (EUR, Fallback)",
+          "base_price_strom_helper": "Grundpreis Strom Helper Entity (optional)",
+          "base_price_gas": "Grundpreis Gas pro Monat (EUR, Fallback)",
+          "base_price_gas_helper": "Grundpreis Gas Helper Entity (optional)",
+          "monthly_advance_strom": "Abschlag Strom pro Monat (EUR)",
+          "monthly_advance_strom_helper": "Abschlag Strom Helper Entity (optional)",
+          "monthly_advance_gas": "Abschlag Gas pro Monat (EUR)",
+          "monthly_advance_gas_helper": "Abschlag Gas Helper Entity (optional)",
+          "settlement_month": "Abrechnungsmonat",
+          "gas_brennwert_helper": "Brennwert Helper Entity (optional)",
+          "gas_brennwert": "Gas Brennwert (Fallback)",
+          "gas_zustandszahl_helper": "Zustandszahl Helper Entity (optional)",
+          "gas_zustandszahl": "Gas Zustandszahl (Fallback)"
+        },
+        "data_description": {
+          "price_helper": "Wähle eine input_number oder sensor Entity für dynamische Preise. Wenn leer, wird der Fallback-Wert verwendet.",
+          "price_kwh": "Arbeitspreis pro kWh, wird verwendet wenn keine Helper Entity konfiguriert ist.",
+          "base_price_strom": "Monatlicher Grundpreis für Strom (z.B. 15,00 EUR/Monat).",
+          "base_price_strom_helper": "Wähle eine input_number für dynamische Grundpreise.",
+          "base_price_gas": "Monatlicher Grundpreis für Gas (z.B. 10,00 EUR/Monat).",
+          "base_price_gas_helper": "Wähle eine input_number für dynamische Grundpreise.",
+          "monthly_advance_strom": "Monatlicher Abschlag für Strom (z.B. 120,00 EUR/Monat).",
+          "monthly_advance_strom_helper": "Wähle eine input_number für dynamische Abschläge.",
+          "monthly_advance_gas": "Monatlicher Abschlag für Gas (z.B. 80,00 EUR/Monat).",
+          "monthly_advance_gas_helper": "Wähle eine input_number für dynamische Abschläge.",
+          "settlement_month": "Monat in dem die Jahresabrechnung kommt. Wird für die Berechnung von Prognosen verwendet.",
+          "gas_brennwert_helper": "Wähle eine input_number oder sensor Entity für dynamischen Brennwert. Wenn leer, wird der Fallback-Wert verwendet.",
+          "gas_brennwert": "Brennwert für m³ → kWh Umrechnung, wird verwendet wenn keine Helper Entity konfiguriert ist.",
+          "gas_zustandszahl_helper": "Wähle eine input_number oder sensor Entity für dynamische Zustandszahl. Wenn leer, wird der Fallback-Wert verwendet.",
+          "gas_zustandszahl": "Zustandszahl für m³ → kWh Umrechnung, wird verwendet wenn keine Helper Entity konfiguriert ist."
+        }
+      }
+    }
+  }
+}
+
