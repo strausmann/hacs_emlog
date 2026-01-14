@@ -32,7 +32,8 @@ tts/
 # Configuration backups
 test_config/configuration.yaml.backup
 blueprints/
-custom_components/
+tests/config/custom_components/hacs/
+tests/config/custom_components/*/deps/
 
 # Environment variables
 .env
