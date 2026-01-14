@@ -37,8 +37,8 @@ jobs:
       - name: Install semantic-release
         run: |
           npm install -g semantic-release @semantic-release/changelog @semantic-release/git @semantic-release/github conventional-changelog-conventionalcommits
-          # Fix for issue #3292: downgrade conventional-changelog-writer to stable version
-          npm install -g conventional-changelog-writer@8.1.0
+          # Fix for issue #3292: use stable versions that don't have the RangeError bug
+          npm install -g @semantic-release/release-notes-generator@12.1.1
 
       - name: Run semantic-release
         run: semantic-release
