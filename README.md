@@ -99,5 +99,15 @@ Bei echter Hardware:
 2. Verwende die echte IP-Adresse in der Konfiguration
 3. Bei Bedarf Tailscale oder VPN für Remote-Zugriff einrichten
 
+## Contributing
+
+Möchten Sie zur Weiterentwicklung beitragen? Schauen Sie sich unsere [Contributing Guidelines](CONTRIBUTING.md) an!
+
+Dort finden Sie:
+- Detaillierte Anleitungen für die Entwicklungsumgebung
+- Informationen zur Architektur und Datenflüssen
+- Test-Strategien und Qualitätsstandards
+- Richtlinien für Pull Requests
+
 ## Support
 Issues/Feature Requests bitte über GitHub Issues.
