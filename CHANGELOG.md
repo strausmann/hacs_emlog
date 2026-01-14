@@ -5,6 +5,26 @@ All notable changes to the **Emlog Home Assistant Integration** will be document
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0](https://github.com/strausmann/hacs_emlog/compare/v0.6.0...v0.7.0) (2026-01-14)
+
+### Features
+
+* **__init__:** initialize integration with utility meter and currency setup ([ec471fe](https://github.com/strausmann/hacs_emlog/commit/ec471feab9fb15a9fd025a2d3630038699d2e78b))
+* **const:** add constants for monthly advance and settlement month configuration ([8939d93](https://github.com/strausmann/hacs_emlog/commit/8939d9379876424c88cd6788f7e8eabfda07c248))
+* **coordinator:** extract currency from API and use HA timezone instead of UTC ([e872a6d](https://github.com/strausmann/hacs_emlog/commit/e872a6d4dbeb9e29499f509ebb51a8b448c6cf24))
+* **sensor:** add meter_index to entity names and unique_ids ([e929e24](https://github.com/strausmann/hacs_emlog/commit/e929e24f18ff4db605021b67a4a569bbb06e60c5))
+* **sensor:** implement dynamic currency support in native_unit_of_measurement ([afef3f4](https://github.com/strausmann/hacs_emlog/commit/afef3f40c7d296764f0cd4d87e77da8edc6275e2))
+* **template:** add dynamic currency support to cost sensors ([7c215a3](https://github.com/strausmann/hacs_emlog/commit/7c215a35d420ce12020246e2a5d9f893a3db822f))
+* **template:** add meter_index to cost and advance sensor names ([e54f870](https://github.com/strausmann/hacs_emlog/commit/e54f870f2802c058d612bc8f27d66a9216d319fc))
+* **translations:** rename meterindex to meter numbers 1-4 (de + en) ([77a3c80](https://github.com/strausmann/hacs_emlog/commit/77a3c80d7fb351f8747fdc52cc47fc874734e9f7))
+* **utility_meter:** automate daily/monthly/yearly meter creation for Emlog sensors ([5c36119](https://github.com/strausmann/hacs_emlog/commit/5c36119df6999e9ca502727a2c28aa2ac08d5aa2))
+* **utility-meter:** add utility-meter ([40b67d8](https://github.com/strausmann/hacs_emlog/commit/40b67d8c84c53fed781a96c4283da694a3c784a4))
+
+### Bug Fixes
+
+* **config:** remove custom validator from schema to prevent serialization errors ([bf15b05](https://github.com/strausmann/hacs_emlog/commit/bf15b0542655ba98e5b0cadc38e1ab3af341c604))
+* **utility_meter:** update entity search pattern to include meter_index ([083313a](https://github.com/strausmann/hacs_emlog/commit/083313aa27fbbba8dbace7ccd7ef7c4fdf0a0120))
+
 ## [0.6.0](https://github.com/strausmann/hacs_emlog/compare/v0.5.0...v0.6.0) (2026-01-14)
 
 ### Features
