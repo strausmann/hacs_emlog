@@ -1,6 +1,13 @@
 # Home Assistant Test Configuration für Emlog Integration
 default_config:
 
+# HTTP Konfiguration für Docker Compose Setup
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 172.18.0.0/16  # Docker Compose default network
+    - 127.0.0.1      # Localhost für direkten Zugriff
+
 logger:
   default: info
   logs:

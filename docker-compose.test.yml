@@ -12,6 +12,8 @@ services:
       - TZ=Europe/Berlin
     depends_on:
       - emlog-mock
+    networks:
+      - hacs_emlog_test
 
   emlog-mock:
     build: ./mock
@@ -19,3 +21,9 @@ services:
       - "8080:8080"
     environment:
       - MOCK_DATA_DIR=/app/mock_data
+    networks:
+      - hacs_emlog_test
+
+networks:
+  hacs_emlog_test:
+    driver: bridge
