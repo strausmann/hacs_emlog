@@ -24,6 +24,8 @@ home-assistant*.db*
 .cloud/
 deps/
 tts/
+blueprints/
+custom_components/
 
 # Environment variables
 .env
