@@ -22,9 +22,41 @@ Im UI-Setup:
 - Strom: Zählerstand (kWh), Wirkleistung (W), Tagesverbrauch (kWh)
 - Gas: Zählerstand (m³), Wirkleistung (W), Tagesverbrauch (kWh)
 
-## Hinweise
-- Diese Integration ist **local_polling**.
-- Für Kosten/Tarife kannst du zusätzlich das beiliegende YAML-Package nutzen (Ordner `packages/`).
+## Entwicklung & Testen
+
+### Lokale Entwicklungsumgebung
+
+Das Projekt enthält eine vollständige Entwicklungsumgebung für GitHub Codespaces:
+
+- **Dev Container**: Vollständige Python/Home Assistant Umgebung
+- **Mock Server**: Simuliert Emlog API ohne echte Hardware
+- **Test Scripts**: Automatisierte Tests für API und Integration
+
+### Testen ohne echte Hardware
+
+```bash
+# Starte Mock Server und führe Tests durch
+./test.sh
+```
+
+Oder manuell:
+```bash
+# Mock Server starten
+docker-compose -f docker-compose.test.yml up -d emlog-mock
+
+# API testen
+curl "http://localhost:8080/pages/getinformation.php?export&meterindex=1"
+
+# Home Assistant mit Test-Konfiguration starten
+docker-compose -f docker-compose.test.yml up homeassistant
+```
+
+### Mit echter Emlog Hardware
+
+Für Tests mit echter Hardware:
+1. Stelle sicher, dass der Emlog Server im gleichen Netzwerk erreichbar ist
+2. Verwende die echte IP-Adresse in der Konfiguration
+3. Bei Bedarf Tailscale oder VPN für Remote-Zugriff einrichten
 
 ## Support
 Issues/Feature Requests bitte über GitHub Issues.
