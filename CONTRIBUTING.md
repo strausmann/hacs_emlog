@@ -287,7 +287,9 @@ Bei jedem Push zu `main` werden folgende Schritte automatisch ausgeführt:
 
 ### Manuelle Releases
 
-Statt auf die nächtliche Automatisierung zu warten, können Sie einen Release manuell auslösen:
+Es gibt drei Wege, einen Release manuell auszulösen:
+
+#### 1. Lokal im Codespace/Terminal
 
 ```bash
 make release
@@ -303,11 +305,83 @@ Dies führt aus:
 
 **Mit Bestätigungsdialog für Sicherheit!**
 
+#### 2. Via GitHub CLI (Remote Trigger)
+
+```bash
+make release-github
+```
+
+Triggert die GitHub Actions Workflow remote. **Benötigt einen Personal Access Token (PAT) mit `workflow` Scope!**
+
+**PAT Setup (einmalig pro Codespace):**
+
+1. **Token erstellen:**
+   - Gehe zu https://github.com/settings/tokens/new
+   - **Note:** `Codespaces Release Workflow`
+   - **Expiration:** 90 days (oder Custom nach Bedarf)
+   - **Scopes:** Nur `workflow` auswählen
+   - Klicke **Generate token**
+   - **Token kopieren** (wird nur einmal angezeigt!)
+
+2. **In Codespace verwenden:**
+   ```bash
+   gh auth login
+   # Wähle: GitHub.com → Paste an authentication token → Token einfügen
+   ```
+
+3. **Release triggern:**
+   ```bash
+   make release-github
+   # Zeigt URL zum Workflow: https://github.com/strausmann/hacs_emlog/actions/workflows/release.yml
+   ```
+
+**🔐 Token dauerhaft speichern (Codespaces Secret):**
+
+Um das Token nicht bei jeder neuen Codespace-Instanz eingeben zu müssen:
+
+1. Gehe zu https://github.com/settings/codespaces
+2. Klicke **New secret**
+3. **Name:** `GH_WORKFLOW_TOKEN`
+4. **Value:** Dein PAT einfügen
+5. **Repository access:** `strausmann/hacs_emlog` auswählen
+6. Klicke **Add secret**
+
+**In Codespace verfügbar machen:**
+
+```bash
+# In .bashrc oder .zshrc hinzufügen (nur einmal):
+echo 'export GITHUB_TOKEN=$GH_WORKFLOW_TOKEN' >> ~/.bashrc
+source ~/.bashrc
+
+# Dann gh CLI neu authentifizieren:
+gh auth login --with-token <<< $GH_WORKFLOW_TOKEN
+```
+
+**Alternative: In devcontainer.json**
+```json
+{
+  "remoteEnv": {
+    "GITHUB_TOKEN": "${localEnv:GH_WORKFLOW_TOKEN}"
+  }
+}
+```
+
+> **Hinweis:** Mit Codespaces Secret ist das Token automatisch in jeder neuen Instanz verfügbar!
+
+#### 3. GitHub Actions UI (Einfachste Methode)
+
+Kein Token Setup notwendig:
+
+1. Gehe zu https://github.com/strausmann/hacs_emlog/actions/workflows/release.yml
+2. Klicke **Run workflow** (Dropdown)
+3. Branch auswählen: `main`
+4. Klicke **Run workflow** (Button)
+
 ### Zeitgesteuerte Releases
 
 Die Release-Automation läuft automatisch:
 - **Täglich um 02:00 UTC** (über `schedule` in GitHub Actions)
-- **Oder manuell** via GitHub Actions UI oder `make release`
+- **Oder manuell** via eine der drei oben genannten Methoden
 
 **Vorteil:** Releases werden nicht bei jedem Commit erstellt, sondern nur wenn wirklich neue Features/Fixes vorhanden sind.
 
