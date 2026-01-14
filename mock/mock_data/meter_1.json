@@ -1,0 +1,66 @@
+{
+  "product": "Emlog Strom",
+  "version": "1.2.3",
+  "Zaehlerstand_Bezug": {
+    "Stand180": 1250.75
+  },
+  "Wirkleistung_Bezug": {
+    "Leistung170": 2.8
+  },
+  "Kwh_Bezug": {
+    "Kwh180": 18.5
+  },
+  "Betrag_Bezug": {
+    "Betrag180": 3.95
+  }
+}{
+  "product": "Emlog - Electronic Meter Log",
+  "version": 1.16,
+  "Zaehlerstand_Bezug": {
+    "Stand180": 3474,
+    "Stand181": 0,
+    "Stand182": 0
+  },
+  "Zaehlerstand_Lieferung": {
+    "Stand280": 0,
+    "Stand281": 0,
+    "Stand282": 0
+  },
+  "Wirkleistung_Bezug": {
+    "Leistung170": 0,
+    "Leistung171": 0,
+    "Leistung172": 0,
+    "Leistung173": 0
+  },
+  "Wirkleistung_Lieferung": {
+    "Leistung270": 0,
+    "Leistung271": 0,
+    "Leistung272": 0,
+    "Leistung273": 0
+  },
+  "Kwh_Bezug": {
+    "Kwh180": 14,
+    "Kwh181": 0,
+    "Kwh182": 0
+  },
+  "Kwh_Lieferung": {
+    "Kwh280": 0,
+    "Kwh281": 0,
+    "Kwh282": 0
+  },
+  "Betrag_Bezug": {
+    "Betrag180": 0,
+    "Betrag181": 0,
+    "Betrag182": 0,
+    "Waehrung": "EUR"
+  },
+  "Betrag_Lieferung": {
+    "Betrag280": 0,
+    "Betrag281": 0,
+    "Betrag282": 0,
+    "Waehrung": "EUR"
+  },
+  "DiffBezugLieferung": {
+    "Betrag": 0
+  }
+}
