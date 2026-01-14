@@ -121,6 +121,37 @@ curl "http://localhost:8080/pages/getinformation.php?export&meterindex=2"
 - Python-Code sollte PEP 8 konform sein
 - Verwenden Sie aussagekräftige Commit-Nachrichten
 
+### Commit-Richtlinien
+Dieses Projekt verwendet **Conventional Commits** für automatisierte Versionierung:
+
+#### Interaktive Commits
+```bash
+npm run commit
+```
+Führt Sie durch ein interaktives Menü mit deutschen Prompts zur Erstellung von Conventional Commits.
+
+#### Manuelle Commits
+Format: `type(scope): description`
+
+**Typen:**
+- `feat:` - Neues Feature (erhöht Minor-Version)
+- `fix:` - Fehlerbehebung (erhöht Patch-Version)
+- `docs:` - Dokumentation
+- `style:` - Code-Formatierung
+- `refactor:` - Code-Refaktorierung
+- `perf:` - Performance-Verbesserung
+- `test:` - Tests
+- `chore:` - Wartungsarbeiten
+
+**Beispiele:**
+```
+feat: add new sensor entity for gas consumption
+fix: resolve timeout issue in coordinator
+docs: update API documentation
+```
+
+Alle Commits werden automatisch validiert - bei Fehlern wird der Commit abgelehnt.
+
 ### Neue Features hinzufügen
 1. **Planung:** Feature in einem Issue beschreiben
 2. **Implementierung:** Code in entsprechendem Modul entwickeln

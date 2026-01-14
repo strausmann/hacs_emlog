@@ -110,6 +110,23 @@ Dieses Projekt verwendet [Semantic Release](https://semantic-release.gitbook.io/
   - `fix:` → Patch-Version erhöhen
   - `BREAKING CHANGE:` → Major-Version erhöhen
 
+### Interaktive Commits
+Verwenden Sie `npm run commit` für eine interaktive Commit-Erstellung mit deutschen Prompts:
+
+```bash
+npm run commit
+```
+
+Dies führt Sie durch:
+- Auswahl des Commit-Typs (feat, fix, docs, etc.)
+- Scope der Änderung
+- Betreff und Beschreibung
+- Breaking Changes
+- Issue-Referenzen
+
+### Commitlint
+Alle Commits werden automatisch auf Conventional Commits Format validiert.
+
 ### Changelog
 Alle Änderungen werden automatisch in der [CHANGELOG.md](CHANGELOG.md) dokumentiert.
 
