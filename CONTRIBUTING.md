@@ -118,6 +118,7 @@ curl "http://localhost:8080/pages/getinformation.php?export&meterindex=2"
 
 ### Code-Qualität
 - Verwenden Sie `make lint` vor jedem Commit
+- Verwenden Sie `npm run prettier` um Code-Formatierung zu überprüfen
 - Python-Code sollte PEP 8 konform sein
 - Verwenden Sie aussagekräftige Commit-Nachrichten
 

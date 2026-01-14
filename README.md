@@ -124,6 +124,14 @@ Dies führt Sie durch:
 - Breaking Changes
 - Issue-Referenzen
 
+### Code-Formatierung
+Das Projekt verwendet **Prettier** für konsistente Code-Formatierung:
+
+```bash
+npm run prettier      # Überprüfen der Formatierung
+npm run prettier-fix  # Automatische Formatierung
+```
+
 ### Commitlint
 Alle Commits werden automatisch auf Conventional Commits Format validiert.
 
