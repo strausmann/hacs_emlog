@@ -1,22 +1,66 @@
 {
-  "branches": ["main"],
+  "debug": "true",
   "plugins": [
-    "@semantic-release/commit-analyzer",
-    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/commit-analyzer",
+      {
+        "preset": "conventionalcommits",
+        "parserOpts": {
+          "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES", "BREAKING"]
+        }
+      }
+    ],
+    [
+      "@semantic-release/release-notes-generator",
+      {
+        "preset": "conventionalcommits",
+        "presetConfig": {
+          "types": [
+            { "type": "feat", "section": "✨ Features", "hidden": false },
+            { "type": "fix", "section": "🐛 Bug Fixes", "hidden": false },
+            { "type": "perf", "section": "🚀 Performance", "hidden": false },
+            { "type": "refactor", "section": "📦 Refactor", "hidden": false },
+            { "type": "test", "section": "🧪 Tests", "hidden": false },
+            { "type": "revert", "section": "🗑 Revert", "hidden": false },
+            { "type": "docs", "section": "📚 Docs", "hidden": false },
+            { "type": "style", "section": "💎 Styles", "hidden": false },
+            { "type": "chore", "section": "♻️ Chores", "hidden": false },
+            { "type": "build", "section": "🛠 Build", "hidden": false },
+            { "type": "ci", "section": "🦊 CI/CD", "hidden": false }
+          ],
+          "parserOpts": {
+            "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES", "BREAKING"]
+          }
+        }
+      }
+    ],
     [
       "@semantic-release/changelog",
       {
         "changelogFile": "CHANGELOG.md",
-        "changelogTitle": "# Emlog Home Assistant Integration Change Log 📜📝\n\nAll notable changes to the **Emlog Home Assistant Integration** will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),\nand this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)."
+        "changelogTitle": "<!-- markdownlint-disable MD012 MD024 -->\n# Emlog Home Assistant Integration Change Log 📜📝\n\nAll notable changes to the **Emlog Home Assistant Integration** will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),\nand this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)."
       }
     ],
     [
       "@semantic-release/git",
       {
         "assets": ["CHANGELOG.md"],
-        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        "message": "chore(release): ${nextRelease.version}"
       }
     ],
     "@semantic-release/github"
-  ]
+  ],
+  "preset": "conventionalcommits",
+  "branches": [
+    "+([0-9])?(.{+([0-9]),x}).x",
+    "main",
+    "master",
+    "next",
+    "next-major",
+    "trunk",
+    { "name": "beta", "prerelease": true },
+    { "name": "alpha", "prerelease": true }
+  ],
+  "repositoryUrl": "https://github.com/strausmann/hacs_emlog.git",
+  "tagFormat": "${version}"
 }
