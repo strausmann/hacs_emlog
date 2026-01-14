@@ -285,6 +285,32 @@ Bei jedem Push zu `main` werden folgende Schritte automatisch ausgeführt:
 
 **Keine manuellen Schritte notwendig!**
 
+### Manuelle Releases
+
+Statt auf die nächtliche Automatisierung zu warten, können Sie einen Release manuell auslösen:
+
+```bash
+make release
+```
+
+Dies führt aus:
+1. Commits seit letztem Release analysieren
+2. Version berechnen und aktualisieren
+3. CHANGELOG.md generieren
+4. Git Tag erstellen
+5. GitHub Release veröffentlichen
+6. Alle Änderungen zu Git pushen
+
+**Mit Bestätigungsdialog für Sicherheit!**
+
+### Zeitgesteuerte Releases
+
+Die Release-Automation läuft automatisch:
+- **Täglich um 02:00 UTC** (über `schedule` in GitHub Actions)
+- **Oder manuell** via GitHub Actions UI oder `make release`
+
+**Vorteil:** Releases werden nicht bei jedem Commit erstellt, sondern nur wenn wirklich neue Features/Fixes vorhanden sind.
+
 ## �🐛 Fehler melden
 
 Bei Fehlern:
