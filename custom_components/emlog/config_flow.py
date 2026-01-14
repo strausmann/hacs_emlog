@@ -15,9 +15,10 @@ from .const import (
     DOMAIN,
     CONF_HOST,
     CONF_METER_TYPE,
-    CONF_METER_INDEX,
+    CONF_STROM_INDEX,
+    CONF_GAS_INDEX,
     CONF_SCAN_INTERVAL,
-    DEFAULT_METER_INDEX,
+    METER_INDICES,
     DEFAULT_SCAN_INTERVAL,
     METER_TYPE_STROM,
     METER_TYPE_GAS,
@@ -130,10 +131,15 @@ class EmlogConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             # Validiere die Verbindung zur Emlog API
+            meter_type = user_input[CONF_METER_TYPE]
+            # Hole den richtigen Index basierend auf meter_type
+            meter_index = int(user_input[CONF_STROM_INDEX] if meter_type == METER_TYPE_STROM else user_input[CONF_GAS_INDEX])
+            
             validation_result = await validate_emlog_connection(
                 self.hass,
                 user_input[CONF_HOST],
-                user_input[CONF_METER_INDEX]
+                meter_type,
+                meter_index
             )
             
             if validation_result:
@@ -143,17 +149,7 @@ class EmlogConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 _LOGGER.error(f"Emlog validation failed: {error_detail}")
                 
                 # Zeige das Formular erneut mit Fehler
-                schema = vol.Schema(
-                    {
-                        vol.Required(CONF_HOST, default=user_input[CONF_HOST]): str,
-                        vol.Required(CONF_METER_TYPE, default=user_input[CONF_METER_TYPE]): vol.In({
-                            METER_TYPE_STROM: "Strom",
-                            METER_TYPE_GAS: "Gas"
-                        }),
-                        vol.Required(CONF_METER_INDEX, default=user_input[CONF_METER_INDEX]): vol.Coerce(int),
-                        vol.Required(CONF_SCAN_INTERVAL, default=user_input[CONF_SCAN_INTERVAL]): vol.Coerce(int),
-                    }
-                )
+                schema = self._build_user_schema(user_input)
                 return self.async_show_form(
                     step_id="user",
                     data_schema=schema,
@@ -162,9 +158,9 @@ class EmlogConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 )
             
             # Validierung erfolgreich - Unique ID setzen
-            meter_type_name = "Strom" if user_input[CONF_METER_TYPE] == METER_TYPE_STROM else "Gas"
+            meter_type_name = "Strom" if meter_type == METER_TYPE_STROM else "Gas"
             await self.async_set_unique_id(
-                f"{user_input[CONF_HOST]}_{user_input[CONF_METER_TYPE]}_{user_input[CONF_METER_INDEX]}"
+                f"{user_input[CONF_HOST]}_{meter_type}_{meter_index}"
             )
             self._abort_if_unique_id_configured()
 
@@ -174,19 +170,50 @@ class EmlogConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
 
         # Zeige das Formular
+        schema = self._build_user_schema()
+
+        return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
+
+    def _build_user_schema(self, user_input=None):
+        """Build the schema for the user step.
+        
+        WICHTIG: Beide strom_index und gas_index sind im Schema, aber nur
+        einer wird genutzt je nach meter_type. Das ist notwendig weil
+        voluptuous keine dynamischen Keys unterstützt.
+        """
+        if user_input is None:
+            user_input = {}
+        
+        meter_type = user_input.get(CONF_METER_TYPE, METER_TYPE_STROM)
+        strom_index = user_input.get(CONF_STROM_INDEX)
+        gas_index = user_input.get(CONF_GAS_INDEX)
+        
+        # Baue das Schema mit BEIDEN Index-Feldern
+        # Der richtige wird basierend auf meter_type verwendet
         schema = vol.Schema(
             {
-                vol.Required(CONF_HOST): str,
-                vol.Required(CONF_METER_TYPE, default=METER_TYPE_STROM): vol.In({
+                vol.Required(CONF_HOST, default=user_input.get(CONF_HOST)): str,
+                vol.Required(CONF_METER_TYPE, default=meter_type): vol.In({
                     METER_TYPE_STROM: "Strom",
                     METER_TYPE_GAS: "Gas"
                 }),
-                vol.Required(CONF_METER_INDEX, default=DEFAULT_METER_INDEX): vol.Coerce(int),
-                vol.Required(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): vol.Coerce(int),
+                # Strom Zähler - required wenn meter_type = strom
+                vol.Required(CONF_STROM_INDEX, default=strom_index): selector.SelectSelector(
+                    selector.SelectSelectorConfig(
+                        options=[str(i) for i in METER_INDICES],
+                    )
+                ),
+                # Gas Zähler - required wenn meter_type = gas
+                vol.Required(CONF_GAS_INDEX, default=gas_index): selector.SelectSelector(
+                    selector.SelectSelectorConfig(
+                        options=[str(i) for i in METER_INDICES],
+                    )
+                ),
+                vol.Required(CONF_SCAN_INTERVAL, default=user_input.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)): vol.Coerce(int),
             }
         )
-
-        return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
+        
+        return schema
 
 
 class EmlogOptionsFlowHandler(config_entries.OptionsFlow):
