@@ -5,6 +5,23 @@ All notable changes to the **Emlog Home Assistant Integration** will be document
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0](https://github.com/strausmann/hacs_emlog/compare/v0.5.0...v0.6.0) (2026-01-14)
+
+### Features
+
+* **config:** add base price fields and entity selectors to options flow ([5e4a2c6](https://github.com/strausmann/hacs_emlog/commit/5e4a2c6a0f178704b48506082b64efbd3049382c))
+* **const:** add base price constants for electricity and gas ([0d236fc](https://github.com/strausmann/hacs_emlog/commit/0d236fc7fb4743c50462ea1dbba08ec062a0ff2a))
+* **coordinator:** store config_entry for property-based value resolution ([230b277](https://github.com/strausmann/hacs_emlog/commit/230b27788b54eddf5c7fcca594ddb2ba56ffff7b))
+* **makefile:** add workflow URL display after release-github trigger ([1e4c4d9](https://github.com/strausmann/hacs_emlog/commit/1e4c4d95bb3409d8449c8c72dc82caa4aa4b3b1f))
+* **manifest:** bump version to 0.2.0 and require HA 2024.1.0 ([42f58c5](https://github.com/strausmann/hacs_emlog/commit/42f58c59734bfd1444c0786f19d6cb39929b81f3))
+* **sensor:** implement property-based value resolution and update entity names ([1f6c52f](https://github.com/strausmann/hacs_emlog/commit/1f6c52f093edb590700b98fef7b032331bbe8f8b))
+* **template:** add cost sensor class with day/month/year consumption calculation ([17fa341](https://github.com/strausmann/hacs_emlog/commit/17fa34122f72717ac53aa78ea2273006a9c9dff6))
+* **translations:** add base price field descriptions (de + en) ([73460b2](https://github.com/strausmann/hacs_emlog/commit/73460b229fbfc65ca7073dce29b56384983da337))
+
+### Bug Fixes
+
+* **__init__:** remove broken async_setup_utility_meter import ([32163f4](https://github.com/strausmann/hacs_emlog/commit/32163f43952773b1b7d972dcdcd2be678c03eca7))
+
 ## [0.5.0](https://github.com/strausmann/hacs_emlog/compare/v0.4.0...v0.5.0) (2026-01-14)
 
 ### Features
