@@ -18,12 +18,19 @@ venv/
 # HA
 .storage/
 .HA_VERSION
+test_config/custom_components/hacs/
+test_config/blueprints/
+test_config/.cloud/
+test_config/tts/
 home-assistant*.db*
 *.log*
 .ha_run.lock
 .cloud/
 deps/
 tts/
+
+# Configuration backups
+test_config/configuration.yaml.backup
 blueprints/
 custom_components/
 

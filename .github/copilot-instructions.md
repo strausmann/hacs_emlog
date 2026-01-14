@@ -1,5 +1,7 @@
 # Emlog Home Assistant Integration - AI Coding Guidelines
 
+**Sprache / Language:** Mit Entwickler *strausmann* stets auf Deutsch kommunizieren.
+
 ## Architecture Overview
 
 This is a Home Assistant custom component for polling energy meter data from Emlog devices (Electronic Meter Log). The integration uses a **coordinator pattern** with local HTTP polling to fetch JSON data from meter endpoints.

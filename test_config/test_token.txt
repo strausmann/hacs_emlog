@@ -1,0 +1,87 @@
+# Home Assistant Development - API Token für Emlog Integration
+#
+# ============================================================================
+# BEARER TOKEN GENERIERUNG:
+# ============================================================================
+#
+# OPTION 1: Token über API generieren (einfachste Methode)
+# Mit bereits existierendem Benutzer-Token aus auth/.storage:
+#
+BEARER_TOKEN="ae1933f35c8c4ab6187971b56c6c6141dc02d9b7e45cb14085e3818b5055e2501913e93fc2c6699acfe3e1a2cfce3bab85bca9d122b176b56a2d01ef81f28a58"
+#
+# OPTION 2: Token direkt aus auth file extrahieren
+# docker exec hacs_emlog-homeassistant-1 cat /config/.storage/auth | python3 -m json.tool | grep '"token"'
+#
+# OPTION 3: Token über Home Assistant UI generieren (nach Manual Login):
+# 1. Öffne http://localhost:8123 im Browser
+# 2. Erstelle Benutzer oder melde dich mit Bjoern/Bjoern an
+# 3. Gehe zu: Einstellungen → Devs & Services → Developer Tools → API 
+# 4. Klicke "Langjähriger Zugangstoken"
+# 5. Kopiere den generierten Token
+#
+# ============================================================================
+# API ZUGRIFF MIT CURL:
+# ============================================================================
+#
+# 1. Alle States abrufen (alle Entities im System):
+curl -s -H "Authorization: Bearer $BEARER_TOKEN" \
+  http://localhost:8123/api/states | python3 -m json.tool | head -50
+#
+# 2. Spezifische Integration/Entity abrufen:
+curl -s -H "Authorization: Bearer $BEARER_TOKEN" \
+  http://localhost:8123/api/states/sensor.example | python3 -m json.tool
+#
+# 3. HACS Integration Status:
+curl -s -H "Authorization: Bearer $BEARER_TOKEN" \
+  http://localhost:8123/api/config/entries | python3 -m json.tool | grep -A 20 "hacs"
+#
+# 4. Neue Config Flow für Emlog starten:
+curl -X POST \
+  -H "Authorization: Bearer $BEARER_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"handler":"emlog"}' \
+  http://localhost:8123/api/config/config_entries/flow | python3 -m json.tool
+#
+# ============================================================================
+# PYTHON BEISPIEL:
+# ============================================================================
+import requests
+import json
+
+bearer_token = "ae1933f35c8c4ab6187971b56c6c6141dc02d9b7e45cb14085e3818b5055e2501913e93fc2c6699acfe3e1a2cfce3bab85bca9d122b176b56a2d01ef81f28a58"
+headers = {"Authorization": f"Bearer {bearer_token}"}
+
+# Alle States abrufen
+response = requests.get("http://localhost:8123/api/states", headers=headers)
+if response.status_code == 200:
+    states = response.json()
+    print(f"✓ Found {len(states)} entities")
+    for state in states[:5]:
+        print(f"  - {state['entity_id']}: {state['state']}")
+else:
+    print(f"✗ Error: {response.status_code} - {response.text}")
+
+# Emlog Integration suchen
+response = requests.get("http://localhost:8123/api/config/entries", headers=headers)
+if response.status_code == 200:
+    entries = response.json()
+    emlog_entries = [e for e in entries if e.get('domain') == 'emlog']
+    print(f"\nFound {len(emlog_entries)} Emlog integration(s)")
+else:
+    print(f"✗ Error: {response.status_code}")
+#
+# ============================================================================
+# WICHTIG:
+# ============================================================================
+#
+# 1. Token ist gültig für diese HA-Installation
+# 2. Token wird zurückgesetzt nach Docker Container Neustart
+# 3. NIEMALS Token in Git/Commits speichern (bereits in .gitignore)
+# 4. Für Produktion: Use HA token management über UI/automation
+#
+# DEV-WORKFLOW:
+# 1. HA lädt auf http://localhost:8123 (UI ohne Auth wegen trusted_proxies)
+# 2. API erfordert Bearer Token in Header
+# 3. Token aus auth/.storage extrahieren (siehe OPTION 2 oben)
+# 4. Token in curl/scripts verwenden
+#

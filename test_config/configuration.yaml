@@ -1,25 +1,42 @@
 # Home Assistant Test Configuration für Emlog Integration
+homeassistant:
+  name: "Emlog Development"
+  latitude: 50.0
+  longitude: 10.0
+  elevation: 0
+  unit_system: metric
+  time_zone: "Europe/Berlin"
+  external_url: "https://glowing-space-goggles-65pgrpx69jc5577-8123.app.github.dev"
+  internal_url: "http://localhost:8123"
+
+# Alle Standard Komponenten laden
 default_config:
 
-# HTTP Konfiguration für Docker Compose Setup
+# Lovelace im YAML-Modus für reproduzierbare UI
+lovelace:
+  mode: yaml
+
+# HTTP Konfiguration für Codespaces/Docker Compose
 http:
   use_x_forwarded_for: true
   trusted_proxies:
     - 172.18.0.0/16  # Docker Compose default network
+    - 172.19.0.0/16  # GitHub Codespaces reverse proxy
     - 127.0.0.1      # Localhost für direkten Zugriff
+  ip_ban_enabled: false  # Disable IP banning for development
+  login_attempts_threshold: -1  # Disable login attempt limiting
+  cors_allowed_origins:
+    - "http://localhost:8123"
+    - "http://127.0.0.1:8123"
+    - "https://glowing-space-goggles-65pgrpx69jc5577-8123.app.github.dev"
 
+# Logging
 logger:
   default: info
   logs:
     custom_components.emlog: debug
 
 # Emlog Integration wird über UI konfiguriert (nicht YAML)
-# Gehe zu: Einstellungen > Geräte & Dienste > Integration hinzufügen > Emlog
-# Konfiguration:
-# - Host: emlog-mock
-# - Strom Meterindex: 1
-# - Gas Meterindex: 2
-# - Scan-Intervall: 30
 
 # Zusätzliche Test-Komponenten
 input_text:

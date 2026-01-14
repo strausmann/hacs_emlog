@@ -24,7 +24,7 @@ mock-logs: ## Zeige Mock Server Logs
 	docker-compose -f docker-compose.test.yml logs -f emlog-mock
 
 # Home Assistant Befehle
-ha-up: ## Starte Home Assistant mit Emlog Integration
+ha-up: update-ha-config ## Starte Home Assistant mit Emlog Integration
 	@echo "🏠 Starte Home Assistant..."
 	@echo "📋 Nach dem Start: http://localhost:8123 aufrufen"
 	@echo "🔧 Integration konfigurieren: Einstellungen > Geräte & Dienste > Integration hinzufügen > Emlog"
@@ -36,6 +36,10 @@ ha-down: ## Stoppe Home Assistant
 
 ha-logs: ## Zeige Home Assistant Logs
 	docker-compose -f docker-compose.test.yml logs -f homeassistant
+
+update-ha-config: ## Aktualisiere Home Assistant Konfiguration mit dynamischer Codespaces-URL
+	@echo "🔧 Aktualisiere Home Assistant Konfiguration..."
+	python3 update_ha_config.py
 
 # Test Befehle
 test: ## Führe vollständige Tests durch (Mock Server + API Tests)

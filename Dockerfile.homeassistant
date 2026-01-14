@@ -1,0 +1,16 @@
+FROM homeassistant/home-assistant:latest
+
+# Install dependencies for HACS installation
+RUN apk add --no-cache git wget unzip bash
+
+# Install HACS
+RUN mkdir -p /config/custom_components && \
+    cd /config/custom_components && \
+    git clone --depth 1 https://github.com/hacs/integration.git hacs 2>&1 || \
+    (wget -q -O hacs.zip https://github.com/hacs/integration/archive/refs/heads/master.zip && \
+     unzip -q hacs.zip && \
+     rm hacs.zip && \
+     mv integration-master hacs)
+
+# Set working directory
+WORKDIR /config

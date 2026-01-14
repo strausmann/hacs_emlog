@@ -1,0 +1,25 @@
+title: Emlog Übersicht
+views:
+  - title: Energie & Gas
+    path: emlog
+    cards:
+      - type: entities
+        title: Strom
+        show_header_toggle: false
+        entities:
+          - entity: sensor.emlog_strom_zahlerstand
+            name: Zählerstand (kWh)
+          - entity: sensor.emlog_strom_wirkleistung
+            name: Wirkleistung (W)
+          - entity: sensor.emlog_strom_verbrauch_tag
+            name: Verbrauch Tag (kWh)
+      - type: entities
+        title: Gas
+        show_header_toggle: false
+        entities:
+          - entity: sensor.emlog_gas_zahlerstand
+            name: Zählerstand (m³)
+          - entity: sensor.emlog_gas_wirkleistung
+            name: Wirkleistung (W)
+          - entity: sensor.emlog_gas_verbrauch_tag
+            name: Verbrauch Tag (kWh)
