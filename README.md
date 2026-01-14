@@ -32,28 +32,36 @@ Das Projekt enthält eine vollständige Entwicklungsumgebung für GitHub Codespa
 - **Mock Server**: Simuliert Emlog API ohne echte Hardware
 - **Test Scripts**: Automatisierte Tests für API und Integration
 
-### Testen ohne echte Hardware
+### Mit Mock Server testen
 
-```bash
-# Starte Mock Server und führe Tests durch
-./test.sh
-```
+Für Tests ohne echte Hardware:
 
-Oder manuell:
-```bash
-# Mock Server starten
-docker-compose -f docker-compose.test.yml up -d emlog-mock
+1. **Mock Server starten:**
+   ```bash
+   ./test.sh
+   # oder manuell:
+   docker-compose -f docker-compose.test.yml up -d emlog-mock
+   ```
 
-# API testen
-curl "http://localhost:8080/pages/getinformation.php?export&meterindex=1"
+2. **Home Assistant starten:**
+   ```bash
+   docker-compose -f docker-compose.test.yml up homeassistant
+   ```
 
-# Home Assistant mit Test-Konfiguration starten
-docker-compose -f docker-compose.test.yml up homeassistant
-```
+3. **Integration über UI konfigurieren:**
+   - Öffne Home Assistant im Browser (http://localhost:8123)
+   - Gehe zu **Einstellungen > Geräte & Dienste**
+   - Klicke **"Integration hinzufügen"**
+   - Suche nach **"Emlog"**
+   - Konfiguriere:
+     - **Host/IP**: `emlog-mock`
+     - **Strom Meterindex**: `1`
+     - **Gas Meterindex**: `2`
+     - **Scan-Intervall**: `30`
 
 ### Mit echter Emlog Hardware
 
-Für Tests mit echter Hardware:
+Bei echter Hardware:
 1. Stelle sicher, dass der Emlog Server im gleichen Netzwerk erreichbar ist
 2. Verwende die echte IP-Adresse in der Konfiguration
 3. Bei Bedarf Tailscale oder VPN für Remote-Zugriff einrichten

@@ -13,12 +13,13 @@ logger:
   logs:
     custom_components.emlog: debug
 
-# Emlog Integration (für lokale Tests mit Mock Server)
-emlog:
-  host: emlog-mock
-  strom_index: 1
-  gas_index: 2
-  scan_interval: 30
+# Emlog Integration wird über UI konfiguriert (nicht YAML)
+# Gehe zu: Einstellungen > Geräte & Dienste > Integration hinzufügen > Emlog
+# Konfiguration:
+# - Host: emlog-mock
+# - Strom Meterindex: 1
+# - Gas Meterindex: 2
+# - Scan-Intervall: 30
 
 # Zusätzliche Test-Komponenten
 input_text:
