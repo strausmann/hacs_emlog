@@ -2,6 +2,8 @@
 
 Willkommen bei der Emlog Home Assistant Integration! Vielen Dank für Ihr Interesse an der Weiterentwicklung dieses Projekts.
 
+**Nutzer-Dokumentation:** Siehe [README.md](README.md) für Installations- und Verwendungshinweise.
+
 ## 🚀 Schnellstart für Entwickler
 
 ### Entwicklungsumgebung einrichten
@@ -25,6 +27,7 @@ Willkommen bei der Emlog Home Assistant Integration! Vielen Dank für Ihr Intere
      - Host: `emlog-mock`
      - Strom Meterindex: `1`
      - Gas Meterindex: `2`
+   - Gehen Sie in die **Optionen** (Zahnrad-Icon) um Preise und Faktoren zu testen
 
 ### Makefile-Befehle
 
@@ -80,14 +83,22 @@ hacs_emlog/
 │   ├── config_flow.py          # UI-Konfiguration
 │   ├── coordinator.py          # Daten-Polling
 │   ├── sensor.py               # Sensor-Entities
+│   ├── template.py             # Kosten-Sensoren
 │   ├── const.py                # Konstanten
 │   ├── manifest.json           # Integration-Metadaten
-│   └── translations/           # UI-Übersetzungen
+│   └── translations/           # UI-Übersetzungen (de.json, en.json)
+├── docs/                       # Dokumentation
+│   ├── guides/                 # Getting Started
+│   ├── architecture/           # Technisches Design
+│   └── api/                    # API Referenz
 ├── package/emlog.yaml          # Legacy YAML-Package
-├── mock/                       # Test-Infrastruktur
-├── test_config/                # HA-Testkonfiguration
-├── docker-compose.test.yml     # Test-Umgebung
-└── Makefile                    # Entwicklungswerkzeuge
+├── tests/
+│   ├── mock/                   # Mock Server (Flask)
+│   └── config/                 # HA Test-Konfiguration
+├── tools/                      # Scripts & Docker
+│   ├── docker/                 # Docker Configs
+│   └── scripts/                # Test-Scripts
+└── Makefile                    # Task Runner
 ```
 
 ### Datenfluss
@@ -120,65 +131,109 @@ curl "http://localhost:8080/pages/getinformation.php?export&meterindex=1"
 curl "http://localhost:8080/pages/getinformation.php?export&meterindex=2"
 ```
 
-## 🔧 Entwicklung
+## � Commit Konventionen
 
-### Code-Qualität
-- Verwenden Sie `make lint` vor jedem Commit
-- Verwenden Sie `npm run prettier` um Code-Formatierung zu überprüfen
-- Python-Code sollte PEP 8 konform sein
-- Verwenden Sie aussagekräftige Commit-Nachrichten
+**CRITICAL:** Alle Commits MÜSSEN [Conventional Commits](https://www.conventionalcommits.org/) Format folgen!
 
-### Commit-Richtlinien
-Dieses Projekt verwendet **Conventional Commits** für automatisierte Versionierung:
+Dieses Projekt verwendet **Semantic Release** für automatisierte Versionierung.
 
-#### Interaktive Commits
-```bash
-npm run commit
+### Commit Format mit Scopes
+
 ```
-Führt Sie durch ein interaktives Menü mit deutschen Prompts zur Erstellung von Conventional Commits.
+type(scope): description
 
-#### Manuelle Commits
-Format: `type(scope): description`
+[body]
 
-**Typen:**
-- `feat:` - Neues Feature (erhöht Minor-Version)
-- `fix:` - Fehlerbehebung (erhöht Patch-Version)
+[footer]
+```
+
+### Erlaubte Scopes
+
+- `coordinator:` - Änderungen an `coordinator.py` (Daten-Polling)
+- `sensor:` - Änderungen an `sensor.py` (Sensor-Entities)
+- `config:` - Änderungen an `config_flow.py` (UI-Konfiguration)
+- `template:` - Änderungen an `template.py` (Kosten-Sensoren)
+- `manifest:` - Änderungen an `manifest.json` (Integration-Metadaten)
+- `const:` - Änderungen an `const.py` (Konstanten)
+- `translations:` - Änderungen an Übersetzungsdateien
+- `mock:` - Änderungen am Mock-Server
+- `test:` - Test-bezogene Änderungen
+- `docs:` - Dokumentationsänderungen
+- `ci:` - CI/CD-Konfiguration
+- `chore:` - Allgemeine Wartung
+
+### ⚠️ WICHTIG: Granulare Commits (KEINE Sammel-Commits!)
+
+**Regel:** Jeder Commit = Genau EINE logische Änderung
+
+```
+✅ RICHTIG - Granular:
+feat(const): add base price constants
+feat(config): add base price fields to options flow
+feat(sensor): implement property-based value resolution
+feat(translations): add base price descriptions
+
+❌ FALSCH - Sammel-Commit:
+feat: add base price support everywhere
+```
+
+Wenn mehrere Dateien betroffen sind: Separate Commits erstellen!
+
+Nutze `git add -p` für selective staging wenn Änderungen gemischt sind.
+
+### Erlaubte Commit-Typen
+
+- `feat:` - Neue Features (erhöht MINOR version)
+- `fix:` - Bugfixes (erhöht PATCH version)
 - `docs:` - Dokumentation
 - `style:` - Code-Formatierung (keine Funktionalität)
 - `refactor:` - Code-Refaktorierung (keine Funktionalität)
-- `perf:` - Performance-Verbesserung
+- `perf:` - Performance-Verbesserungen
 - `test:` - Tests hinzufügen/korrigieren
 - `chore:` - Wartungsarbeiten
 - `build:` - Build-System/Dependencies
 - `ci:` - CI/CD-Konfiguration
 
-**Scopes (empfohlen):**
-- `coordinator` - Daten-Polling Logik
-- `sensor` - Sensor-Entities
-- `config` - UI-Konfiguration
-- `manifest` - Integration-Metadaten
-- `const` - Konstanten und Konfiguration
-- `translations` - UI-Übersetzungen
-- `mock` - Test-Infrastruktur
-- `test` - Tests
-- `docs` - Dokumentation
-- `ci` - CI/CD-Konfiguration
-- `deps` - Dependencies
-- `build` - Build-System
+### Commit-Beispiele
 
-**Beispiele:**
-```
-feat(sensor): add new gas consumption sensor entity
-fix(coordinator): resolve timeout in API polling
-docs(readme): update installation instructions
-chore(deps): update semantic-release to v25.0.2
-ci(workflow): add automated testing to GitHub Actions
-feat(config)!: change host validation logic
+```bash
+# Feature
+git commit -m "feat(sensor): add new gas consumption sensor entity"
 
-BREAKING CHANGE: host configuration now requires protocol prefix
+# Bug Fix
+git commit -m "fix(coordinator): resolve timeout in API polling"
+
+# Dokumentation
+git commit -m "docs(readme): update installation instructions"
+
+# Dependency
+git commit -m "chore(deps): update semantic-release to v25.0.2"
+
+# CI/CD
+git commit -m "ci(workflow): add automated testing to GitHub Actions"
+
+# Breaking Change
+git commit -m "feat(config)!: change host validation logic
+
+BREAKING CHANGE: host configuration now requires protocol prefix"
 ```
 
-Alle Commits werden automatisch validiert - bei Fehlern wird der Commit abgelehnt.
+### Interaktive Commits
+
+Verwende `npm run commit` für eine interaktive Commit-Erstellung mit deutschen Prompts:
+
+```bash
+npm run commit
+```
+
+Dies führt dich durch:
+- Auswahl des Commit-Typs (feat, fix, docs, etc.)
+- Scope der Änderung
+- Betreff und Beschreibung
+- Breaking Changes
+- Issue-Referenzen
+
+**Alle Commits werden automatisch validiert** - bei Fehlern wird der Commit abgelehnt.
 
 ### Neue Features hinzufügen
 1. **Planung:** Feature in einem Issue beschreiben
