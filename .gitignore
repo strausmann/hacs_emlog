@@ -17,6 +17,13 @@ venv/
 
 # HA
 .storage/
+.HA_VERSION
+home-assistant*.db*
+*.log*
+.ha_run.lock
+.cloud/
+deps/
+tts/
 
 # Environment variables
 .env
