@@ -49,12 +49,16 @@ async def async_setup_utility_meters(
     registry = er.async_get(hass)
     source_entity_id = None
     
-    # Suche nach der Zählerstands-Entity (z.B. sensor.emlog_strom_zaehlerstand_kwh)
+    # Suche nach der Zählerstands-Entity (z.B. sensor.emlog_strom_1_zaehlerstand_kwh)
+    # Entity-ID Muster: sensor.emlog_{meter_type}_{meter_index}_zaehlerstand_kwh
+    meter_type_short = "strom" if meter_type == METER_TYPE_STROM else "gas"
+    expected_pattern = f"emlog_{meter_type_short}_{meter_index}_zaehlerstand_kwh"
+    
     for entity in registry.entities.values():
         if (
             entity.platform == "emlog"
             and entity.config_entry_id == entry.entry_id
-            and "zaehlerstand_kwh" in entity.entity_id
+            and expected_pattern in entity.entity_id
         ):
             source_entity_id = entity.entity_id
             break
