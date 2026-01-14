@@ -26,7 +26,7 @@ class EmlogCostSensor(TemplateEntity, SensorEntity):
 
     _attr_device_class = SensorDeviceClass.MONETARY
     _attr_state_class = SensorStateClass.TOTAL
-    _attr_unit_of_measurement = "EUR"
+    # Unit wird dynamisch gesetzt via _currency
 
     def __init__(
         self,
@@ -40,6 +40,7 @@ class EmlogCostSensor(TemplateEntity, SensorEntity):
         self._meter_type = meter_type
         self._period = period
         self._entry = entry
+        self._currency = "EUR"  # Default, wird später aktualisiert
 
         # Map period to German name
         period_name = {
@@ -51,6 +52,11 @@ class EmlogCostSensor(TemplateEntity, SensorEntity):
         meter_name = "Strom" if meter_type == "strom" else "Gas"
         self._attr_name = f"Emlog {meter_name} Kosten {period_name}"
         self._attr_unique_id = f"emlog_{meter_type}_kosten_{period}"
+
+    @property
+    def unit_of_measurement(self) -> str:
+        """Return unit of measurement (currency from coordinator)."""
+        return self._currency
 
     def _get_value_from_helper_or_config(
         self, helper_key: str, config_key: str, default_value: float
