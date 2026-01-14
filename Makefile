@@ -1,4 +1,4 @@
-.PHONY: help mock-up mock-down mock-logs ha-up ha-down ha-logs test test-api clean full-clean dev-up dev-down dev-logs lint status version
+.PHONY: help mock-up mock-down mock-logs ha-up ha-down ha-logs test test-api clean full-clean dev-up dev-down dev-logs lint status version release-dry-run release-notes
 
 help:
 	@echo "╔════════════════════════════════════════════════════════════╗"
@@ -30,6 +30,10 @@ help:
 	@echo "  make test                  Führe Tests durch"
 	@echo "  make test-api              Teste Mock API"
 	@echo "  make lint                  Code-Qualität prüfen"
+	@echo ""
+	@echo "Release Management:"
+	@echo "  make release-dry-run       Teste Release (ohne zu pushen)"
+	@echo "  make release-notes         Zeige generierte Release Notes"
 	@echo ""
 	@echo "Wartung:"
 	@echo "  make status                Service Status"
@@ -97,3 +101,13 @@ status:
 version:
 	@echo "Version: $$(git describe --tags --abbrev=0 2>/dev/null || echo 'unreleased')"
 	@git status --short | head -5
+
+release-dry-run:
+	@echo "🚀 Teste Semantic Release (Dry-Run)..."
+	@echo ""
+	@semantic-release --dry-run 2>&1 | grep -E "✔|✘|The (next|release|Repository)" || true
+
+release-notes:
+	@echo "📝 Generierte Release Notes:"
+	@echo ""
+	@semantic-release --dry-run 2>&1 | grep -A 50 "Release note for version" | head -60
