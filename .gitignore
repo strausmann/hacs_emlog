@@ -17,3 +17,25 @@ venv/
 
 # HA
 .storage/
+
+# Environment variables
+.env
+.env.local
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# Build artifacts (falls zukünftig verwendet)
+build/
+dist/
