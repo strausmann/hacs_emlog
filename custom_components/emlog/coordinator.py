@@ -22,6 +22,7 @@ class EmlogData:
     api_status: str = "connected"  # "connected" oder "failed" oder "initializing"
     last_error: str | None = None  # Fehlerbeschreibung bei Fehler
     last_successful_update: datetime | None = None  # Letzter erfolgreicher Update
+    currency: str = "EUR"  # Währung aus API, default EUR
 
 
 class EmlogCoordinator(DataUpdateCoordinator[EmlogData]):
@@ -115,6 +116,7 @@ class EmlogCoordinator(DataUpdateCoordinator[EmlogData]):
                     api_status="failed",
                     last_error=last_error,
                     last_successful_update=self.data.last_successful_update,
+                    currency=self.data.currency,
                 )
             
             # Beim allerersten Fehler: Gib fehlerhafte Daten zurück
@@ -124,6 +126,7 @@ class EmlogCoordinator(DataUpdateCoordinator[EmlogData]):
                 api_status="failed",
                 last_error=last_error,
                 last_successful_update=None,
+                currency="EUR",
             )
         
         # Erfolgreicher Update - Reset counter
@@ -133,11 +136,29 @@ class EmlogCoordinator(DataUpdateCoordinator[EmlogData]):
             )
         self._failed_updates = 0
         self._last_error = None
-        now = datetime.now(timezone.utc)
+        
+        # Nutze HA Timezone falls verfügbar, sonst UTC
+        if hasattr(self.hass, 'config') and self.hass.config.time_zone:
+            from homeassistant.util import dt as dt_util
+            tz = dt_util.get_time_zone(self.hass.config.time_zone)
+            now = datetime.now(tz) if tz else datetime.now(timezone.utc)
+        else:
+            now = datetime.now(timezone.utc)
+        
+        # Extrahiere Währung aus API-Response
+        currency = "EUR"  # Default
+        if meter_data:
+            # Versuche Währung aus verschiedenen Positionen zu extrahieren
+            currency = (
+                meter_data.get("Betrag_Bezug", {}).get("Waehrung") or
+                meter_data.get("Betrag_Lieferung", {}).get("Waehrung") or
+                "EUR"
+            )
             
         return EmlogData(
             meter_data=meter_data or {},
             api_status="connected",
             last_error=None,
             last_successful_update=now,
+            currency=currency,
         )
