@@ -5,6 +5,17 @@ All notable changes to the **Emlog Home Assistant Integration** will be document
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0](https://github.com/strausmann/hacs_emlog/compare/v0.4.0...v0.5.0) (2026-01-14)
+
+### Features
+
+* **makefile:** add release-github command to trigger remote GitHub Actions release ([d646072](https://github.com/strausmann/hacs_emlog/commit/d6460724f05071457296b8de7b551488efe11a74))
+* **test:** add test file for release testing ([afded2e](https://github.com/strausmann/hacs_emlog/commit/afded2e835a840345ae10a356618d061225f51b6))
+
+### Bug Fixes
+
+* **makefile:** add CI=true to release command for proper semantic-release execution ([2ee4677](https://github.com/strausmann/hacs_emlog/commit/2ee4677372972a72525d8749489bada9c3aa6962))
+
 ## [Unreleased]
 
 ## [0.4.0](https://github.com/strausmann/hacs_emlog/compare/v0.3.0...v0.4.0) (2026-01-14)
