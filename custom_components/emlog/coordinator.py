@@ -3,11 +3,11 @@ from __future__ import annotations
 import asyncio
 import logging
 from dataclasses import dataclass
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone
 
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import DOMAIN, EMLOG_EXPORT_PATH
 
@@ -17,39 +17,127 @@ _LOGGER = logging.getLogger(__name__)
 
 @dataclass
 class EmlogData:
-    strom: dict
-    gas: dict
+    """Data from Emlog API for a single meter."""
+    meter_data: dict  # Raw JSON data from API
+    api_status: str = "connected"  # "connected" oder "failed" oder "initializing"
+    last_error: str | None = None  # Fehlerbeschreibung bei Fehler
+    last_successful_update: datetime | None = None  # Letzter erfolgreicher Update
 
 
 class EmlogCoordinator(DataUpdateCoordinator[EmlogData]):
-    def __init__(self, hass: HomeAssistant, host: str, strom_index: int, gas_index: int, scan_interval_s: int):
+    """Coordinator für einen einzelnen Emlog-Zähler (Strom ODER Gas)."""
+    
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        host: str,
+        meter_type: str,
+        meter_index: int,
+        scan_interval_s: int,
+        config_entry=None,
+    ):
         self.hass = hass
         self.host = host
-        self.strom_index = strom_index
-        self.gas_index = gas_index
+        self.meter_type = meter_type  # "strom" oder "gas"
+        self.meter_index = meter_index
+        self.config_entry = config_entry  # Store for dynamic value access
+        self._failed_updates = 0  # Zähler für aufeinanderfolgende Fehler
+        self._last_error: str | None = None  # Beschreibung des letzten Fehlers
 
         super().__init__(
             hass,
             logger=_LOGGER,
-            name=f"{DOMAIN}_{host}",
+            name=f"{DOMAIN}_{host}_{meter_type}_{meter_index}",
             update_interval=timedelta(seconds=scan_interval_s),
         )
 
-    async def _fetch_export(self, meterindex: int) -> dict:
+    async def _fetch_export(self) -> tuple[dict | None, str | None]:
+        """Fetch export data from Emlog.
+        
+        Returns:
+            Tuple of (data, error_message)
+            - (dict, None): Erfolgreich
+            - (None, str): Fehler
+        """
         session = async_get_clientsession(self.hass)
-        url = f"http://{self.host}{EMLOG_EXPORT_PATH}?export&meterindex={meterindex}"
+        url = f"http://{self.host}{EMLOG_EXPORT_PATH}?export&meterindex={self.meter_index}"
 
         try:
             async with session.get(url, timeout=10) as resp:
                 if resp.status != 200:
-                    raise UpdateFailed(f"HTTP {resp.status} from {url}")
-                return await resp.json(content_type=None)
-        except asyncio.TimeoutError as err:
-            raise UpdateFailed(f"Timeout while fetching {url}") from err
+                    error_msg = f"HTTP {resp.status} von {self.host} (Index {self.meter_index})"
+                    _LOGGER.warning(error_msg)
+                    return None, error_msg
+                return await resp.json(content_type=None), None
+        except asyncio.TimeoutError:
+            error_msg = f"Timeout beim Verbindungsaufbau zu {self.host} (Index {self.meter_index})"
+            _LOGGER.warning(error_msg)
+            return None, error_msg
         except Exception as err:
-            raise UpdateFailed(f"Error while fetching {url}: {err}") from err
+            error_msg = f"Fehler bei {self.host} (Index {self.meter_index}): {type(err).__name__} - {err}"
+            _LOGGER.warning(error_msg)
+            return None, error_msg
 
     async def _async_update_data(self) -> EmlogData:
-        strom = await self._fetch_export(self.strom_index)
-        gas = await self._fetch_export(self.gas_index)
-        return EmlogData(strom=strom, gas=gas)
+        """Fetch data from API.
+        
+        Home Assistant Best Practice:
+        - Bei temporären Fehlern: Alte Daten beibehalten
+        - Entities bleiben 'available' solange möglich
+        - UpdateFailed Exception NICHT werfen (graceful degradation)
+        - Bei API-Fehlern: status="failed" mit Fehlerdetails zurückgeben
+        
+        Verhalten:
+        - API erreichbar: Neue Daten, api_status="connected", last_error=None
+        - API nicht erreichbar: Alte Daten behalten, api_status="failed", last_error=Details
+        - Keine alten Daten: Leere Daten mit failed status
+        """
+        meter_data, error = await self._fetch_export()
+
+        if error:
+            # Fehler beim Abrufen der Daten
+            self._failed_updates += 1
+            self._last_error = error
+            
+            # Kürze Fehlermeldung auf 200 Zeichen (HA State Limit: 255)
+            last_error = error
+            if len(last_error) > 200:
+                last_error = last_error[:197] + "..."
+            
+            # Gib alte Daten zurück wenn vorhanden
+            if self.data is not None:
+                _LOGGER.info(
+                    f"API temporarily unavailable - keeping last known values "
+                    f"(failed updates: {self._failed_updates})"
+                )
+                return EmlogData(
+                    meter_data=self.data.meter_data,
+                    api_status="failed",
+                    last_error=last_error,
+                    last_successful_update=self.data.last_successful_update,
+                )
+            
+            # Beim allerersten Fehler: Gib fehlerhafte Daten zurück
+            _LOGGER.debug("No previous data available, returning empty data with failed status")
+            return EmlogData(
+                meter_data={},
+                api_status="failed",
+                last_error=last_error,
+                last_successful_update=None,
+            )
+        
+        # Erfolgreicher Update - Reset counter
+        if self._failed_updates > 0:
+            _LOGGER.info(
+                f"Connection to Emlog API restored after {self._failed_updates} failed attempts"
+            )
+        self._failed_updates = 0
+        self._last_error = None
+        now = datetime.now(timezone.utc)
+            
+        return EmlogData(
+            meter_data=meter_data or {},
+            api_status="connected",
+            last_error=None,
+            last_successful_update=now,
+        )
