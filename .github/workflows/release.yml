@@ -25,6 +25,9 @@ jobs:
         run: |
           git config --global user.email "bjoern@strausmann.net"
           git config --global user.name "Semantic Release Bot"
+          echo "Fixing Git Repository..."
+          git fetch --all --tags --force
+          echo "Done"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
