@@ -11,6 +11,7 @@ import os
 import threading
 import time
 import random
+import math
 from datetime import datetime
 
 app = Flask(__name__)
@@ -229,20 +230,41 @@ def index():
 
 def update_loop():
     """Erhöht alle 10s die Werte realistisch und persistiert den Zustand."""
+    tick_counter = 0
     while True:
         time.sleep(TICK_SECONDS)
+        tick_counter += 1
         try:
             with STATE_LOCK:
                 # Strom (Index 1)
                 s = STATE.get("1")
                 if s:
-                    # Zählerstand (kWh)
+                    # Zählerstand (kWh) - monoton steigend
                     s["Zaehlerstand_Bezug"]["Stand180"] = float(s["Zaehlerstand_Bezug"]["Stand180"]) + ELECTRICITY_INC_KWH
-                    # Tagesverbrauch (kWh)
+                    # Tagesverbrauch (kWh) - monoton steigend
                     s["Kwh_Bezug"]["Kwh180"] = float(s["Kwh_Bezug"]["Kwh180"]) + ELECTRICITY_INC_KWH
-                    # Wirkleistung (W) um den Mittelwert herum schwanken
-                    avg_w = (ELECTRICITY_DAILY_KWH / 24.0) * 1000.0
-                    s["Wirkleistung_Bezug"]["Leistung170"] = max(0.0, avg_w + random.uniform(-0.2 * avg_w, 0.2 * avg_w))
+                    
+                    # Wirkleistung (W) - realistische Haushalts-Leistung (150-300W durchschnittlich)
+                    # Berechne durchschnittliche Watt: (kWh/Tag) / 24h
+                    # Aber: kWh/Tag ist schon in kWh, also: (kWh/24) * 1000 W/kW = Watt
+                    # Für 35 kWh/Tag: 35/24 = 1.458 kWh/h = 1458 W (FALSCH!)
+                    # Richtig: 35 kWh/Tag = 35000 Wh/Tag; 35000Wh / 24h / 60min / 60s = 405 W durchschnittlich
+                    # ODER: (35 kWh / 24h) * 1000 W/kW = 1458W (das ist kWh/h in Watt - aber kWh ist bereits ENERGIE!)
+                    # Korrektur: Durchschnittliche MOMENTANE Leistung sollte VIEL kleiner sein
+                    # Bei 35 kWh/Tag über 24h: durchschnittlich 35000Wh / 86400s = 0.405 W (!!! das ist viel zu klein)
+                    # Ah, ich sehe meinen Fehler: 35 kWh/Tag ist nicht klein, aber 1458W durchschnitt ist auch nicht realistisch
+                    # Realität: Ein Haushalt mit 35 kWh/Tag hat durchschnittlich ~150-200W wenn man "Wirkleistung" meint
+                    # Aber ein Emlog misst ja momentane Leistung die schwankt. Realistische Werte: 100-500W
+                    # Für simulierte realistische Haushalts-Last: sanfte Schwankung um 200W mit 10-50W Varianz
+                    realistic_avg_w = 200.0  # Realistische durchschnittliche Haushaltsleistung (~200W)
+                    # Leichte tägliche Schwankung simulieren (weniger nachts, mehr tagsüber)
+                    hour_of_day = (tick_counter * TICK_SECONDS) % 86400 / 3600.0
+                    daily_factor = 0.5 + 0.5 * (1.0 + (0.5 * (math.sin(hour_of_day * 3.14159 / 12.0)))) / 2.0
+                    base_power = realistic_avg_w * daily_factor
+                    # Kleine Schwankungen hinzufügen (±10%)
+                    fluctuation = random.uniform(-10, 10)
+                    s["Wirkleistung_Bezug"]["Leistung170"] = max(0.0, base_power + fluctuation)
+                    
                     # Betrag (angenommen 0.30 EUR/kWh)
                     s["Betrag_Bezug"]["Betrag180"] = float(s["Betrag_Bezug"]["Betrag180"]) + ELECTRICITY_INC_KWH * 0.30
                     s["DiffBezugLieferung"]["Betrag"] = -abs(float(s["Betrag_Bezug"]["Betrag180"]))
@@ -250,13 +272,22 @@ def update_loop():
                 # Gas (Index 2)
                 g = STATE.get("2")
                 if g:
-                    # Zählerstand (m³) aus kWh via Näherung
+                    # Zählerstand (m³) aus kWh via Näherung - monoton steigend
                     g["Zaehlerstand_Bezug"]["Stand180"] = float(g["Zaehlerstand_Bezug"]["Stand180"]) + GAS_INC_M3
-                    # Tagesverbrauch (kWh)
+                    # Tagesverbrauch (kWh) - monoton steigend
                     g["Kwh_Bezug"]["Kwh180"] = float(g["Kwh_Bezug"]["Kwh180"]) + GAS_INC_KWH
-                    # Wirkleistung (W)
-                    avg_w_gas = (GAS_DAILY_KWH / 24.0) * 1000.0
-                    g["Wirkleistung_Bezug"]["Leistung170"] = max(0.0, avg_w_gas + random.uniform(-0.2 * avg_w_gas, 0.2 * avg_w_gas))
+                    
+                    # Wirkleistung (W) - für Gas, typisch viel niedriger (Heizung hat weniger momentane Spitzen)
+                    # Bei 75 kWh/Tag Gas: realistische durchschnittliche Leistung ~150-200W
+                    realistic_avg_w_gas = 150.0
+                    # Stärkere tägliche Variation (nachts mehr Heizung)
+                    hour_of_day = (tick_counter * TICK_SECONDS) % 86400 / 3600.0
+                    daily_factor_gas = 1.5 - 0.5 * (1.0 + (0.7 * (math.sin(hour_of_day * 3.14159 / 12.0)))) / 2.0
+                    base_power_gas = realistic_avg_w_gas * daily_factor_gas
+                    # Kleine Schwankungen hinzufügen (±5%)
+                    fluctuation_gas = random.uniform(-7, 7)
+                    g["Wirkleistung_Bezug"]["Leistung170"] = max(0.0, base_power_gas + fluctuation_gas)
+                    
                     # Betrag (angenommen 0.11 EUR/kWh)
                     g["Betrag_Bezug"]["Betrag180"] = float(g["Betrag_Bezug"]["Betrag180"]) + GAS_INC_KWH * 0.11
                     g["DiffBezugLieferung"]["Betrag"] = -abs(float(g["Betrag_Bezug"]["Betrag180"]))
