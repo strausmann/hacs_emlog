@@ -1,12 +1,12 @@
 # ---------------------------------------------------
-# Package: emlog (universell)
-# Pfad: config/packages/emlog.yaml
+# Package: emlog (universell, mit schönen Anzeigenamen)
+# Datei: config/packages/emlog.yaml
 #
 # Features:
 # - Host/IP + Meterindex als Helper (UI änderbar)
 # - REST URLs via resource_template
 # - Brennwert/Zustandszahl + Preis/Grundpreis als Helper
-# - Tarifwechsel nach Datum (aktuell/neu) ohne Automation
+# - Tarifwechsel ab Datum (aktuell/neu)
 # - utility_meter für Tag/Monat/Jahr aus echten Zählerständen
 # - Kosten Tag/Monat/Jahr inkl. Grundpreis
 # ---------------------------------------------------
@@ -55,7 +55,7 @@ input_number:
     icon: mdi:gauge
     initial: 0.95
 
-  # --- Strom Preise (für Tarifwechsel) ---
+  # --- Strom Tarife (für Tarifwechsel) ---
   emlog_strom_preis_aktuell:
     name: "Emlog Strom Arbeitspreis (aktuell)"
     min: 0
@@ -75,7 +75,7 @@ input_number:
     icon: mdi:currency-eur
 
   emlog_strom_grundpreis_monat_aktuell:
-    name: "Emlog Strom Grundpreis/Monat (aktuell)"
+    name: "Emlog Strom Grundpreis pro Monat (aktuell)"
     min: 0
     max: 200
     step: 0.01
@@ -84,7 +84,7 @@ input_number:
     icon: mdi:calendar-month
 
   emlog_strom_grundpreis_monat_neu:
-    name: "Emlog Strom Grundpreis/Monat (neu)"
+    name: "Emlog Strom Grundpreis pro Monat (neu)"
     min: 0
     max: 200
     step: 0.01
@@ -92,7 +92,7 @@ input_number:
     unit_of_measurement: "EUR/Monat"
     icon: mdi:calendar-month
 
-  # --- Gas Preise (für Tarifwechsel) ---
+  # --- Gas Tarife (für Tarifwechsel) ---
   emlog_gas_preis_aktuell:
     name: "Emlog Gas Arbeitspreis (aktuell)"
     min: 0
@@ -112,7 +112,7 @@ input_number:
     icon: mdi:currency-eur
 
   emlog_gas_grundpreis_monat_aktuell:
-    name: "Emlog Gas Grundpreis/Monat (aktuell)"
+    name: "Emlog Gas Grundpreis pro Monat (aktuell)"
     min: 0
     max: 200
     step: 0.01
@@ -121,7 +121,7 @@ input_number:
     icon: mdi:calendar-month
 
   emlog_gas_grundpreis_monat_neu:
-    name: "Emlog Gas Grundpreis/Monat (neu)"
+    name: "Emlog Gas Grundpreis pro Monat (neu)"
     min: 0
     max: 200
     step: 0.01
@@ -140,6 +140,7 @@ input_datetime:
     has_date: true
     has_time: false
 
+
 rest:
   # ----------------------
   # Strom
@@ -149,39 +150,37 @@ rest:
     timeout: 10
     scan_interval: 30
     sensor:
-      - name: "emlog_product"
-        unique_id: "emlog_product"
+      - name: "Emlog Produkt"
+        unique_id: emlog_product
         value_template: "{{ value_json.product | default('Emlog') }}"
 
-      - name: "emlog_software_version"
-        unique_id: "emlog_software_version"
+      - name: "Emlog Software Version"
+        unique_id: emlog_software_version
         value_template: "{{ value_json.version | float(0) }}"
 
-      # echter Zählerstand (gesamt)
-      - name: "emlog_strom_zaehlerstand_kwh"
-        unique_id: "emlog_strom_zaehlerstand_kwh"
+      - name: "Emlog Strom Zählerstand (kWh)"
+        unique_id: emlog_strom_zaehlerstand_kwh
         value_template: "{{ value_json['Zaehlerstand_Bezug']['Stand180'] | float(0) }}"
         unit_of_measurement: "kWh"
         state_class: total_increasing
         device_class: energy
 
-      - name: "emlog_strom_wirkleistung_w"
-        unique_id: "emlog_strom_wirkleistung_w"
+      - name: "Emlog Strom Leistung (W)"
+        unique_id: emlog_strom_wirkleistung_w
         value_template: "{{ value_json['Wirkleistung_Bezug']['Leistung170'] | float(0) }}"
         unit_of_measurement: "W"
         state_class: measurement
         device_class: power
 
-      # Tagesverbrauch (Kwh180 = Tagesverbrauch, setzt täglich zurück)
-      - name: "emlog_strom_verbrauch_tag_kwh"
-        unique_id: "emlog_strom_verbrauch_tag_kwh"
+      - name: "Emlog Strom Verbrauch heute (kWh)"
+        unique_id: emlog_strom_verbrauch_tag_kwh
         value_template: "{{ value_json['Kwh_Bezug']['Kwh180'] | float(0) }}"
         unit_of_measurement: "kWh"
         state_class: total
         device_class: energy
 
-      - name: "emlog_strom_betrag_tag_eur"
-        unique_id: "emlog_strom_betrag_tag_eur"
+      - name: "Emlog Strom Betrag heute (EUR)"
+        unique_id: emlog_strom_betrag_tag_eur
         value_template: "{{ value_json['Betrag_Bezug']['Betrag180'] | float(0) }}"
         unit_of_measurement: "EUR"
         state_class: total
@@ -195,31 +194,29 @@ rest:
     timeout: 10
     scan_interval: 30
     sensor:
-      # echter Zählerstand in m³ (gesamt)
-      - name: "emlog_gas_zaehlerstand_m3"
-        unique_id: "emlog_gas_zaehlerstand_m3"
+      - name: "Emlog Gas Zählerstand (m³)"
+        unique_id: emlog_gas_zaehlerstand_m3
         value_template: "{{ value_json['Zaehlerstand_Bezug']['Stand180'] | float(0) }}"
         unit_of_measurement: "m³"
         state_class: total_increasing
         device_class: gas
 
-      - name: "emlog_gas_wirkleistung_w"
-        unique_id: "emlog_gas_wirkleistung_w"
+      - name: "Emlog Gas Leistung (W)"
+        unique_id: emlog_gas_wirkleistung_w
         value_template: "{{ value_json['Wirkleistung_Bezug']['Leistung170'] | float(0) }}"
         unit_of_measurement: "W"
         state_class: measurement
         device_class: power
 
-      # Tagesverbrauch (setzt täglich zurück)
-      - name: "emlog_gas_verbrauch_tag_kwh"
-        unique_id: "emlog_gas_verbrauch_tag_kwh"
+      - name: "Emlog Gas Verbrauch heute (kWh)"
+        unique_id: emlog_gas_verbrauch_tag_kwh
         value_template: "{{ value_json['Kwh_Bezug']['Kwh180'] | float(0) }}"
         unit_of_measurement: "kWh"
         state_class: total
         device_class: energy
 
-      - name: "emlog_gas_betrag_tag_eur"
-        unique_id: "emlog_gas_betrag_tag_eur"
+      - name: "Emlog Gas Betrag heute (EUR)"
+        unique_id: emlog_gas_betrag_tag_eur
         value_template: "{{ value_json['Betrag_Bezug']['Betrag180'] | float(0) }}"
         unit_of_measurement: "EUR"
         state_class: total
@@ -263,15 +260,15 @@ template:
       # ----------------------
       # Gas: Umrechnung & Zählerstand in kWh (gesamt)
       # ----------------------
-      - name: "emlog_gas_umrechnungsfaktor_kwh_pro_m3"
-        unique_id: "emlog_gas_umrechnungsfaktor_kwh_pro_m3"
+      - name: "Emlog Gas Umrechnungsfaktor (kWh pro m³)"
+        unique_id: emlog_gas_umrechnungsfaktor_kwh_pro_m3
         unit_of_measurement: "kWh/m³"
         state: >
           {{ (states('input_number.emlog_gas_brennwert') | float(11.58)) *
-            (states('input_number.emlog_gas_zustandszahl') | float(0.95)) }}
+             (states('input_number.emlog_gas_zustandszahl') | float(0.95)) }}
 
-      - name: "emlog_gas_zaehlerstand_kwh"
-        unique_id: "emlog_gas_zaehlerstand_kwh"
+      - name: "Emlog Gas Zählerstand (kWh)"
+        unique_id: emlog_gas_zaehlerstand_kwh
         unit_of_measurement: "kWh"
         device_class: energy
         state_class: total_increasing
@@ -286,8 +283,8 @@ template:
       # ----------------------
       # Effektive Tarife (schalten ab Datum um)
       # ----------------------
-      - name: "emlog_strom_preis_effektiv"
-        unique_id: "emlog_strom_preis_effektiv"
+      - name: "Emlog Strom Arbeitspreis (effektiv)"
+        unique_id: emlog_strom_preis_effektiv
         unit_of_measurement: "EUR/kWh"
         state: >
           {% set dt = states('input_datetime.emlog_strom_tarifwechsel_ab') %}
@@ -298,8 +295,8 @@ template:
             {{ states('input_number.emlog_strom_preis_aktuell') | float(0) }}
           {% endif %}
 
-      - name: "emlog_strom_grundpreis_monat_effektiv"
-        unique_id: "emlog_strom_grundpreis_monat_effektiv"
+      - name: "Emlog Strom Grundpreis pro Monat (effektiv)"
+        unique_id: emlog_strom_grundpreis_monat_effektiv
         unit_of_measurement: "EUR/Monat"
         state: >
           {% set dt = states('input_datetime.emlog_strom_tarifwechsel_ab') %}
@@ -310,8 +307,8 @@ template:
             {{ states('input_number.emlog_strom_grundpreis_monat_aktuell') | float(0) }}
           {% endif %}
 
-      - name: "emlog_gas_preis_effektiv"
-        unique_id: "emlog_gas_preis_effektiv"
+      - name: "Emlog Gas Arbeitspreis (effektiv)"
+        unique_id: emlog_gas_preis_effektiv
         unit_of_measurement: "EUR/kWh"
         state: >
           {% set dt = states('input_datetime.emlog_gas_tarifwechsel_ab') %}
@@ -322,8 +319,8 @@ template:
             {{ states('input_number.emlog_gas_preis_aktuell') | float(0) }}
           {% endif %}
 
-      - name: "emlog_gas_grundpreis_monat_effektiv"
-        unique_id: "emlog_gas_grundpreis_monat_effektiv"
+      - name: "Emlog Gas Grundpreis pro Monat (effektiv)"
+        unique_id: emlog_gas_grundpreis_monat_effektiv
         unit_of_measurement: "EUR/Monat"
         state: >
           {% set dt = states('input_datetime.emlog_gas_tarifwechsel_ab') %}
@@ -338,8 +335,8 @@ template:
       # Kosten: Tag / Monat / Jahr (Arbeitspreis + Grundpreis)
       # Grundpreis/Tag wird auf Tage im aktuellen Monat verteilt.
       # ----------------------
-      - name: "emlog_strom_kosten_tag_eur"
-        unique_id: "emlog_strom_kosten_tag_eur"
+      - name: "Emlog Strom Kosten heute (EUR)"
+        unique_id: emlog_strom_kosten_tag_eur
         unit_of_measurement: "EUR"
         device_class: monetary
         state_class: total
@@ -351,8 +348,8 @@ template:
           {% set dim = (next_month - timedelta(days=1)).day | float(30) %}
           {{ (kwh * ap + (gp_m / dim)) | round(2) }}
 
-      - name: "emlog_gas_kosten_tag_eur"
-        unique_id: "emlog_gas_kosten_tag_eur"
+      - name: "Emlog Gas Kosten heute (EUR)"
+        unique_id: emlog_gas_kosten_tag_eur
         unit_of_measurement: "EUR"
         device_class: monetary
         state_class: total
@@ -364,8 +361,8 @@ template:
           {% set dim = (next_month - timedelta(days=1)).day | float(30) %}
           {{ (kwh * ap + (gp_m / dim)) | round(2) }}
 
-      - name: "emlog_strom_kosten_monat_eur"
-        unique_id: "emlog_strom_kosten_monat_eur"
+      - name: "Emlog Strom Kosten (Monat) (EUR)"
+        unique_id: emlog_strom_kosten_monat_eur
         unit_of_measurement: "EUR"
         device_class: monetary
         state_class: total
@@ -375,8 +372,8 @@ template:
           {% set gp  = states('sensor.emlog_strom_grundpreis_monat_effektiv') | float(0) %}
           {{ (kwh * ap + gp) | round(2) }}
 
-      - name: "emlog_gas_kosten_monat_eur"
-        unique_id: "emlog_gas_kosten_monat_eur"
+      - name: "Emlog Gas Kosten (Monat) (EUR)"
+        unique_id: emlog_gas_kosten_monat_eur
         unit_of_measurement: "EUR"
         device_class: monetary
         state_class: total
@@ -386,8 +383,8 @@ template:
           {% set gp  = states('sensor.emlog_gas_grundpreis_monat_effektiv') | float(0) %}
           {{ (kwh * ap + gp) | round(2) }}
 
-      - name: "emlog_strom_kosten_jahr_eur"
-        unique_id: "emlog_strom_kosten_jahr_eur"
+      - name: "Emlog Strom Kosten (Jahr) (EUR)"
+        unique_id: emlog_strom_kosten_jahr_eur
         unit_of_measurement: "EUR"
         device_class: monetary
         state_class: total
@@ -397,8 +394,8 @@ template:
           {% set gp  = states('sensor.emlog_strom_grundpreis_monat_effektiv') | float(0) %}
           {{ (kwh * ap + (gp * 12)) | round(2) }}
 
-      - name: "emlog_gas_kosten_jahr_eur"
-        unique_id: "emlog_gas_kosten_jahr_eur"
+      - name: "Emlog Gas Kosten (Jahr) (EUR)"
+        unique_id: emlog_gas_kosten_jahr_eur
         unit_of_measurement: "EUR"
         device_class: monetary
         state_class: total
