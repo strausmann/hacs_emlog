@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from decimal import Decimal, ROUND_HALF_UP
 
 import aiohttp
 import voluptuous as vol
@@ -15,8 +16,7 @@ from .const import (
     DOMAIN,
     CONF_HOST,
     CONF_METER_TYPE,
-    CONF_STROM_INDEX,
-    CONF_GAS_INDEX,
+    CONF_METER_INDEX,
     CONF_SCAN_INTERVAL,
     METER_INDICES,
     DEFAULT_SCAN_INTERVAL,
@@ -32,15 +32,46 @@ from .const import (
     CONF_BASE_PRICE_GAS,
     CONF_BASE_PRICE_STROM_HELPER,
     CONF_BASE_PRICE_GAS_HELPER,
+    CONF_MONTHLY_ADVANCE_STROM,
+    CONF_MONTHLY_ADVANCE_GAS,
+    CONF_MONTHLY_ADVANCE_STROM_HELPER,
+    CONF_MONTHLY_ADVANCE_GAS_HELPER,
+    CONF_SETTLEMENT_MONTH,
     DEFAULT_PRICE_KWH,
     DEFAULT_GAS_BRENNWERT,
     DEFAULT_GAS_ZUSTANDSZAHL,
     DEFAULT_BASE_PRICE_STROM,
     DEFAULT_BASE_PRICE_GAS,
+    DEFAULT_MONTHLY_ADVANCE_STROM,
+    DEFAULT_MONTHLY_ADVANCE_GAS,
+    DEFAULT_SETTLEMENT_MONTH,
     EMLOG_EXPORT_PATH,
 )
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def _price_validator(value: str | float) -> float:
+    """Validiere Preis auf positive Werte.
+    
+    Dezimal-Rounding auf 4 Stellen erfolgt im Coordinator/Sensor.
+    
+    Args:
+        value: Preis als String oder Float
+        
+    Returns:
+        Preis als float
+        
+    Raises:
+        vol.Invalid: Wenn Wert nicht in gültiges Float konvertierbar
+    """
+    try:
+        price = float(value)
+        if price < 0:
+            raise vol.Invalid("Preis darf nicht negativ sein")
+        return price
+    except (ValueError, TypeError) as err:
+        raise vol.Invalid(f"Ungültiger Preis: {err}")
 
 
 async def validate_emlog_connection(hass, host: str, meter_index: int) -> dict[str, str]:
@@ -131,14 +162,11 @@ class EmlogConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             # Validiere die Verbindung zur Emlog API
-            meter_type = user_input[CONF_METER_TYPE]
-            # Hole den richtigen Index basierend auf meter_type
-            meter_index = int(user_input[CONF_STROM_INDEX] if meter_type == METER_TYPE_STROM else user_input[CONF_GAS_INDEX])
+            meter_index = int(user_input[CONF_METER_INDEX])
             
             validation_result = await validate_emlog_connection(
                 self.hass,
                 user_input[CONF_HOST],
-                meter_type,
                 meter_index
             )
             
@@ -158,6 +186,7 @@ class EmlogConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 )
             
             # Validierung erfolgreich - Unique ID setzen
+            meter_type = user_input[CONF_METER_TYPE]
             meter_type_name = "Strom" if meter_type == METER_TYPE_STROM else "Gas"
             await self.async_set_unique_id(
                 f"{user_input[CONF_HOST]}_{meter_type}_{meter_index}"
@@ -175,36 +204,18 @@ class EmlogConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
 
     def _build_user_schema(self, user_input=None):
-        """Build the schema for the user step.
-        
-        WICHTIG: Beide strom_index und gas_index sind im Schema, aber nur
-        einer wird genutzt je nach meter_type. Das ist notwendig weil
-        voluptuous keine dynamischen Keys unterstützt.
-        """
+        """Build the schema for the user step."""
         if user_input is None:
             user_input = {}
         
-        meter_type = user_input.get(CONF_METER_TYPE, METER_TYPE_STROM)
-        strom_index = user_input.get(CONF_STROM_INDEX)
-        gas_index = user_input.get(CONF_GAS_INDEX)
-        
-        # Baue das Schema mit BEIDEN Index-Feldern
-        # Der richtige wird basierend auf meter_type verwendet
         schema = vol.Schema(
             {
                 vol.Required(CONF_HOST, default=user_input.get(CONF_HOST)): str,
-                vol.Required(CONF_METER_TYPE, default=meter_type): vol.In({
+                vol.Required(CONF_METER_TYPE, default=user_input.get(CONF_METER_TYPE, METER_TYPE_STROM)): vol.In({
                     METER_TYPE_STROM: "Strom",
                     METER_TYPE_GAS: "Gas"
                 }),
-                # Strom Zähler - required wenn meter_type = strom
-                vol.Required(CONF_STROM_INDEX, default=strom_index): selector.SelectSelector(
-                    selector.SelectSelectorConfig(
-                        options=[str(i) for i in METER_INDICES],
-                    )
-                ),
-                # Gas Zähler - required wenn meter_type = gas
-                vol.Required(CONF_GAS_INDEX, default=gas_index): selector.SelectSelector(
+                vol.Required(CONF_METER_INDEX, default=user_input.get(CONF_METER_INDEX)): selector.SelectSelector(
                     selector.SelectSelectorConfig(
                         options=[str(i) for i in METER_INDICES],
                     )
@@ -232,14 +243,19 @@ class EmlogOptionsFlowHandler(config_entries.OptionsFlow):
         current_price_helper = options.get(CONF_PRICE_HELPER, data.get(CONF_PRICE_HELPER, ""))
         current_brennwert_helper = options.get(CONF_GAS_BRENNWERT_HELPER, data.get(CONF_GAS_BRENNWERT_HELPER, ""))
         current_zustandszahl_helper = options.get(CONF_GAS_ZUSTANDSZAHL_HELPER, data.get(CONF_GAS_ZUSTANDSZAHL_HELPER, ""))
+        current_settlement_month = options.get(CONF_SETTLEMENT_MONTH, data.get(CONF_SETTLEMENT_MONTH, DEFAULT_SETTLEMENT_MONTH))
         
-        # Base prices (monthly)
+        # Base prices (monthly) and monthly advance
         if meter_type == METER_TYPE_STROM:
             current_base_price = options.get(CONF_BASE_PRICE_STROM, data.get(CONF_BASE_PRICE_STROM, DEFAULT_BASE_PRICE_STROM))
             current_base_price_helper = options.get(CONF_BASE_PRICE_STROM_HELPER, data.get(CONF_BASE_PRICE_STROM_HELPER, ""))
+            current_monthly_advance = options.get(CONF_MONTHLY_ADVANCE_STROM, data.get(CONF_MONTHLY_ADVANCE_STROM, DEFAULT_MONTHLY_ADVANCE_STROM))
+            current_monthly_advance_helper = options.get(CONF_MONTHLY_ADVANCE_STROM_HELPER, data.get(CONF_MONTHLY_ADVANCE_STROM_HELPER, ""))
         else:
             current_base_price = options.get(CONF_BASE_PRICE_GAS, data.get(CONF_BASE_PRICE_GAS, DEFAULT_BASE_PRICE_GAS))
             current_base_price_helper = options.get(CONF_BASE_PRICE_GAS_HELPER, data.get(CONF_BASE_PRICE_GAS_HELPER, ""))
+            current_monthly_advance = options.get(CONF_MONTHLY_ADVANCE_GAS, data.get(CONF_MONTHLY_ADVANCE_GAS, DEFAULT_MONTHLY_ADVANCE_GAS))
+            current_monthly_advance_helper = options.get(CONF_MONTHLY_ADVANCE_GAS_HELPER, data.get(CONF_MONTHLY_ADVANCE_GAS_HELPER, ""))
 
         if user_input is not None:
             # Entferne leere Helper-Entity-IDs aus der Eingabe
@@ -260,7 +276,8 @@ class EmlogOptionsFlowHandler(config_entries.OptionsFlow):
             schema_dict[vol.Optional(CONF_PRICE_HELPER, default="")] = str
         
         # Base price (Grundpreis pro Monat)
-        schema_dict[vol.Optional(CONF_BASE_PRICE_STROM if meter_type == METER_TYPE_STROM else CONF_BASE_PRICE_GAS, default=current_base_price)] = vol.Coerce(float)
+        base_price_key = CONF_BASE_PRICE_STROM if meter_type == METER_TYPE_STROM else CONF_BASE_PRICE_GAS
+        schema_dict[vol.Optional(base_price_key, default=current_base_price)] = vol.Coerce(float)
         if current_base_price_helper:
             base_price_helper_key = CONF_BASE_PRICE_STROM_HELPER if meter_type == METER_TYPE_STROM else CONF_BASE_PRICE_GAS_HELPER
             schema_dict[vol.Optional(base_price_helper_key, default=current_base_price_helper)] = selector.EntitySelector(
@@ -269,6 +286,26 @@ class EmlogOptionsFlowHandler(config_entries.OptionsFlow):
         else:
             base_price_helper_key = CONF_BASE_PRICE_STROM_HELPER if meter_type == METER_TYPE_STROM else CONF_BASE_PRICE_GAS_HELPER
             schema_dict[vol.Optional(base_price_helper_key, default="")] = str
+        
+        # Monthly advance (Abschlag pro Monat)
+        monthly_advance_key = CONF_MONTHLY_ADVANCE_STROM if meter_type == METER_TYPE_STROM else CONF_MONTHLY_ADVANCE_GAS
+        schema_dict[vol.Optional(monthly_advance_key, default=current_monthly_advance)] = vol.Coerce(float)
+        
+        if current_monthly_advance_helper:
+            monthly_advance_helper_key = CONF_MONTHLY_ADVANCE_STROM_HELPER if meter_type == METER_TYPE_STROM else CONF_MONTHLY_ADVANCE_GAS_HELPER
+            schema_dict[vol.Optional(monthly_advance_helper_key, default=current_monthly_advance_helper)] = selector.EntitySelector(
+                selector.EntitySelectorConfig(domain=["input_number", "sensor"])
+            )
+        else:
+            monthly_advance_helper_key = CONF_MONTHLY_ADVANCE_STROM_HELPER if meter_type == METER_TYPE_STROM else CONF_MONTHLY_ADVANCE_GAS_HELPER
+            schema_dict[vol.Optional(monthly_advance_helper_key, default="")] = str
+        
+        # Settlement month (Abrechnungsmonat)
+        schema_dict[vol.Optional(CONF_SETTLEMENT_MONTH, default=current_settlement_month)] = vol.In({
+            1: "Januar", 2: "Februar", 3: "März", 4: "April",
+            5: "Mai", 6: "Juni", 7: "Juli", 8: "August",
+            9: "September", 10: "Oktober", 11: "November", 12: "Dezember"
+        })
         
         # Gas-specific fields: only show for gas meters
         if meter_type == METER_TYPE_GAS:
