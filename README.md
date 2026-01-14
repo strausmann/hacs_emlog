@@ -213,6 +213,59 @@ script:
             Kosten: {{ (states('sensor.emlog_strom_1_verbrauch_tag') | float(0) * 0.35) | round(2) }} EUR
 ```
 
+## � Kostenberechnung & Abschlag-Sensoren
+
+Die Integration bietet automatische Kostenberechnungen basierend auf konfigurierten Preisen und Grundgebühren.
+
+### Verfügbare Cost-Sensoren
+
+Nach der Konfiguration von Preisen und Abschlägen werden automatisch folgende Kosten-Sensoren erstellt:
+
+#### Tägliche/Monatliche/Jährliche Kosten
+
+| Sensor-Name | Entity-Name | Berechnung | Beschreibung |
+|-------------|-------------|-----------|------------|
+| `Emlog Strom Kosten Tag` | `sensor.emlog_strom_kosten_tag` | (Verbrauch × kWh-Preis) + (Grundpreis ÷ 30) | **Heute anfallende Kosten** (ohne Abschlag) |
+| `Emlog Strom Kosten Monat` | `sensor.emlog_strom_kosten_monat` | (Verbrauch × kWh-Preis) + Grundpreis | **Diesen Monat anfallende Kosten** |
+| `Emlog Strom Kosten Jahr` | `sensor.emlog_strom_kosten_jahr` | (Verbrauch × kWh-Preis) + (Grundpreis × 12) | **Dieses Jahr anfallende Kosten** |
+| `Emlog Gas Kosten Tag` | `sensor.emlog_gas_kosten_tag` | Wie Strom, für Gas | **Tägliche Gas-Kosten** |
+| `Emlog Gas Kosten Monat` | `sensor.emlog_gas_kosten_monat` | Wie Strom, für Gas | **Monatliche Gas-Kosten** |
+| `Emlog Gas Kosten Jahr` | `sensor.emlog_gas_kosten_jahr` | Wie Strom, für Gas | **Jährliche Gas-Kosten** |
+
+#### Abschlag-Sensoren (monatliche Vorauszahlungen)
+
+| Sensor-Name | Entity-Name | Berechnung | Beschreibung |
+|-------------|-------------|-----------|------------|
+| `Emlog Strom Abschlag Jahresgesamt` | `sensor.emlog_strom_advance_total` | Monatlicher Abschlag × 12 | **Gesamte Abschlagszahlung pro Jahr** |
+| `Emlog Strom Abschlag Differenz` | `sensor.emlog_strom_advance_difference` | Jährliche Kosten - Abschlag Jahresgesamt | **Differenz zwischen Kosten und Abschlägen** |
+| `Emlog Gas Abschlag Jahresgesamt` | `sensor.emlog_gas_advance_total` | Monatlicher Abschlag × 12 | **Gesamte Gas-Abschlagszahlung pro Jahr** |
+| `Emlog Gas Abschlag Differenz` | `sensor.emlog_gas_advance_difference` | Jährliche Kosten - Abschlag Jahresgesamt | **Differenz: negativ = Nachzahlung, positiv = Rückerstattung** |
+
+### Beispiel-Berechnung
+
+**Beispiel Strom mit 0,35 EUR/kWh und 50 EUR/Monat Grundgebühr:**
+
+- Tagesverbrauch: 20 kWh
+- **Tägliche Kosten** = (20 × 0,35) + (50 ÷ 30) = 7,00 + 1,67 = **8,67 EUR**
+
+- Monatsverbrauch (300 kWh):
+- **Monatliche Kosten** = (300 × 0,35) + 50 = 105,00 + 50 = **155,00 EUR**
+
+- Jahresverbrauch (3.600 kWh) mit monatlichem Abschlag von 140 EUR:
+- **Jährliche Kosten** = (3.600 × 0,35) + (50 × 12) = 1.260,00 + 600 = **1.860,00 EUR**
+- **Abschlag Jahresgesamt** = 140 × 12 = **1.680,00 EUR**
+- **Abschlag Differenz** = 1.860,00 - 1.680,00 = **180,00 EUR** (Nachzahlung fällig!)
+
+### Abschlag interpretieren
+
+- **Positive Differenz** (z.B. +180 EUR) → Verbrauch war höher als Abschläge → Nachzahlung notwendig ❌
+- **Negative Differenz** (z.B. -200 EUR) → Abschläge waren höher → Rückerstattung zu erwarten ✅
+- **Differenz ≈ 0** → Abschläge stimmen sehr gut mit Verbrauch überein ✅
+
+### Automatische Abrechnung
+
+Die Integration verwendet den konfigurierten **Abrechnungsmonat** für Jahresberechnungen. Normalerweise ist das **Dezember** (Monat 12). Sie können dies in den Integrations-Optionen anpassen.
+
 ## 🔧 Fehlerbehebung
 
 ### Integration wird nicht angezeigt
@@ -228,6 +281,11 @@ script:
 - Gehe in die **Optionen** der Integration (Zahnrad-Icon)
 - Prüfe dass Helfer-Entities korrekt verlinkt sind
 - Führe einen **Integration Reload** durch: Einstellungen → Geräte & Dienste → Emlog → ⋮ (Menü) → **Neu laden**
+
+### Kosten-Sensoren werden nicht angezeigt
+- Prüfe ob **Strompreis** und **Grundpreis** konfiguriert sind (Optionen der Integration)
+- Ohne diese Werte können keine Kostenberechnungen erfolgen
+- Nach Konfiguration: **Integration Reload** durchführen
 
 ### Dynamische Helfer funktionieren nicht
 - Stelle sicher dass die `input_number` Entity existiert
@@ -257,4 +315,4 @@ Möchtest du zur Integration beitragen?
 
 ## 📄 Lizenz
 
-Diese Integration ist unter der [Apache 2.0 Lizenz](LICENSE) lizenziert.
+Diese Integration ist unter der [MIT Lizenz](LICENSE) lizenziert.
