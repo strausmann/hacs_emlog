@@ -15,7 +15,8 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import (
     CONF_HOST,
     CONF_METER_TYPE,
-    CONF_METER_INDEX,
+    CONF_STROM_INDEX,
+    CONF_GAS_INDEX,
     CONF_SCAN_INTERVAL,
     CONF_PRICE_KWH,
     CONF_GAS_BRENNWERT,
@@ -182,7 +183,7 @@ async def async_setup_entry(
     """Set up Emlog sensors from a config entry."""
     host = entry.data[CONF_HOST]
     meter_type = entry.data[CONF_METER_TYPE]
-    meter_index = int(entry.data[CONF_METER_INDEX])
+    meter_index = int(entry.data[CONF_STROM_INDEX] if meter_type == METER_TYPE_STROM else entry.data[CONF_GAS_INDEX])
     scan_interval = int(entry.options.get(CONF_SCAN_INTERVAL, entry.data.get(CONF_SCAN_INTERVAL, 30)))
 
     # Helper function to get value from entity or fallback to config
