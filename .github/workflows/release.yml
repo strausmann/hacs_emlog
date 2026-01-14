@@ -1,9 +1,11 @@
 name: Release
 
 on:
-  push:
-    branches:
-      - main
+  # Schedule: Jeden Tag um 2 Uhr nachts UTC
+  schedule:
+    - cron: '0 2 * * *'
+  # Manual trigger für On-Demand Releases
+  workflow_dispatch:
 
 permissions:
   contents: write

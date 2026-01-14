@@ -1,4 +1,4 @@
-.PHONY: help mock-up mock-down mock-logs ha-up ha-down ha-logs test test-api clean full-clean dev-up dev-down dev-logs lint status version release-dry-run release-notes
+.PHONY: help mock-up mock-down mock-logs ha-up ha-down ha-logs test test-api clean full-clean dev-up dev-down dev-logs lint status version release-dry-run release-notes release
 
 help:
 	@echo "╔════════════════════════════════════════════════════════════╗"
@@ -34,6 +34,7 @@ help:
 	@echo "Release Management:"
 	@echo "  make release-dry-run       Teste Release (ohne zu pushen)"
 	@echo "  make release-notes         Zeige generierte Release Notes"
+	@echo "  make release               Führe manuellen Release aus (mit Bestätigung)"
 	@echo ""
 	@echo "Wartung:"
 	@echo "  make status                Service Status"
@@ -111,3 +112,21 @@ release-notes:
 	@echo "📝 Generierte Release Notes:"
 	@echo ""
 	@semantic-release --dry-run 2>&1 | grep -A 50 "Release note for version" | head -60
+
+release:
+	@echo "🚀 Führe Semantic Release aus..."
+	@echo ""
+	@echo "⚠️  Dies wird:"
+	@echo "   • Commits analysieren"
+	@echo "   • Version berechnen"
+	@echo "   • CHANGELOG.md aktualisieren"
+	@echo "   • Git Tag erstellen"
+	@echo "   • GitHub Release veröffentlichen"
+	@echo "   • Änderungen zu Git pushen"
+	@echo ""
+	@read -p "Fortfahren? (y/N): " confirm; \
+	if [ "$$confirm" = "y" ] || [ "$$confirm" = "Y" ]; then \
+		semantic-release; \
+	else \
+		echo "Release abgebrochen."; \
+	fi
