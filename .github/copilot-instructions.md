@@ -49,6 +49,63 @@ return float(data.get("Zaehlerstand_Bezug", {}).get("Stand180", 0) or 0)
 self._attr_unique_id = f"emlog_{host}_{channel}_{definition.key}".replace(".", "_")
 ```
 
+## Commit Conventions & Semantic Release
+
+**CRITICAL: Alle Commits MÜSSEN Conventional Commits Format folgen!**
+
+Dieses Projekt verwendet **Semantic Release** für automatisierte Versionierung. Alle Commits müssen dem Conventional Commits Standard entsprechen:
+
+### Commit Format
+```
+type(scope): description
+
+[body]
+
+[footer]
+```
+
+### Erlaubte Commit-Typen (aus .releaserc.json)
+- `feat:` - Neue Features (erhöht MINOR version)
+- `fix:` - Bugfixes (erhöht PATCH version)  
+- `docs:` - Dokumentation
+- `style:` - Code-Formatierung (keine Funktionalität)
+- `refactor:` - Code-Refaktorierung (keine Funktionalität)
+- `perf:` - Performance-Verbesserungen
+- `test:` - Tests hinzufügen/korrigieren
+- `chore:` - Wartungsarbeiten (Semantic Release verwendet diesen für Releases)
+- `build:` - Build-System/Dependencies
+- `ci:` - CI/CD-Konfiguration
+
+### Breaking Changes
+Für Breaking Changes:
+```
+feat!: breaking change description
+
+BREAKING CHANGE: detailed explanation
+```
+
+### Beispiele
+```
+feat: add new sensor for gas consumption
+fix: resolve timeout in API polling
+docs: update installation instructions
+chore: update dependencies
+feat!: change API response format
+
+BREAKING CHANGE: API response now uses different field names
+```
+
+### Automatische Versionierung
+- Semantic Release analysiert Commit-Typen automatisch
+- Erstellt Releases, Tags und CHANGELOG.md
+- Release-Commits verwenden: `chore(release): ${nextRelease.version}`
+
+### WICHTIG für Copilot
+- **NIEMALS** andere Commit-Formate verwenden!
+- Bei Unsicherheit: `.releaserc.json` und `.commitlintrc.json` konsultieren
+- Commitlint validiert automatisch alle Commits
+- Fehlschlagende Commits werden abgelehnt
+
 ## Configuration & Setup
 
 **Integration Config:**
@@ -132,5 +189,8 @@ except asyncio.TimeoutError as err:
 - `.devcontainer/devcontainer.json`: Development environment configuration
 - `mock/`: Mock server for testing without physical Emlog device
 - `test.sh`: Test script for running mock server and validation
-- `docker-compose.test.yml`: Docker setup for isolated testing</content>
+- `docker-compose.test.yml`: Docker setup for isolated testing
+- `.releaserc.json`: Semantic Release configuration (CRITICAL für Commit-Format!)
+- `.commitlintrc.json`: Commitlint configuration (muss bei allen Commits befolgt werden!)
+- `package.json`: Node.js dependencies for tooling (Prettier, Commitlint, Husky)</content>
 <parameter name="filePath">/workspaces/hacs_emlog/.github/copilot-instructions.md
