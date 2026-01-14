@@ -158,7 +158,7 @@ GAS_SENSORS: list[EmlogSensorDef] = [
         "mdi:tag",
     ),
     EmlogSensorDef(
-        "gas_brennwert",
+        "brennwert",
         "Brennwert",
         None,
         None,
@@ -166,7 +166,7 @@ GAS_SENSORS: list[EmlogSensorDef] = [
         "mdi:fire-circle",
     ),
     EmlogSensorDef(
-        "gas_zustandszahl",
+        "zustandszahl",
         "Zustandszahl",
         None,
         None,
@@ -233,6 +233,7 @@ async def async_setup_entry(
                 coordinator,
                 host,
                 meter_type,
+                meter_index,
                 meter_name,
                 sensor_def,
                 price_kwh,
@@ -250,6 +251,7 @@ async def async_setup_entry(
                 coordinator,
                 host,
                 meter_type,
+                meter_index,
                 meter_name,
                 sensor_def,
                 price_kwh,
@@ -259,9 +261,9 @@ async def async_setup_entry(
         )
 
     # Status-Entitäten (für alle Meter-Typen)
-    entities.append(EmlogStatusEntity(coordinator, host, meter_type, meter_name))
-    entities.append(EmlogLastErrorEntity(coordinator, host, meter_type, meter_name))
-    entities.append(EmlogLastUpdateEntity(coordinator, host, meter_type, meter_name))
+    entities.append(EmlogStatusEntity(coordinator, host, meter_type, meter_index, meter_name))
+    entities.append(EmlogLastErrorEntity(coordinator, host, meter_type, meter_index, meter_name))
+    entities.append(EmlogLastUpdateEntity(coordinator, host, meter_type, meter_index, meter_name))
 
     async_add_entities(entities)
 
@@ -274,6 +276,7 @@ class EmlogSensorEntity(SensorEntity):
         coordinator: EmlogCoordinator,
         host: str,
         meter_type: str,
+        meter_index: int,
         meter_name: str,
         definition: EmlogSensorDef,
         price_kwh: float,
@@ -283,6 +286,7 @@ class EmlogSensorEntity(SensorEntity):
         self.coordinator = coordinator
         self._host = host
         self._meter_type = meter_type
+        self._meter_index = meter_index
         self._meter_name = meter_name
         self._definition = definition
         # Store initial values but will read from coordinator for dynamic updates
@@ -290,11 +294,11 @@ class EmlogSensorEntity(SensorEntity):
         self._initial_gas_brennwert = gas_brennwert
         self._initial_gas_zustandszahl = gas_zustandszahl
 
-        # stabile entity_id für Nutzung in Utility-Metern
-        self.entity_id = f"sensor.emlog_{meter_type}_{definition.key}"
+        # Entity ID mit Zählernummer für Konsistenz mit Utility Metern
+        self.entity_id = f"sensor.emlog_{meter_type}_{meter_index}_{definition.key}"
 
-        self._attr_name = f"Emlog {meter_name} {definition.name}"
-        self._attr_unique_id = f"emlog_{host}_{meter_type}_{definition.key}".replace(".", "_")
+        self._attr_name = f"Emlog {meter_name} {meter_index} {definition.name}"
+        self._attr_unique_id = f"emlog_{host}_{meter_type}_{meter_index}_{definition.key}".replace(".", "_")
         # Native unit wird jetzt dynamisch in property gesetzt (wegen Währung)
         # self._attr_native_unit_of_measurement wird durch property überschrieben
         self._attr_device_class = definition.device_class
@@ -471,14 +475,15 @@ class EmlogSensorEntity(SensorEntity):
 class EmlogStatusEntity(SensorEntity):
     """Zeigt den API-Status an: 'connected', 'failed' oder 'initializing'."""
 
-    def __init__(self, coordinator: EmlogCoordinator, host: str, meter_type: str, meter_name: str):
+    def __init__(self, coordinator: EmlogCoordinator, host: str, meter_type: str, meter_index: int, meter_name: str):
         self.coordinator = coordinator
         self._host = host
         self._meter_type = meter_type
+        self._meter_index = meter_index
         self._meter_name = meter_name
 
-        self._attr_name = f"Emlog {meter_name} API Status"
-        self._attr_unique_id = f"emlog_{host}_{meter_type}_api_status"
+        self._attr_name = f"Emlog {meter_name} {meter_index} API Status"
+        self._attr_unique_id = f"emlog_{host}_{meter_type}_{meter_index}_api_status"
         self._attr_icon = "mdi:api"
 
     @property
@@ -509,14 +514,15 @@ class EmlogStatusEntity(SensorEntity):
 class EmlogLastErrorEntity(SensorEntity):
     """Zeigt die letzte Fehlermeldung an."""
 
-    def __init__(self, coordinator: EmlogCoordinator, host: str, meter_type: str, meter_name: str):
+    def __init__(self, coordinator: EmlogCoordinator, host: str, meter_type: str, meter_index: int, meter_name: str):
         self.coordinator = coordinator
         self._host = host
         self._meter_type = meter_type
+        self._meter_index = meter_index
         self._meter_name = meter_name
 
-        self._attr_name = f"Emlog {meter_name} Letzter Fehler"
-        self._attr_unique_id = f"emlog_{host}_{meter_type}_last_error"
+        self._attr_name = f"Emlog {meter_name} {meter_index} Letzte Fehlermeldung"
+        self._attr_unique_id = f"emlog_{host}_{meter_type}_{meter_index}_last_error"
         self._attr_icon = "mdi:alert-circle"
 
     @property
@@ -548,14 +554,15 @@ class EmlogLastErrorEntity(SensorEntity):
 class EmlogLastUpdateEntity(SensorEntity):
     """Zeigt den Zeitpunkt des letzten erfolgreichen Daten-Updates an."""
 
-    def __init__(self, coordinator: EmlogCoordinator, host: str, meter_type: str, meter_name: str):
+    def __init__(self, coordinator: EmlogCoordinator, host: str, meter_type: str, meter_index: int, meter_name: str):
         self.coordinator = coordinator
         self._host = host
         self._meter_type = meter_type
+        self._meter_index = meter_index
         self._meter_name = meter_name
 
-        self._attr_name = f"Emlog {meter_name} Letztes Update"
-        self._attr_unique_id = f"emlog_{host}_{meter_type}_last_update"
+        self._attr_name = f"Emlog {meter_name} {meter_index} Letztes Update"
+        self._attr_unique_id = f"emlog_{host}_{meter_type}_{meter_index}_last_update"
         self._attr_icon = "mdi:clock"
         self._attr_device_class = SensorDeviceClass.TIMESTAMP
 
