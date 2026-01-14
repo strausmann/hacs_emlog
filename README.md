@@ -2,95 +2,129 @@
 
 Diese Integration liest Daten aus dem Emlog-Endpoint (z. B. `getinformation.php?export&meterindex=...`).
 
-## Installation (HACS Custom Repository)
+## 📚 Dokumentation
+
+Ausführliche Dokumentation findest du unter [docs/](docs/):
+
+- **[Getting Started](docs/guides/)** - Installation und erste Schritte
+- **[Architektur](docs/architecture/)** - Technisches Design und Systemübersicht
+- **[API Referenz](docs/api/)** - Emlog API und Datenstrukturen
+- **[Entwicklung](docs/guides/README-Codespaces.md)** - Setup für Entwicklung
+
+## ⚡ Schnellstart
+
+### Installation (HACS)
 
 1. HACS → Integrationen → Menü (⋮) → **Custom Repositories**
-2. Repo-URL eintragen (dieses Repository)
+2. Repo-URL eintragen: `https://github.com/strausmann/hacs_emlog`
 3. Kategorie: **Integration**
 4. Installieren → Home Assistant neu starten
 5. Einstellungen → Geräte & Dienste → **Integration hinzufügen** → **Emlog**
 
-## Konfiguration
+### Konfiguration
 
-Im UI-Setup:
-- Host/IP (ohne http://)
-- Strom Meterindex
-- Gas Meterindex
-- Scan-Intervall
+Im UI-Setup eingeben:
+- **Host**: IP-Adresse des Emlog Geräts (z.B. 192.168.1.100)
+- **Strom Meterindex**: Normalerweise `1`
+- **Gas Meterindex**: Normalerweise `2`
+- **Scan-Intervall**: Polling-Frequenz in Sekunden (Default: 30)
 
-## Entities (MVP)
-- Strom: Zählerstand (kWh), Wirkleistung (W), Tagesverbrauch (kWh)
-- Gas: Zählerstand (m³), Wirkleistung (W), Tagesverbrauch (kWh)
+## 📊 Verfügbare Sensoren
 
-## Entwicklung & Testen
+### Strom (Electricity)
+- Zählerstand (kWh)
+- Tarif 1 & 2 Zählerstände
+- Aktuelle Leistung (W)
+- Tagesverbrauch (kWh)
 
-### Schnellstart mit Make-Befehlen
+### Gas (Gas)
+- Zählerstand (m³)
+- Aktuelle Leistung (W)
+- Tagesverbrauch (kWh)
 
-Die Entwicklungsumgebung kann einfach mit Make-Befehlen gesteuert werden:
+Siehe [docs/api/](docs/api/) für vollständige Sensor-Liste.
+
+## 🛠️ Entwicklung
+
+### Entwicklungsumgebung starten
+
+Mit Make-Befehlen:
 
 ```bash
-# Hilfe anzeigen
+# Alle verfügbaren Befehle anzeigen
 make help
 
 # Vollständige Entwicklungsumgebung starten
-make dev-setup
+make dev-up
 
-# Einzelne Services verwalten
-make mock-up          # Mock Server starten
-make ha-up           # Home Assistant starten
-make mock-down       # Mock Server stoppen
-make ha-down         # Home Assistant stoppen
+# Home Assistant unter http://localhost:8123 öffnen
+# Mock Server unter http://localhost:8080 erreichbar
 
 # Tests durchführen
-make test            # Vollständige Tests
-make test-api        # Nur API Tests
-make lint            # Code-Qualitätsprüfungen
+make test              # Vollständige Tests
+make test-api          # Nur API Tests
+make lint              # Code-Qualität prüfen
 
-# Status und Logs
-make status          # Service Status anzeigen
-make dev-logs        # Logs beider Services
-make mock-logs       # Nur Mock Server Logs
-make ha-logs         # Nur Home Assistant Logs
+# Cleanup
+make dev-down          # Stoppe alle Services
+make full-clean        # Vollständiges Cleanup mit Volumes
+```
 
-# Aufräumen
-make clean           # Services stoppen
-make full-clean      # Vollständiges Cleanup
+### Repository-Struktur
+
+```
+hacs_emlog/
+├── custom_components/emlog/    # HACS Integration (Produktion)
+│   ├── coordinator.py          # Daten-Polling
+│   ├── sensor.py               # Sensor-Entities
+│   ├── config_flow.py          # Konfigurations-UI
+│   └── manifest.json           # Integration-Metadaten
+│
+├── docs/                       # 📚 Dokumentation
+│   ├── guides/                 # Getting Started & Setup
+│   ├── architecture/           # Technisches Design
+│   ├── api/                    # API Referenz
+│   └── README.md              # Dokumentations-Übersicht
+│
+├── tools/                      # 🛠️ Entwicklungswerkzeuge
+│   └── scripts/                # Test & Setup Scripts
+│
+├── tests/                      # 🧪 Tests & Mock
+│   ├── mock/                   # Flask Mock Server
+│   └── config/                 # HA Test-Konfiguration
+│
+├── package/
+│   └── emlog.yaml             # Legacy YAML Package
+│
+└── Makefile                    # Development Task Runner
 ```
 
 ### Lokale Entwicklungsumgebung
 
-Das Projekt enthält eine vollständige Entwicklungsumgebung für GitHub Codespaces:
+Das Projekt enthält eine vollständige Entwicklungsumgebung:
 
 - **Dev Container**: Vollständige Python/Home Assistant Umgebung
-- **Mock Server**: Simuliert Emlog API ohne echte Hardware
-- **Test Scripts**: Automatisierte Tests für API und Integration
+- **Mock Server**: Simuliert Emlog API ohne echte Hardware ([tests/mock/](tests/mock/))
+- **Test Scripts**: Automatisierte Tests für API und Integration ([tools/scripts/](tools/scripts/))
 
 ### Mit Mock Server testen
 
 Für Tests ohne echte Hardware:
 
-1. **Mock Server starten:**
-   ```bash
-   ./test.sh
-   # oder manuell:
-   docker-compose -f docker-compose.test.yml up -d emlog-mock
-   ```
+```bash
+# Dev-Umgebung mit Mock Server starten
+make dev-up
 
-2. **Home Assistant starten:**
-   ```bash
-   docker-compose -f docker-compose.test.yml up homeassistant
-   ```
+# Dann im Browser öffnen:
+# Home Assistant: http://localhost:8123
+# Mock API: http://localhost:8080
+```
 
-3. **Integration über UI konfigurieren:**
-   - Öffne Home Assistant im Browser (http://localhost:8123)
-   - Gehe zu **Einstellungen > Geräte & Dienste**
-   - Klicke **"Integration hinzufügen"**
-   - Suche nach **"Emlog"**
-   - Konfiguriere:
-     - **Host/IP**: `emlog-mock`
-     - **Strom Meterindex**: `1`
-     - **Gas Meterindex**: `2`
-     - **Scan-Intervall**: `30`
+Integration konfigurieren:
+- **Host**: `emlog-mock`
+- **Strom Meterindex**: `1`
+- **Gas Meterindex**: `2`
+- **Scan-Intervall**: `30`
 
 ### Mit echter Emlog Hardware
 
@@ -140,7 +174,7 @@ Alle Änderungen werden automatisch in der [CHANGELOG.md](CHANGELOG.md) dokument
 
 ## Contributing
 
-Möchten Sie zur Weiterentwicklung beitragen? Schauen Sie sich unsere [Contributing Guidelines](CONTRIBUTING.md) an!
+Möchten Sie zur Weiterentwicklung beitragen? Schauen Sie sich unsere [Contributing Guidelines](docs/guides/CONTRIBUTING.md) an!
 
 Dort finden Sie:
 - Detaillierte Anleitungen für die Entwicklungsumgebung
