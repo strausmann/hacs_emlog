@@ -1,4 +1,4 @@
-.PHONY: help mock-up mock-down mock-logs ha-up ha-down ha-logs test test-api clean full-clean dev-up dev-down dev-logs lint status version release-dry-run release-notes release
+.PHONY: help mock-up mock-down mock-logs ha-up ha-down ha-logs test test-api clean full-clean dev-up dev-down dev-logs lint status version release-dry-run release-notes release release-github
 
 help:
 	@echo "╔════════════════════════════════════════════════════════════╗"
@@ -34,7 +34,8 @@ help:
 	@echo "Release Management:"
 	@echo "  make release-dry-run       Teste Release (ohne zu pushen)"
 	@echo "  make release-notes         Zeige generierte Release Notes"
-	@echo "  make release               Führe manuellen Release aus (mit Bestätigung)"
+	@echo "  make release               Führe manuellen Release aus (lokal, mit Bestätigung)"
+	@echo "  make release-github        Triggere GitHub Actions Release (remote auf GitHub)"
 	@echo ""
 	@echo "Wartung:"
 	@echo "  make status                Service Status"
@@ -130,3 +131,10 @@ release:
 	else \
 		echo "Release abgebrochen."; \
 	fi
+
+release-github:
+	@echo "🚀 Triggere GitHub Actions Release Workflow..."
+	@echo ""
+	@gh workflow run release.yml --repo strausmann/hacs_emlog && \
+	echo "✅ Workflow getriggert! Status prüfen mit: gh run list --workflow=release.yml" || \
+	echo "❌ Fehler beim Triggern. Stelle sicher dass gh CLI authentifiziert ist."
