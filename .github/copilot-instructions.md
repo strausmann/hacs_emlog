@@ -123,6 +123,7 @@ except asyncio.TimeoutError as err:
 ## Key Files Reference
 
 - `Makefile`: Development workflow commands and automation
+- `CONTRIBUTING.md`: Comprehensive development guidelines and workflow
 - `custom_components/emlog/manifest.json`: Integration metadata and requirements
 - `custom_components/emlog/const.py`: All configuration constants and defaults
 - `custom_components/emlog/coordinator.py`: Core data fetching logic
