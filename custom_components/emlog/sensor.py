@@ -15,8 +15,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import (
     CONF_HOST,
     CONF_METER_TYPE,
-    CONF_STROM_INDEX,
-    CONF_GAS_INDEX,
+    CONF_METER_INDEX,
     CONF_SCAN_INTERVAL,
     CONF_PRICE_KWH,
     CONF_GAS_BRENNWERT,
@@ -93,15 +92,15 @@ STROM_SENSORS: list[EmlogSensorDef] = [
     EmlogSensorDef(
         "betrag_tag_eur",
         "Betrag Heute",
-        "EUR",
+        None,  # Wird dynamisch vom Coordinator gesetzt
         SensorDeviceClass.MONETARY,
         SensorStateClass.TOTAL,
         "mdi:currency-eur",
     ),
     EmlogSensorDef(
         "preis_eur_kwh",
-        "Preis (EUR/kWh)",
-        "EUR/kWh",
+        "Preis (kWh)",
+        None,  # Wird dynamisch vom Coordinator gesetzt (z.B. EUR/kWh)
         SensorDeviceClass.MONETARY,
         None,
         "mdi:tag",
@@ -145,15 +144,15 @@ GAS_SENSORS: list[EmlogSensorDef] = [
     EmlogSensorDef(
         "betrag_tag_eur",
         "Betrag Heute",
-        "EUR",
+        None,  # Wird dynamisch vom Coordinator gesetzt
         SensorDeviceClass.MONETARY,
         SensorStateClass.TOTAL,
         "mdi:currency-eur",
     ),
     EmlogSensorDef(
         "preis_eur_kwh",
-        "Preis (EUR/kWh)",
-        "EUR/kWh",
+        "Preis (kWh)",
+        None,  # Wird dynamisch vom Coordinator gesetzt (z.B. EUR/kWh)
         SensorDeviceClass.MONETARY,
         None,
         "mdi:tag",
@@ -183,7 +182,7 @@ async def async_setup_entry(
     """Set up Emlog sensors from a config entry."""
     host = entry.data[CONF_HOST]
     meter_type = entry.data[CONF_METER_TYPE]
-    meter_index = int(entry.data[CONF_STROM_INDEX] if meter_type == METER_TYPE_STROM else entry.data[CONF_GAS_INDEX])
+    meter_index = int(entry.data[CONF_METER_INDEX])
     scan_interval = int(entry.options.get(CONF_SCAN_INTERVAL, entry.data.get(CONF_SCAN_INTERVAL, 30)))
 
     # Helper function to get value from entity or fallback to config
@@ -296,7 +295,8 @@ class EmlogSensorEntity(SensorEntity):
 
         self._attr_name = f"Emlog {meter_name} {definition.name}"
         self._attr_unique_id = f"emlog_{host}_{meter_type}_{definition.key}".replace(".", "_")
-        self._attr_native_unit_of_measurement = definition.unit
+        # Native unit wird jetzt dynamisch in property gesetzt (wegen Währung)
+        # self._attr_native_unit_of_measurement wird durch property überschrieben
         self._attr_device_class = definition.device_class
         self._attr_state_class = definition.state_class
         if definition.icon:
@@ -317,6 +317,24 @@ class EmlogSensorEntity(SensorEntity):
         except Exception:
             pass
         return self._initial_price_kwh
+
+    @property
+    def _currency(self) -> str:
+        """Get currency from coordinator."""
+        if self.coordinator.data and hasattr(self.coordinator.data, 'currency'):
+            return self.coordinator.data.currency or "EUR"
+        return "EUR"
+
+    @property
+    def native_unit_of_measurement(self) -> str | None:
+        """Return the unit of measurement, dynamically set for monetary sensors."""
+        # Wenn definition.unit None ist, verwende Währung vom Coordinator
+        if self._definition.unit is None:
+            if self._definition.key == "betrag_tag_eur":
+                return self._currency
+            elif self._definition.key == "preis_eur_kwh":
+                return f"{self._currency}/kWh"
+        return self._definition.unit
 
     @property
     def _gas_brennwert(self) -> float:
