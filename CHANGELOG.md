@@ -1,47 +1,52 @@
-# [0.2.0](https://github.com/strausmann/hacs_emlog/compare/v0.1.0...v0.2.0) (2026-01-14)
+<!-- markdownlint-disable MD012 MD024 -->
+# Emlog Home Assistant Integration Change Log 📜📝
 
-
-### Features
-
-* integrate Commitlint with German prompts for conventional commits ([be34601](https://github.com/strausmann/hacs_emlog/commit/be3460164649f4a234cd4fbb0ee6fb5533ec9943))
-
-# Changelog
-
-All notable changes to this project will be documented in this file.
+All notable changes to the **Emlog Home Assistant Integration** will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-## [0.1.0] - 2026-01-14
+## [0.2.0](https://github.com/strausmann/hacs_emlog/compare/v0.1.0...v0.2.0) (2026-01-14)
 
-### Added
-- **HACS Integration**: Initial Home Assistant Custom Component for Emlog devices
-  - Coordinator pattern for HTTP polling of Emlog API endpoints
-  - Config flow for user-friendly setup (host, meter indices, scan interval)
-  - Sensor entities for electricity and gas meter data
-  - German and English translations
-  - Local polling integration with proper error handling
+### ✨ Features
 
-- **Development Environment**: Complete setup for GitHub Codespaces
-  - Dev container with Python 3.11, Docker-in-Docker, and Home Assistant
-  - VS Code extensions for Python development (Black, isort, Pylint)
-  - Port forwarding for Home Assistant (port 8123)
+* integrate Commitlint with German prompts for conventional commits ([be34601](https://github.com/strausmann/hacs_emlog/commit/be3460164649f4a234cd4fbb0ee6fb5533ec9943))
+* integrate Prettier code formatting and update changelog format ([914eea7](https://github.com/strausmann/hacs_emlog/commit/914eea7b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b))
 
-- **Testing Infrastructure**: Mock server and automated testing
-  - Flask-based mock server simulating Emlog API responses
-  - Realistic JSON data for electricity (meter index 1) and gas (meter index 2)
-  - Docker Compose setup for isolated testing
-  - Automated test script (`test.sh`) for API validation
-  - Test configuration for Home Assistant
+### 📚 Documentation
 
-- **Documentation**: Comprehensive guides for development and usage
-  - AI coding guidelines in `.github/copilot-instructions.md`
-  - Updated README with development and testing instructions
-  - Migration context from YAML package to HACS integration
+* document commit conventions and interactive commit workflow ([def71c8](https://github.com/strausmann/hacs_emlog/commit/def71c8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b))
+* document Prettier code formatting in contribution guidelines ([be52092](https://github.com/strausmann/hacs_emlog/commit/be52092b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b))
 
-### Changed
+## [0.1.0](https://github.com/strausmann/hacs_emlog/compare/v0.0.0...v0.1.0) (2026-01-14)
+
+### ✨ Features
+
+* **HACS Integration**: Initial Home Assistant Custom Component for Emlog devices
+  * Coordinator pattern for HTTP polling of Emlog API endpoints
+  * Config flow for user-friendly setup (host, meter indices, scan interval)
+  * Sensor entities for electricity and gas meter data
+  * German and English translations
+  * Local polling integration with proper error handling
+
+* **Development Environment**: Complete setup for GitHub Codespaces
+  * Dev container with Python 3.11, Docker-in-Docker, and Home Assistant
+  * VS Code extensions for Python development (Black, isort, Pylint)
+  * Port forwarding for Home Assistant (port 8123)
+
+* **Testing Infrastructure**: Mock server and automated testing
+  * Flask-based mock server simulating Emlog API responses
+  * Realistic JSON data for electricity (meter index 1) and gas (meter index 2)
+  * Docker Compose setup for isolated testing
+  * Automated test script (`test.sh`) for API validation
+  * Test configuration for Home Assistant
+
+* **Documentation**: Comprehensive guides for development and usage
+  * AI coding guidelines in `.github/copilot-instructions.md`
+  * Updated README with development and testing instructions
+  * Migration context from YAML package to HACS integration
 - **Package Configuration**: Updated `package/emlog.yaml` for consistency
 - **Project Structure**: Organized development and testing files
 
