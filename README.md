@@ -2,6 +2,8 @@
 
 Diese Integration liest Energie- und Gaszählerdaten direkt vom Emlog-Gerät und macht sie in Home Assistant verfügbar. Sie bietet vollständige Automatisierung zur Datenerfassung mit erweiterten Konfigurationsoptionen für Tarifberechnungen.
 
+> **⚠️ Inoffizielle Integration:** Diese Integration ist ein privates Projekt und **nicht offiziell** von [Weidmann Elektronik](https://shop.weidmann-elektronik.de/index.php?page=product&info=141) (Hersteller von Emlog) unterstützt. Das Emlog-Gerät ist ein Produkt von Weidmann Elektronik – diese Integration wurde von der Community entwickelt.
+
 ## ✨ Features
 
 ### Kerneigenschaften
