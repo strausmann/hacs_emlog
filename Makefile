@@ -1,4 +1,4 @@
-.PHONY: help mock-up mock-down mock-logs ha-up ha-down ha-logs test test-api clean full-clean dev-up dev-down dev-logs lint status version release-dry-run release-notes release release-github
+.PHONY: help mock-up mock-down mock-logs ha-up ha-down ha-logs ha-reload test test-api clean full-clean dev-up dev-down dev-logs lint status version release-dry-run release-notes release release-github
 
 help:
 	@echo "╔════════════════════════════════════════════════════════════╗"
@@ -25,6 +25,7 @@ help:
 	@echo "  make ha-up                 Starte Home Assistant"
 	@echo "  make ha-down               Stoppe Home Assistant"
 	@echo "  make ha-logs               Home Assistant Logs"
+	@echo "  make ha-reload             Kopiere Integration & starte HA neu"
 	@echo ""
 	@echo "Testing & Validierung:"
 	@echo "  make test                  Führe Tests durch"
@@ -63,6 +64,18 @@ ha-down:
 
 ha-logs:
 	docker-compose -f tools/docker/compose.yml logs -f homeassistant
+
+ha-reload:
+	@echo "🔄 Kopiere Integration ins Test-Verzeichnis..."
+	@mkdir -p tests/config/custom_components
+	@cp -r custom_components/emlog tests/config/custom_components/
+	@echo "✅ Integration kopiert"
+	@echo "🔄 Starte Home Assistant neu..."
+	@docker restart docker-homeassistant-1 || (echo "⚠️  Container-Name nicht gefunden, versuche mit compose..." && docker-compose -f tools/docker/compose.yml restart homeassistant)
+	@sleep 5
+	@echo "✅ Home Assistant neugestartet"
+	@echo "📊 Prüfe Integration..."
+	@docker logs docker-homeassistant-1 2>&1 | grep -i "emlog" | tail -5 || echo "⚠️  Keine Emlog-Logs gefunden"
 
 update-ha-config:
 	@python3 tools/scripts/update_ha_config.py
