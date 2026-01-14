@@ -64,7 +64,9 @@ type(scope): description
 [footer]
 ```
 
-**Scope verwenden wenn möglich!** Der Scope gibt an, welche Komponente betroffen ist.
+**⚠️ MANDATORY: Scope MUSS bei JEDEM Commit verwendet werden!**
+
+Der Scope gibt an, welche Komponente betroffen ist. **Commits OHNE Scope sind nicht akzeptabel!**
 
 ### Erlaubte Scopes für dieses Projekt
 - `coordinator:` - Änderungen an `coordinator.py` (Daten-Polling)
@@ -120,9 +122,25 @@ BREAKING CHANGE: host configuration now requires protocol prefix
 
 ### WICHTIG für Copilot
 - **NIEMALS** andere Commit-Formate verwenden!
+- **NIEMALS** Commits ohne Scope erstellen - der Scope ist MANDATORY!
+- **IMMER** den passenden Scope aus der obigen Liste verwenden
 - Bei Unsicherheit: `.releaserc.json` und `.commitlintrc.json` konsultieren
 - Commitlint validiert automatisch alle Commits
 - Fehlschlagende Commits werden abgelehnt
+
+**Beispiel für FALSCHE Commits (unakzeptabel):**
+```
+feat: add new sensor      ❌ Scope fehlt!
+fix: resolve timeout      ❌ Scope fehlt!
+docs: update readme       ❌ Scope fehlt!
+```
+
+**Beispiel für KORREKTE Commits (akzeptabel):**
+```
+feat(sensor): add new sensor           ✅ Scope vorhanden!
+fix(coordinator): resolve timeout      ✅ Scope vorhanden!
+docs(readme): update installation      ✅ Scope vorhanden!
+```
 
 ## Configuration & Setup
 
