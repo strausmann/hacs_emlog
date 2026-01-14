@@ -87,6 +87,9 @@ hacs_emlog/
 │   └── README.md              # Dokumentations-Übersicht
 │
 ├── tools/                      # 🛠️ Entwicklungswerkzeuge
+│   ├── docker/                 # Docker-Konfiguration
+│   │   ├── compose.yml         # Docker Compose Config
+│   │   └── Dockerfile.homeassistant
 │   └── scripts/                # Test & Setup Scripts
 │
 ├── tests/                      # 🧪 Tests & Mock
