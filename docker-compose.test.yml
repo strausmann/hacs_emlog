@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  homeassistant:
+    image: homeassistant/home-assistant:latest
+    volumes:
+      - ./test_config:/config
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "8123:8123"
+    environment:
+      - TZ=Europe/Berlin
+    depends_on:
+      - emlog-mock
+
+  emlog-mock:
+    build: ./mock
+    ports:
+      - "8080:8080"
+    environment:
+      - MOCK_DATA_DIR=/app/mock_data
