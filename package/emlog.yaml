@@ -229,27 +229,33 @@ utility_meter:
   # Strom: aus echtem Zählerstand (kWh)
   emlog_strom_verbrauch_tag_kwh_utility:
     source: sensor.emlog_strom_zaehlerstand_kwh
+    unique_id: emlog_strom_verbrauch_tag_kwh_utility
     cycle: daily
 
   emlog_strom_verbrauch_monat_kwh:
     source: sensor.emlog_strom_zaehlerstand_kwh
+    unique_id: emlog_strom_verbrauch_monat_kwh
     cycle: monthly
 
   emlog_strom_verbrauch_jahr_kwh:
     source: sensor.emlog_strom_zaehlerstand_kwh
+    unique_id: emlog_strom_verbrauch_jahr_kwh
     cycle: yearly
 
   # Gas: aus umgerechnetem kWh-Zählerstand (gesamt)
   emlog_gas_verbrauch_tag_kwh_utility:
     source: sensor.emlog_gas_zaehlerstand_kwh
+    unique_id: emlog_gas_verbrauch_tag_kwh_utility
     cycle: daily
 
   emlog_gas_verbrauch_monat_kwh:
     source: sensor.emlog_gas_zaehlerstand_kwh
+    unique_id: emlog_gas_verbrauch_monat_kwh
     cycle: monthly
 
   emlog_gas_verbrauch_jahr_kwh:
     source: sensor.emlog_gas_zaehlerstand_kwh
+    unique_id: emlog_gas_verbrauch_jahr_kwh
     cycle: yearly
 
 template:
