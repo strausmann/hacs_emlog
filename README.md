@@ -1,4 +1,4 @@
-# Emlog (Electronic Meter Log) – Home Assistant Integration
+# Emlog (Electronic Meter Log) – Home Assistant Integration (HACS)
 
 Diese Integration liest Energie- und Gaszählerdaten direkt vom Emlog-Gerät und macht sie in Home Assistant verfügbar. Sie bietet vollständige Automatisierung zur Datenerfassung mit erweiterten Konfigurationsoptionen für Tarifberechnungen.
 
@@ -11,6 +11,12 @@ Diese Integration liest Energie- und Gaszählerdaten direkt vom Emlog-Gerät und
 - 🔄 **Utility Meter Integration** - Erstellt automatisch tägliche/monatliche/jährliche Verbrauchsmesser
 - 🎯 **Flexible Helfer-Integration** - Nutze `input_number` Entities für dynamische Werte (Preise, Faktoren)
 - ⚡ **Multi-Meter Support** - Unterstütze mehrere Emlog-Geräte gleichzeitig
+
+#### 💡 Wichtig: Dynamische Werte statt statische Konfiguration
+
+**Währung:** Die Integration erkennt die Währung automatisch von Ihrem Emlog-Gerät. Sie **müssen keine Währung manuell eintragen**. Die Unit-of-Measurement wird dynamisch basierend auf der API-Response gesetzt (z.B. EUR, CHF, etc.).
+
+**Timezone:** Alle Zeitstempel nutzen die in Home Assistant konfigurierte Timezone - **nicht UTC**. Dies stellt sicher, dass Ihre Kostenberechnungen und Utility-Meter mit Ihrer lokalen Zeit synchronisiert sind.
 
 ### Sensoren
 - **Zählerstände** (in kWh / m³) - Gesamtverbrauch mit verschiedenen Tarifen
@@ -111,47 +117,47 @@ input_number:
 ## 📊 Verfügbare Sensoren
 
 Nach der Konfiguration werden automatisch Sensoren für deinen Zähler erstellt. Die Entity-Namen folgen dem Pattern:
-`sensor.emlog_{meter_type}_{sensor_key}`
+`sensor.emlog_{meter_type}_{meter_index}_{sensor_key}`
 
-Beispiele: `sensor.emlog_strom_zaehlerstand_kwh`, `sensor.emlog_gas_wirkleistung_w`
+Beispiele: `sensor.emlog_strom_1_zaehlerstand_kwh`, `sensor.emlog_gas_2_wirkleistung_w`
 
-### Gemeinsame Informations-Sensoren
+### Informations-Sensoren (pro Meter)
 
 | Entity-Name | Name | Unit | Beschreibung |
 |-------------|------|------|------------|
-| `emlog_product` | Produkt | — | Produktbezeichnung vom Emlog-Gerät (z.B. "Emlog - Electronic Meter Log") |
-| `emlog_version` | Software Version | — | Firmware-Version des Emlog-Geräts (z.B. 1.16) |
+| `emlog_strom_1_product` | Produkt | — | Produktbezeichnung vom Emlog-Gerät (z.B. "Emlog - Electronic Meter Log") |
+| `emlog_strom_1_version` | Software Version | — | Firmware-Version des Emlog-Geräts (z.B. 1.16) |
 
 ### Strom (Electricity) - Meter-Sensoren
 
 | Entity-Name | Name | Unit | Device Class | Beschreibung |
 |-------------|------|------|--------------|------------|
-| `emlog_strom_zaehlerstand_kwh` | Zählerstand (kWh) | kWh | `energy` | **Gesamter Stromverbrauch** seit Inbetriebnahme (kumulativ, nur steigend) |
-| `emlog_strom_wirkleistung_w` | Wirkleistung (W) | W | `power` | **Aktuelle Stromleistung** in Echtzeit (Messwert alle 30 Sekunden) |
-| `emlog_strom_verbrauch_tag_kwh` | Verbrauch Heute (kWh) | kWh | `energy` | **Heutiger Stromverbrauch** (setzt sich täglich zurück) |
-| `emlog_strom_betrag_tag_eur` | Betrag Heute | [Währung] | `monetary` | **Heutige Stromkosten** aus Emlog-API (berechneter Tagesbetrag) |
-| `emlog_strom_preis_eur_kwh` | Preis (kWh) | [Währung]/kWh | `monetary` | **Konfigurierter Strompreis** (nutzt Helfer wenn verlinkt) |
+| `emlog_strom_1_zaehlerstand_kwh` | Zählerstand (kWh) | kWh | `energy` | **Gesamter Stromverbrauch** seit Inbetriebnahme (kumulativ, nur steigend) |
+| `emlog_strom_1_wirkleistung_w` | Wirkleistung (W) | W | `power` | **Aktuelle Stromleistung** in Echtzeit (Messwert alle 30 Sekunden) |
+| `emlog_strom_1_verbrauch_tag_kwh` | Verbrauch Heute (kWh) | kWh | `energy` | **Heutiger Stromverbrauch** (setzt sich täglich zurück) |
+| `emlog_strom_1_betrag_tag_eur` | Betrag Heute | [Währung] | `monetary` | **Heutige Stromkosten** aus Emlog-API (berechneter Tagesbetrag) |
+| `emlog_strom_1_preis_eur_kwh` | Preis (kWh) | [Währung]/kWh | `monetary` | **Konfigurierter Strompreis** (nutzt Helfer wenn verlinkt) |
 
 ### Gas (Gas) - Meter-Sensoren
 
 | Entity-Name | Name | Unit | Device Class | Beschreibung |
 |-------------|------|------|--------------|------------|
-| `emlog_gas_zaehlerstand_m3` | Zählerstand (m³) | m³ | `gas` | **Gesamter Gasverbrauch** in Kubikmetern seit Inbetriebnahme |
-| `emlog_gas_zaehlerstand_kwh` | Zählerstand (kWh) | kWh | `energy` | **Gesamter Gasverbrauch in kWh** (konvertiert mit Brennwert/Zustandszahl) |
-| `emlog_gas_wirkleistung_w` | Wirkleistung (W) | W | `power` | **Aktuelle Gasleistung** |
-| `emlog_gas_verbrauch_tag_kwh` | Verbrauch Heute (kWh) | kWh | `energy` | **Heutiger Gasverbrauch in kWh** |
-| `emlog_gas_betrag_tag_eur` | Betrag Heute | [Währung] | `monetary` | **Heutige Gaskosten** |
-| `emlog_gas_preis_eur_kwh` | Preis (kWh) | [Währung]/kWh | `monetary` | **Konfigurierter Gaspreis** |
-| `emlog_gas_brennwert` | Brennwert | — | — | **Brennwert für Gas-Umrechnung** (m³ → kWh) |
-| `emlog_gas_zustandszahl` | Zustandszahl | — | — | **Zustandszahl für Gas-Umrechnung** |
+| `emlog_gas_2_zaehlerstand_m3` | Zählerstand (m³) | m³ | `gas` | **Gesamter Gasverbrauch** in Kubikmetern seit Inbetriebnahme |
+| `emlog_gas_2_zaehlerstand_kwh` | Zählerstand (kWh) | kWh | `energy` | **Gesamter Gasverbrauch in kWh** (konvertiert mit Brennwert/Zustandszahl) |
+| `emlog_gas_2_wirkleistung_w` | Wirkleistung (W) | W | `power` | **Aktuelle Gasleistung** |
+| `emlog_gas_2_verbrauch_tag_kwh` | Verbrauch Heute (kWh) | kWh | `energy` | **Heutiger Gasverbrauch in kWh** |
+| `emlog_gas_2_betrag_tag_eur` | Betrag Heute | [Währung] | `monetary` | **Heutige Gaskosten** |
+| `emlog_gas_2_preis_eur_kwh` | Preis (kWh) | [Währung]/kWh | `monetary` | **Konfigurierter Gaspreis** |
+| `emlog_gas_2_brennwert` | Brennwert | — | — | **Brennwert für Gas-Umrechnung** (m³ → kWh) |
+| `emlog_gas_2_zustandszahl` | Zustandszahl | — | — | **Zustandszahl für Gas-Umrechnung** |
 
-### Status & Fehler-Sensoren
+### Status & Fehler-Sensoren (pro Meter)
 
 | Entity-Name | Name | Unit | Beschreibung |
 |-------------|------|------|------------|
-| `emlog_strom_status` / `emlog_gas_status` | API Status | — | **API-Verbindungsstatus** ("connected", "failed", "initializing") |
-| `emlog_strom_last_error` / `emlog_gas_last_error` | Letzte Fehlermeldung | — | **Letzter Fehler** bei API-Abfrage (leer wenn OK) |
-| `emlog_strom_last_update` / `emlog_gas_last_update` | Letztes Update | — | **Zeitstempel** des letzten erfolgreichen Updates |
+| `emlog_strom_1_api_status` / `emlog_gas_2_api_status` | API Status | — | **API-Verbindungsstatus** ("connected", "failed", "initializing") |
+| `emlog_strom_1_letzte_fehlermeldung` / `emlog_gas_2_letzte_fehlermeldung` | Letzte Fehlermeldung | — | **Letzter Fehler** bei API-Abfrage (leer wenn OK) |
+| `emlog_strom_1_letztes_update` / `emlog_gas_2_letztes_update` | Letztes Update | — | **Zeitstempel** des letzten erfolgreichen Updates |
 
 ### Automatische Utility Meter (Aggregationen)
 
@@ -159,10 +165,10 @@ Die Integration erstellt automatisch für **jeden Meter-Typ** (Strom/Gas) **drei
 
 | Entity-Name | Name | Period | Beschreibung |
 |-------------|------|--------|------------|
-| `sensor.emlog_strom_1_verbrauch_tag` | Emlog Strom 1 Verbrauch Tag | Täglich | Täglicher Stromverbrauch (Referenz-Entity: `sensor.emlog_strom_zaehlerstand_kwh`) |
+| `sensor.emlog_strom_1_verbrauch_tag` | Emlog Strom 1 Verbrauch Tag | Täglich | Täglicher Stromverbrauch (Referenz-Entity: `sensor.emlog_strom_1_zaehlerstand_kwh`) |
 | `sensor.emlog_strom_1_verbrauch_monat` | Emlog Strom 1 Verbrauch Monat | Monatlich | Monatlicher Stromverbrauch (setzt sich am 1. des Monats zurück) |
 | `sensor.emlog_strom_1_verbrauch_jahr` | Emlog Strom 1 Verbrauch Jahr | Jährlich | Jährlicher Stromverbrauch (setzt sich am 1. Januar zurück) |
-| `sensor.emlog_gas_2_verbrauch_tag` | Emlog Gas 2 Verbrauch Tag | Täglich | Täglicher Gasverbrauch |
+| `sensor.emlog_gas_2_verbrauch_tag` | Emlog Gas 2 Verbrauch Tag | Täglich | Täglicher Gasverbrauch (Referenz-Entity: `sensor.emlog_gas_2_zaehlerstand_kwh`) |
 | `sensor.emlog_gas_2_verbrauch_monat` | Emlog Gas 2 Verbrauch Monat | Monatlich | Monatlicher Gasverbrauch |
 | `sensor.emlog_gas_2_verbrauch_jahr` | Emlog Gas 2 Verbrauch Jahr | Jährlich | Jährlicher Gasverbrauch |
 
@@ -175,9 +181,9 @@ Die Integration erstellt automatisch für **jeden Meter-Typ** (Strom/Gas) **drei
 type: glance
 title: Stromverbrauch aktuell
 entities:
-  - entity: sensor.emlog_strom_zaehlerstand_kwh
+  - entity: sensor.emlog_strom_1_zaehlerstand_kwh
     name: Gesamtverbrauch
-  - entity: sensor.emlog_strom_wirkleistung_w
+  - entity: sensor.emlog_strom_1_wirkleistung_w
     name: Aktuelle Leistung
   - entity: sensor.emlog_strom_1_verbrauch_tag
     name: Heute
@@ -191,13 +197,13 @@ automation:
   - alias: "Stromverbrauch zu hoch"
     trigger:
       platform: numeric_state
-      entity_id: sensor.emlog_strom_wirkleistung_w
+      entity_id: sensor.emlog_strom_1_wirkleistung_w
       above: 3000
     action:
       - service: persistent_notification.create
         data:
           title: "⚠️ Hoher Stromverbrauch"
-          message: "Leistung über 3000W: {{ states('sensor.emlog_strom_wirkleistung_w') }}W"
+          message: "Leistung über 3000W: {{ states('sensor.emlog_strom_1_wirkleistung_w') }}W"
 ```
 
 ### Script - Tägliche Verbrauchsmitteilung
@@ -225,21 +231,21 @@ Nach der Konfiguration von Preisen und Abschlägen werden automatisch folgende K
 
 | Sensor-Name | Entity-Name | Berechnung | Beschreibung |
 |-------------|-------------|-----------|------------|
-| `Emlog Strom Kosten Tag` | `sensor.emlog_strom_kosten_tag` | (Verbrauch × kWh-Preis) + (Grundpreis ÷ 30) | **Heute anfallende Kosten** (ohne Abschlag) |
-| `Emlog Strom Kosten Monat` | `sensor.emlog_strom_kosten_monat` | (Verbrauch × kWh-Preis) + Grundpreis | **Diesen Monat anfallende Kosten** |
-| `Emlog Strom Kosten Jahr` | `sensor.emlog_strom_kosten_jahr` | (Verbrauch × kWh-Preis) + (Grundpreis × 12) | **Dieses Jahr anfallende Kosten** |
-| `Emlog Gas Kosten Tag` | `sensor.emlog_gas_kosten_tag` | Wie Strom, für Gas | **Tägliche Gas-Kosten** |
-| `Emlog Gas Kosten Monat` | `sensor.emlog_gas_kosten_monat` | Wie Strom, für Gas | **Monatliche Gas-Kosten** |
-| `Emlog Gas Kosten Jahr` | `sensor.emlog_gas_kosten_jahr` | Wie Strom, für Gas | **Jährliche Gas-Kosten** |
+| `Emlog Strom 1 Kosten Tag` | `sensor.emlog_strom_1_kosten_tag` | (Verbrauch × kWh-Preis) + (Grundpreis ÷ 30) | **Heute anfallende Kosten** (ohne Abschlag) |
+| `Emlog Strom 1 Kosten Monat` | `sensor.emlog_strom_1_kosten_monat` | (Verbrauch × kWh-Preis) + Grundpreis | **Diesen Monat anfallende Kosten** |
+| `Emlog Strom 1 Kosten Jahr` | `sensor.emlog_strom_1_kosten_jahr` | (Verbrauch × kWh-Preis) + (Grundpreis × 12) | **Dieses Jahr anfallende Kosten** |
+| `Emlog Gas 2 Kosten Tag` | `sensor.emlog_gas_2_kosten_tag` | Wie Strom, für Gas | **Tägliche Gas-Kosten** |
+| `Emlog Gas 2 Kosten Monat` | `sensor.emlog_gas_2_kosten_monat` | Wie Strom, für Gas | **Monatliche Gas-Kosten** |
+| `Emlog Gas 2 Kosten Jahr` | `sensor.emlog_gas_2_kosten_jahr` | Wie Strom, für Gas | **Jährliche Gas-Kosten** |
 
 #### Abschlag-Sensoren (monatliche Vorauszahlungen)
 
 | Sensor-Name | Entity-Name | Berechnung | Beschreibung |
 |-------------|-------------|-----------|------------|
-| `Emlog Strom Abschlag Jahresgesamt` | `sensor.emlog_strom_advance_total` | Monatlicher Abschlag × 12 | **Gesamte Abschlagszahlung pro Jahr** |
-| `Emlog Strom Abschlag Differenz` | `sensor.emlog_strom_advance_difference` | Jährliche Kosten - Abschlag Jahresgesamt | **Differenz zwischen Kosten und Abschlägen** |
-| `Emlog Gas Abschlag Jahresgesamt` | `sensor.emlog_gas_advance_total` | Monatlicher Abschlag × 12 | **Gesamte Gas-Abschlagszahlung pro Jahr** |
-| `Emlog Gas Abschlag Differenz` | `sensor.emlog_gas_advance_difference` | Jährliche Kosten - Abschlag Jahresgesamt | **Differenz: negativ = Nachzahlung, positiv = Rückerstattung** |
+| `Emlog Strom 1 Abschlag Jahresgesamt` | `sensor.emlog_strom_1_advance_total` | Monatlicher Abschlag × 12 | **Gesamte Abschlagszahlung pro Jahr** |
+| `Emlog Strom 1 Abschlag Differenz` | `sensor.emlog_strom_1_advance_difference` | Jährliche Kosten - Abschlag Jahresgesamt | **Differenz zwischen Kosten und Abschlägen** |
+| `Emlog Gas 2 Abschlag Jahresgesamt` | `sensor.emlog_gas_2_advance_total` | Monatlicher Abschlag × 12 | **Gesamte Gas-Abschlagszahlung pro Jahr** |
+| `Emlog Gas 2 Abschlag Differenz` | `sensor.emlog_gas_2_advance_difference` | Jährliche Kosten - Abschlag Jahresgesamt | **Differenz: negativ = Nachzahlung, positiv = Rückerstattung** |
 
 ### Beispiel-Berechnung
 
