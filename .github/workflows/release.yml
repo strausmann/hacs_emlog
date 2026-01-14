@@ -35,7 +35,10 @@ jobs:
           node-version: '18'
 
       - name: Install semantic-release
-        run: npm install -g semantic-release @semantic-release/changelog @semantic-release/git @semantic-release/github conventional-changelog-conventionalcommits
+        run: |
+          npm install -g semantic-release @semantic-release/changelog @semantic-release/git @semantic-release/github conventional-changelog-conventionalcommits
+          # Fix for issue #3292: downgrade conventional-changelog-writer to stable version
+          npm install -g conventional-changelog-writer@8.1.0
 
       - name: Run semantic-release
         run: semantic-release
