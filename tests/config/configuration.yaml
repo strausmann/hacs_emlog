@@ -6,7 +6,7 @@ homeassistant:
   elevation: 0
   unit_system: metric
   time_zone: "Europe/Berlin"
-  external_url: "https://glowing-space-goggles-65pgrpx69jc5577-8123.app.github.dev"
+  external_url: "http://localhost:8123"
   internal_url: "http://localhost:8123"
 
 # Alle Standard Komponenten laden
@@ -20,9 +20,15 @@ lovelace:
 http:
   use_x_forwarded_for: true
   trusted_proxies:
-    - 172.18.0.0/16  # Docker Compose default network
-    - 172.19.0.0/16  # GitHub Codespaces reverse proxy
-    - 127.0.0.1      # Localhost für direkten Zugriff
+    # RFC 1918 private IPv4 ranges
+    - 10.0.0.0/8
+    - 172.16.0.0/12        # Alle 172.16.x.x - 172.31.x.x
+    - 192.168.0.0/16
+    # Loopback
+    - 127.0.0.0/8
+    - ::1/128
+    # IPv6 private
+    - fc00::/7
   ip_ban_enabled: false  # Disable IP banning for development
   login_attempts_threshold: -1  # Disable login attempt limiting
   cors_allowed_origins:

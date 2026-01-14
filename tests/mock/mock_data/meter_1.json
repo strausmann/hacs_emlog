@@ -2,7 +2,7 @@
   "product": "Emlog - Electronic Meter Log",
   "version": 1.16,
   "Zaehlerstand_Bezug": {
-    "Stand180": 3474,
+    "Stand180": 3474.12345,
     "Stand181": 0,
     "Stand182": 0
   },
@@ -12,7 +12,7 @@
     "Stand282": 0
   },
   "Wirkleistung_Bezug": {
-    "Leistung170": 0,
+    "Leistung170": 123.45,
     "Leistung171": 0,
     "Leistung172": 0,
     "Leistung173": 0
@@ -24,7 +24,7 @@
     "Leistung273": 0
   },
   "Kwh_Bezug": {
-    "Kwh180": 14,
+    "Kwh180": 14.567,
     "Kwh181": 0,
     "Kwh182": 0
   },
