@@ -136,5 +136,11 @@ release-github:
 	@echo "🚀 Triggere GitHub Actions Release Workflow..."
 	@echo ""
 	@gh workflow run release.yml --repo strausmann/hacs_emlog && \
-	echo "✅ Workflow getriggert! Status prüfen mit: gh run list --workflow=release.yml" || \
-	echo "❌ Fehler beim Triggern. Stelle sicher dass gh CLI authentifiziert ist."
+	echo "✅ Workflow getriggert!" && \
+	echo "" && \
+	echo "📊 Workflow Status anzeigen:" && \
+	echo "   make status: gh run list --workflow=release.yml --limit 3" && \
+	echo "" && \
+	echo "🌐 Im Browser öffnen:" && \
+	echo "   https://github.com/strausmann/hacs_emlog/actions/workflows/release.yml" || \
+	echo "❌ Fehler beim Triggern. Siehe CONTRIBUTING.md für PAT Setup-Anleitung."
