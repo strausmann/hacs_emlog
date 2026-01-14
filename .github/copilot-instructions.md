@@ -122,27 +122,69 @@ BREAKING CHANGE: host configuration now requires protocol prefix
 - Erstellt Releases, Tags und CHANGELOG.md
 - Release-Commits verwenden: `chore(release): ${nextRelease.version}`
 
-### WICHTIG für Copilot
-- **NIEMALS** andere Commit-Formate verwenden!
-- **NIEMALS** Commits ohne Scope erstellen - der Scope ist MANDATORY!
-- **IMMER** den passenden Scope aus der obigen Liste verwenden
-- Bei Unsicherheit: `.releaserc.json` und `.commitlintrc.json` konsultieren
-- Commitlint validiert automatisch alle Commits
-- Fehlschlagende Commits werden abgelehnt
+### WICHTIG für Copilot - Strenge Commit-Regeln
+
+**⚠️ ABSOLUTE REGELN (KEINE AUSNAHMEN):**
+
+1. **NIEMALS Sammel-Commits!** Jeder Commit = Genau EINE logische Änderung
+   - ❌ FALSCH: Ein Commit mit Änderungen an config_flow.py + sensor.py + const.py
+   - ✅ RICHTIG: Drei separate Commits - einer pro Datei/Feature
+
+2. **Commits müssen granular sein:**
+   - Jede neue Feature → eigener `feat(scope):` Commit
+   - Jeder Bugfix → eigener `fix(scope):` Commit
+   - Jede Übersetzung → eigener `translations:` Commit
+   - Jede Test-Datei-Änderung → eigener `test(scope):` Commit
+
+3. **Standard-Pattern für zusammenhängende Änderungen:**
+   ```
+   fix(__init__): remove broken async_setup_utility_meter import          [Commit 1]
+   feat(const): add base price constants for electricity and gas          [Commit 2]
+   feat(coordinator): store config_entry for property-based resolution    [Commit 3]
+   feat(sensor): implement property-based value resolution                [Commit 4]
+   feat(config): add base price fields and entity selectors               [Commit 5]
+   feat(template): add cost sensor class with consumption calculation     [Commit 6]
+   feat(manifest): bump version to 0.2.0 and require HA 2024.1.0         [Commit 7]
+   feat(translations): add base price field descriptions (de + en)        [Commit 8]
+   test: update test configuration and mock data                         [Commit 9]
+   chore: fix gitignore to properly track custom_components/emlog        [Commit 10]
+   ```
+
+4. **Nutzen von git add --patch oder git reset:**
+   - Wenn mehrere Änderungen in einer Datei: `git add -p` für selective staging
+   - Wenn Änderungen gegenüber gemischt werden: `git reset` und neu-committen
+
+5. **Commits OHNE Scope sind NICHT ERLAUBT:**
+   - ❌ FALSCH: `feat: add new sensor` (kein Scope!)
+   - ✅ RICHTIG: `feat(sensor): add new sensor`
+
+6. **Bei Unsicherheit:**
+   - `.releaserc.json` und `.commitlintrc.json` konsultieren
+   - Commitlint validiert automatisch alle Commits
+   - Fehlschlagende Commits werden abgelehnt
 
 **Beispiel für FALSCHE Commits (unakzeptabel):**
 ```
-feat: add new sensor      ❌ Scope fehlt!
-fix: resolve timeout      ❌ Scope fehlt!
-docs: update readme       ❌ Scope fehlt!
+feat: add new sensor                           ❌ Kein Scope!
+feat(config): refactor all components          ❌ Sammel-Commit!
+fix: fix several bugs in multiple files        ❌ Zu vage, mehrere Dinge!
+docs: update docs                              ❌ Kein Scope!
 ```
 
 **Beispiel für KORREKTE Commits (akzeptabel):**
 ```
-feat(sensor): add new sensor           ✅ Scope vorhanden!
-fix(coordinator): resolve timeout      ✅ Scope vorhanden!
-docs(readme): update installation      ✅ Scope vorhanden!
+feat(sensor): add new gas consumption sensor               ✅
+fix(coordinator): resolve timeout in API polling          ✅
+feat(config): add base price entity selector              ✅
+feat(translations): add German descriptions for helpers    ✅
+test(mock): update mock server response data              ✅
+chore(manifest): bump version to 0.2.0                    ✅
 ```
+
+**Commits sollten die Frage beantworten:**
+- Was wurde genau geändert? (spezifisch)
+- Welche Komponente? (Scope)
+- Warum? (Commit-Message Body bei komplexen Änderungen)
 
 ## Configuration & Setup
 
