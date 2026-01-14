@@ -1,0 +1,16 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Emlog",
+        "description": "Konfiguriere Host/IP und Meterindex f\u00fcr Strom und Gas.",
+        "data": {
+          "host": "Host/IP (ohne http://)",
+          "strom_index": "Strom Meterindex",
+          "gas_index": "Gas Meterindex",
+          "scan_interval": "Scan-Intervall (Sekunden)"
+        }
+      }
+    }
+  }
+}
