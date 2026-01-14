@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configure Git
+      - name: Setup Git
         run: |
           git config --global user.email "bjoern@strausmann.net"
           git config --global user.name "Semantic Release Bot"
