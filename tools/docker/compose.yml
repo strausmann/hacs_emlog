@@ -2,7 +2,7 @@ services:
   homeassistant:
     image: homeassistant/home-assistant:latest
     volumes:
-      - ./tests/config:/config
+      - ../../tests/config:/config
       - /etc/localtime:/etc/localtime:ro
     ports:
       - "8123:8123"
@@ -14,7 +14,7 @@ services:
       - hacs_emlog_test
 
   emlog-mock:
-    build: ./tests/mock
+    build: ../../tests/mock
     ports:
       - "8080:8080"
     environment:
