@@ -313,7 +313,6 @@ _LOGGER.error("API error")
 
 ## 📚 Weitere Dokumentation
 
-- [Sensor Reference](./sensors.md) (ToDo)
 - [API Reference](../api/)
 - [Contributing Guide](../guides/CONTRIBUTING.md)
 - [Codespaces Setup](../guides/README-Codespaces.md)

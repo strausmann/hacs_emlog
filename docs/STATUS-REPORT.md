@@ -89,4 +89,4 @@ EOF
 
 - Der alte 401-Fehler bei der Codespaces URL war ein **Tunnel-Auth-Issue**, nicht ein HA-Problem
 - Verwende `http://localhost:8123` für Development - das ist einfacher und funktioniert sofort
-- Für externe HTTPS-Tests siehe [CODESPACES-ACCESS.md](CODESPACES-ACCESS.md)
+- Für externe HTTPS-Tests siehe [CODESPACES-ACCESS.md](./guides/CODESPACES-ACCESS.md)

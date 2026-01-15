@@ -45,7 +45,7 @@ https://<codespace-name>-8123.app.github.dev
 - URL wird automatisch generiert: `https://<codespace-name>-8123.app.github.dev`
 - ⚠️ Codespaces Tunnel erfordert PKI-Authentifizierung
 - API-Zugriff erfordert Bearer Token
-- Siehe [CODESPACES-ACCESS.md](CODESPACES-ACCESS.md) für Workarounds
+- Siehe [CODESPACES-ACCESS.md](./CODESPACES-ACCESS.md) für Workarounds
 
 ## 🔐 Authentifizierung
 
@@ -141,7 +141,7 @@ docker-compose -f tools/docker/compose.yml restart homeassistant
 ### 400 Bad Request bei `https://...app.github.dev`
 
 → **Lösung:** Das ist die Codespaces Tunnel-Auth. Nutze stattdessen `http://localhost:8123`
-→ Siehe [CODESPACES-ACCESS.md](CODESPACES-ACCESS.md) für externe Zugriffs-Optionen
+→ Siehe [CODESPACES-ACCESS.md](./CODESPACES-ACCESS.md) für externe Zugriffs-Optionen
 
 ### Auth-Fehler bei `https://...app.github.dev`
 

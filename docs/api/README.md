@@ -270,8 +270,7 @@ Der Mock Server simuliert realistische Daten mit:
 ## 📚 Weitere Ressourcen
 
 - [Emlog Handbuch](https://www.emlog.de/) (Hersteller)
-- [Integration Architektur](./architecture.md)
-- [Testing Guide](./testing.md)
+- [Integration Architektur](../architecture/)
 - [GitHub Issues](https://github.com/strausmann/hacs_emlog/issues)
 
 ---

@@ -6,22 +6,18 @@ Praktische Anleitungen für Installation und Entwicklung der Emlog Integration.
 
 ### Für Benutzer
 
-- **[Installation](./README.md)** (ToDo) - Emlog Integration in Home Assistant installieren
-- **[Konfiguration](./CONFIGURATION.md)** (ToDo) - Integration konfigurieren
-- **[Sensor-Referenz](./SENSORS.md)** (ToDo) - Verfügbare Sensoren
+> Installation, Konfiguration und Sensor-Referenz werden noch dokumentiert.
 
 ### Für Entwickler
 
 - **[Entwicklungs-Umgebung](./README-Codespaces.md)** - Entwicklung in Codespaces
 - **[Zugriff & Setup](./CODESPACES-ACCESS.md)** - Umgebung konfigurieren
 - **[Beitragen](./CONTRIBUTING.md)** - Contributing Guidelines
-- **[Testing Guide](./TESTING.md)** (ToDo) - Tests schreiben und ausführen
 
 ### Spezielle Themen
 
 - **[Sicherheit](../SECURITY.md)** - Security Policy und Vulnerabilities
 - **[Architektur](../architecture/)** - Technisches Design
-- **[Mock Server](./MOCK-SERVER.md)** (ToDo) - Mock Server für Tests
 
 ## 🎯 Schnelleinstieg
 
