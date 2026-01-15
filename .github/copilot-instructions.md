@@ -100,19 +100,25 @@ Der Scope gibt an, welche Komponente betroffen ist. **Commits OHNE Scope sind ni
 
 ### Erlaubte Scopes für dieses Projekt
 
+**WICHTIG:** Siehe `.github/SCOPES.md` für **vollständige Dokumentation aller Scopes mit Beispielen!**
+
+**Kurzübersicht:**
+
 - `coordinator:` - Änderungen an `coordinator.py` (Daten-Polling)
 - `sensor:` - Änderungen an `sensor.py` (Sensor-Entities)
 - `config:` - Änderungen an `config_flow.py` (UI-Konfiguration)
-- `manifest:` - Änderungen an `manifest.json` (Integration-Metadaten)
+- `template:` - Änderungen an `template.py` (Kostenberechnung)
+- `utility-meter:` - Änderungen an `utility_meter.py`
 - `const:` - Änderungen an `const.py` (Konstanten)
-- `translations:` - Änderungen an Übersetzungsdateien
-- `mock:` - Änderungen am Mock-Server (`mock/` Verzeichnis)
+- `manifest:` - Änderungen an `manifest.json` (Integration-Metadaten)
+- `translations:` - Änderungen an Übersetzungsdateien (de.json, en.json)
+- `mock:` - Änderungen am Mock-Server (`tests/mock/`)
 - `test:` - Test-bezogene Änderungen
-- `docs:` - Dokumentationsänderungen
-- `ci:` - CI/CD-Konfiguration (`.github/`, `.releaserc.json`)
-- `deps:` - Dependency-Updates (`package.json`, `requirements.txt`)
-- `build:` - Build-System und Entwicklungstools (`Makefile`, Docker)
-- `chore:` - Allgemeine Wartung (Cleanup, Refactoring ohne Funktionsänderung)
+- `docs:` - Dokumentationsänderungen (README, docs/)
+- `ci:` - CI/CD-Konfiguration (`.github/workflows/`)
+- `build:` - Build-System (Makefile, package.json)
+- `chore:` - Allgemeine Wartung
+- `deps:` - Dependency-Updates
 
 ### Erlaubte Commit-Typen (aus .releaserc.json)
 
@@ -308,6 +314,7 @@ except asyncio.TimeoutError as err:
 ### 📋 Documentation (LESEN VOR ENTWICKLUNG!)
 
 - **`.github/copilot-instructions.md`**: Diese Datei - Überblick und Grundlagen
+- **`.github/SCOPES.md`**: **WICHTIG** - Dokumentation aller erlaubten Commit Scopes mit Strategie und Beispielen
 - **`.github/ARCHITECTURE_DECISIONS.md`**: **WICHTIG** - Alle bewussten Architektur-Entscheidungen und Begründungen
   - Helper-Entity Fallback-Kette
   - Konditionaler EntitySelector Pattern

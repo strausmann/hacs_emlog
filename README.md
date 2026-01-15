@@ -2,6 +2,8 @@
 
 Diese Integration liest Energie- und Gaszählerdaten direkt vom Emlog-Gerät und macht sie in Home Assistant verfügbar. Sie bietet vollständige Automatisierung zur Datenerfassung mit erweiterten Konfigurationsoptionen für Tarifberechnungen.
 
+> **📌 Hinweis:** Dies ist meine erste HACS Integration. Sie wurde mit der Unterstützung von GitHub Copilot entwickelt, um Transparenz zu schaffen und zu demonstrieren, wie KI-Coding-Tools bei der Integration-Entwicklung helfen können. Die Architektur-Entscheidungen, Design-Pattern und Begründungen sind im `.github/`-Verzeichnis dokumentiert.
+
 > **⚠️ Inoffizielle Integration:** Diese Integration ist ein privates Projekt und **nicht offiziell** von [Weidmann Elektronik](https://shop.weidmann-elektronik.de/index.php?page=product&info=141) (Hersteller von Emlog) unterstützt. Das Emlog-Gerät ist ein Produkt von Weidmann Elektronik – diese Integration wurde von der Community entwickelt.
 
 ## ✨ Features
