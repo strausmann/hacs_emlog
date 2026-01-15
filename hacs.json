@@ -1,0 +1,9 @@
+{
+  "name": "Emlog",
+  "homeassistant": "2024.1.0",
+  "render_readme": true,
+  "render_changelog": true,
+  "domains": ["emlog"],
+  "iot_class": "local_polling",
+  "requirements": []
+}
