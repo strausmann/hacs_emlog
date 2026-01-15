@@ -18,7 +18,6 @@ updates:
       - 'strausmann'
     labels:
       - 'dependencies'
-      - 'npm'
 
   # GitHub Actions
   - package-ecosystem: 'github-actions'
