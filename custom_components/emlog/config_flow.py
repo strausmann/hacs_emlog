@@ -37,6 +37,17 @@ from .const import (
     CONF_MONTHLY_ADVANCE_STROM_HELPER,
     CONF_MONTHLY_ADVANCE_GAS_HELPER,
     CONF_SETTLEMENT_MONTH,
+    CONF_PRICE_CHANGE_DATE_STROM,
+    CONF_PRICE_CHANGE_DATE_GAS,
+    CONF_PRICE_KWH_NEW_STROM,
+    CONF_PRICE_KWH_NEW_GAS,
+    CONF_PRICE_KWH_NEW_STROM_HELPER,
+    CONF_PRICE_KWH_NEW_GAS_HELPER,
+    CONF_BASE_PRICE_STROM_NEW,
+    CONF_BASE_PRICE_GAS_NEW,
+    CONF_BASE_PRICE_STROM_NEW_HELPER,
+    CONF_BASE_PRICE_GAS_NEW_HELPER,
+    CONF_INCLUDE_FEED_IN_SENSORS,
     DEFAULT_PRICE_KWH,
     DEFAULT_GAS_BRENNWERT,
     DEFAULT_GAS_ZUSTANDSZAHL,
@@ -300,12 +311,50 @@ class EmlogOptionsFlowHandler(config_entries.OptionsFlow):
             monthly_advance_helper_key = CONF_MONTHLY_ADVANCE_STROM_HELPER if meter_type == METER_TYPE_STROM else CONF_MONTHLY_ADVANCE_GAS_HELPER
             schema_dict[vol.Optional(monthly_advance_helper_key, default="")] = str
         
+        # Tariff change (optional for preparing price/base-price changes)
+        change_date_key = CONF_PRICE_CHANGE_DATE_STROM if meter_type == METER_TYPE_STROM else CONF_PRICE_CHANGE_DATE_GAS
+        current_change_date = options.get(change_date_key, data.get(change_date_key, ""))
+        schema_dict[vol.Optional(change_date_key, default=current_change_date)] = str
+        
+        # New price (after change)
+        new_price_key = CONF_PRICE_KWH_NEW_STROM if meter_type == METER_TYPE_STROM else CONF_PRICE_KWH_NEW_GAS
+        current_new_price = options.get(new_price_key, data.get(new_price_key, 0.0))
+        schema_dict[vol.Optional(new_price_key, default=current_new_price)] = vol.Coerce(float)
+        
+        new_price_helper_key = CONF_PRICE_KWH_NEW_STROM_HELPER if meter_type == METER_TYPE_STROM else CONF_PRICE_KWH_NEW_GAS_HELPER
+        current_new_price_helper = options.get(new_price_helper_key, data.get(new_price_helper_key, ""))
+        if current_new_price_helper:
+            schema_dict[vol.Optional(new_price_helper_key, default=current_new_price_helper)] = selector.EntitySelector(
+                selector.EntitySelectorConfig(domain=["input_number", "sensor"])
+            )
+        else:
+            schema_dict[vol.Optional(new_price_helper_key, default="")] = str
+        
+        # New base price (after change)
+        new_base_price_key = CONF_BASE_PRICE_STROM_NEW if meter_type == METER_TYPE_STROM else CONF_BASE_PRICE_GAS_NEW
+        current_new_base_price = options.get(new_base_price_key, data.get(new_base_price_key, 0.0))
+        schema_dict[vol.Optional(new_base_price_key, default=current_new_base_price)] = vol.Coerce(float)
+        
+        new_base_price_helper_key = CONF_BASE_PRICE_STROM_NEW_HELPER if meter_type == METER_TYPE_STROM else CONF_BASE_PRICE_GAS_NEW_HELPER
+        current_new_base_price_helper = options.get(new_base_price_helper_key, data.get(new_base_price_helper_key, ""))
+        if current_new_base_price_helper:
+            schema_dict[vol.Optional(new_base_price_helper_key, default=current_new_base_price_helper)] = selector.EntitySelector(
+                selector.EntitySelectorConfig(domain=["input_number", "sensor"])
+            )
+        else:
+            schema_dict[vol.Optional(new_base_price_helper_key, default="")] = str
+        
         # Settlement month (Abrechnungsmonat)
         schema_dict[vol.Optional(CONF_SETTLEMENT_MONTH, default=current_settlement_month)] = vol.In({
             1: "Januar", 2: "Februar", 3: "März", 4: "April",
             5: "Mai", 6: "Juni", 7: "Juli", 8: "August",
             9: "September", 10: "Oktober", 11: "November", 12: "Dezember"
         })
+        
+        # Feed-in sensors (only for electricity)
+        if meter_type == METER_TYPE_STROM:
+            current_include_feed_in = options.get(CONF_INCLUDE_FEED_IN_SENSORS, data.get(CONF_INCLUDE_FEED_IN_SENSORS, False))
+            schema_dict[vol.Optional(CONF_INCLUDE_FEED_IN_SENSORS, default=current_include_feed_in)] = bool
         
         # Gas-specific fields: only show for gas meters
         if meter_type == METER_TYPE_GAS:
