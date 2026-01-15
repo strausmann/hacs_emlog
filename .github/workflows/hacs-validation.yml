@@ -28,7 +28,3 @@ jobs:
         uses: hacs/action@main
         with:
           category: integration
-          ignore: |
-            missing-string
-            manifest-not-found
-            json-parse-error
