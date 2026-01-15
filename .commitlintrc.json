@@ -37,7 +37,8 @@
         "mock",
         "architecture",
         "init",
-        "deps"
+        "deps",
+        "ci"
       ]
     ],
     "subject-empty": [2, "never"],

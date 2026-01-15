@@ -57,6 +57,10 @@ Scopes sollten:
 
 ### 🔐 CI/CD & Git
 
+| Scope | Anwendungsfall               | Betrifft             | Beispiel                                                  |
+| ----- | ---------------------------- | -------------------- | --------------------------------------------------------- |
+| `ci`  | GitHub Actions, CI-Workflows | `.github/workflows/` | `build(ci): add HACS validation workflow for integration` |
+
 ### 📦 Dependencies & Maintenance
 
 | Scope  | Anwendungsfall     | Betrifft                           | Beispiel                                   |

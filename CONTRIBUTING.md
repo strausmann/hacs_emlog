@@ -224,7 +224,7 @@ type(scope): description
 **⚠️ MANDATORY - Alle drei Teile sind erforderlich:**
 
 - **type** - Art der Änderung (feat, fix, docs, etc.) - wird von Commitlint validiert
-- **scope** - Komponente (aus 12 erlaubten Scopes) - wird von Commitlint validiert
+- **scope** - Komponente (aus 13 erlaubten Scopes) - wird von Commitlint validiert
 - **description** - Kurzbeschreibung in imperativem Modus - wird von Commitlint validiert
 
 **Validation durch Commitlint + Husky:**
@@ -240,7 +240,7 @@ Commitlint prüft automatisch alle Commits und blockiert sie, wenn:
 
 **Detaillierte Dokumentation:** Siehe [`.github/SCOPES.md#erlaubte-scopes`](.github/SCOPES.md#erlaubte-scopes)
 
-Es sind genau **12 Scopes** definiert:
+Es sind genau **13 Scopes** definiert:
 
 - `coordinator` - Daten-Polling
 - `sensor` - Sensor-Entities
@@ -254,6 +254,7 @@ Es sind genau **12 Scopes** definiert:
 - `architecture` - Architektur-Dokumentation
 - `init` - Integration-Initialisierung
 - `deps` - Dependency-Updates
+- `ci` - GitHub Actions & CI-Workflows
 
 Alle weiteren Scopes werden von Commitlint blockiert. Hilfe bei der Scope-Wahl: [Decision Tree](.github/SCOPES.md#-decision-tree-welcher-scope)
 

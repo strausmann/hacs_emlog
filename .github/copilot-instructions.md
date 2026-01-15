@@ -112,8 +112,8 @@ Fehlende oder ungültige Commits werden automatisch blockiert:
 
 **WICHTIG:** Siehe [`.github/SCOPES.md#erlaubte-scopes`](.github/SCOPES.md#erlaubte-scopes) für **vollständige Dokumentation aller Scopes mit Beispielen!**
 
-**Es sind genau 12 Scopes definiert:**
-coordinator, sensor, config, template, utility-meter, const, manifest, translations, mock, architecture, init, deps
+**Es sind genau 13 Scopes definiert:**
+coordinator, sensor, config, template, utility-meter, const, manifest, translations, mock, architecture, init, deps, ci
 
 Alle weiteren Scopes werden von Commitlint blockiert. Mehr Details: [Decision Tree](.github/SCOPES.md#-decision-tree-welcher-scope)
 
