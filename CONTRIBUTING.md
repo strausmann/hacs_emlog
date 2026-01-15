@@ -9,12 +9,14 @@ Willkommen bei der Emlog Home Assistant Integration! Vielen Dank für Ihr Intere
 ### Entwicklungsumgebung einrichten
 
 1. **Repository klonen:**
+
    ```bash
    git clone https://github.com/strausmann/hacs_emlog.git
    cd hacs_emlog
    ```
 
 2. **Entwicklungsumgebung starten:**
+
    ```bash
    make dev-setup
    ```
@@ -34,6 +36,7 @@ Willkommen bei der Emlog Home Assistant Integration! Vielen Dank für Ihr Intere
 Verwenden Sie die folgenden Make-Befehle für eine effiziente Entwicklung:
 
 #### Grundlegende Befehle
+
 ```bash
 make help          # Alle verfügbaren Befehle anzeigen
 make dev-setup     # Komplette Entwicklungsumgebung starten
@@ -42,6 +45,7 @@ make status        # Status aller Services anzeigen
 ```
 
 #### Service-Management
+
 ```bash
 # Mock Server
 make mock-up       # Mock Server starten
@@ -55,6 +59,7 @@ make ha-logs       # Home Assistant Logs
 ```
 
 #### Tests und Qualitätssicherung
+
 ```bash
 make test          # Vollständige Tests (Mock Server + API)
 make test-api      # Nur API-Endpunkte testen
@@ -62,20 +67,49 @@ make lint          # Code-Qualitätsprüfungen (Python, JSON, YAML)
 ```
 
 #### Release Management
+
 ```bash
 make release-dry-run    # Teste Semantic Release (Dry-Run, ohne zu pushen)
 make release-notes      # Zeige generierte Release Notes für nächste Release
 ```
 
 #### Aufräumen
+
 ```bash
 make clean         # Services stoppen und Container entfernen
 make full-clean    # Vollständiges Cleanup (inkl. Images)
 ```
 
+## ✨ Code Quality & Formatting
+
+### Prettier Code Formatting
+
+Alle Code-Änderungen **MÜSSEN** mit Prettier formatiert sein, bevor sie committed werden!
+
+```bash
+# Überprüfe Formatierung
+npm run prettier
+
+# Repariere Formatierungsprobleme automatisch
+npm run prettier-fix
+```
+
+**Wichtige Regeln:**
+
+- ✅ Führe `npm run prettier-fix` VOR jedem Commit aus
+- ✅ Keine Commits mit Formatierungsfehlern pushen
+- ✅ Prettier wird durch Git Hooks automatisch überprüft (nach `husky install`)
+
+### Code Style
+
+- **Python**: PEP 8 via Black und Pylint
+- **JSON/YAML**: Prettier
+- **Markdown**: Prettier mit max 80 Zeichen pro Zeile
+
 ## 🏗️ Architektur verstehen
 
 ### Projektstruktur
+
 ```
 hacs_emlog/
 ├── custom_components/emlog/     # HACS Integration
@@ -102,6 +136,7 @@ hacs_emlog/
 ```
 
 ### Datenfluss
+
 1. **Coordinator** fragt regelmäßig Emlog API ab
 2. **Sensor Entities** verarbeiten die JSON-Daten
 3. **Config Flow** ermöglicht UI-basierte Konfiguration
@@ -110,18 +145,21 @@ hacs_emlog/
 ## 🧪 Testen
 
 ### Mit Mock Server (empfohlen)
+
 ```bash
 make dev-setup  # Startet Mock Server + Home Assistant
 make test       # Führt alle Tests durch
 ```
 
 ### Mit echter Hardware
+
 ```bash
 # Echte Emlog-IP in der Integration konfigurieren
 # Beispiel: Host: 192.168.1.100
 ```
 
 ### API-Manuelle Tests
+
 ```bash
 # Mock Server starten
 make mock-up
@@ -227,6 +265,7 @@ npm run commit
 ```
 
 Dies führt dich durch:
+
 - Auswahl des Commit-Typs (feat, fix, docs, etc.)
 - Scope der Änderung
 - Betreff und Beschreibung
@@ -236,25 +275,34 @@ Dies führt dich durch:
 **Alle Commits werden automatisch validiert** - bei Fehlern wird der Commit abgelehnt.
 
 ### Neue Features hinzufügen
+
 1. **Planung:** Feature in einem Issue beschreiben
 2. **Implementierung:** Code in entsprechendem Modul entwickeln
 3. **Tests:** Mock-Daten und Tests hinzufügen
 4. **Dokumentation:** README und Code-Kommentare aktualisieren
 
 ### Emlog API verstehen
+
 Die Integration kommuniziert mit der Emlog API:
+
 - **Endpoint:** `http://{host}/pages/getinformation.php?export&meterindex={index}`
 - **Datenformat:** JSON mit verschachtelten Objekten
 - **Meter-Indizes:** Typischerweise 1 (Strom) und 2 (Gas)
 
 Beispiel API-Antwort:
+
 ```json
 {
   "product": "Emlog - Electronic Meter Log",
   "version": 1.16,
-  "Zaehlerstand_Bezug": {"Stand180": 3474, "Stand181": 0, "Stand182": 0},
-  "Wirkleistung_Bezug": {"Leistung170": 2.8, "Leistung171": 0, "Leistung172": 0, "Leistung173": 0},
-  "Kwh_Bezug": {"Kwh180": 14, "Kwh181": 0, "Kwh182": 0}
+  "Zaehlerstand_Bezug": { "Stand180": 3474, "Stand181": 0, "Stand182": 0 },
+  "Wirkleistung_Bezug": {
+    "Leistung170": 2.8,
+    "Leistung171": 0,
+    "Leistung172": 0,
+    "Leistung173": 0
+  },
+  "Kwh_Bezug": { "Kwh180": 14, "Kwh181": 0, "Kwh182": 0 }
 }
 ```
 
@@ -266,6 +314,7 @@ Beispiel API-Antwort:
 4. **PR erstellen:** Über GitHub Interface
 
 ### PR-Checkliste
+
 - [ ] `make lint` besteht
 - [ ] `make test` besteht
 - [ ] Neue Features sind in Mock-Daten abgebildet
@@ -351,6 +400,7 @@ make release
 ```
 
 Dies führt aus:
+
 1. Commits seit letztem Release analysieren
 2. Version berechnen und aktualisieren
 3. CHANGELOG.md generieren
@@ -379,6 +429,7 @@ Triggert die GitHub Actions Workflow remote. **Benötigt einen Personal Access T
    - **Token kopieren** (wird nur einmal angezeigt!)
 
 2. **In Codespace verwenden:**
+
    ```bash
    gh auth login
    # Wähle: GitHub.com → Paste an authentication token → Token einfügen
@@ -413,6 +464,7 @@ gh auth login --with-token <<< $GH_WORKFLOW_TOKEN
 ```
 
 **Alternative: In devcontainer.json**
+
 ```json
 {
   "remoteEnv": {
@@ -435,6 +487,7 @@ Kein Token Setup notwendig:
 ### Zeitgesteuerte Releases
 
 Die Release-Automation läuft automatisch:
+
 - **Täglich um 02:00 UTC** (über `schedule` in GitHub Actions)
 - **Oder manuell** via eine der drei oben genannten Methoden
 
@@ -443,6 +496,7 @@ Die Release-Automation läuft automatisch:
 ## �🐛 Fehler melden
 
 Bei Fehlern:
+
 1. **Reproduktion:** Schritte zur Reproduktion beschreiben
 2. **Logs:** Relevante Logs mit `make dev-logs` sammeln
 3. **Umgebung:** HA-Version, Emlog-Version, Netzwerk-Setup

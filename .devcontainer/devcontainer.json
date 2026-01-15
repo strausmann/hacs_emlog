@@ -1,41 +1,47 @@
 {
-    "name": "Home Assistant Emlog Development",
-    "image": "mcr.microsoft.com/devcontainers/python:3.11",
-    "features": {
-        "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-        "ghcr.io/devcontainers/features/github-cli:1": {}
+  "name": "Home Assistant Emlog Development",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "latest"
     },
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "ms-python.python",
-                "ms-python.black-formatter",
-                "ms-python.isort",
-                "ms-python.pylint",
-                "ms-vscode.vscode-json",
-                "redhat.vscode-yaml",
-                "ms-vscode-remote.remote-containers",
-                "ms-azuretools.vscode-docker"
-            ],
-            "settings": {
-                "python.defaultInterpreterPath": "/usr/local/bin/python",
-                "python.formatting.provider": "black",
-                "python.linting.enabled": true,
-                "python.linting.pylintEnabled": true,
-                "editor.formatOnSave": true,
-                "files.associations": {
-                    "*.yaml": "yaml"
-                }
-            }
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "moby": false
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.black-formatter",
+        "ms-python.isort",
+        "ms-python.pylint",
+        "ms-vscode.vscode-json",
+        "redhat.vscode-yaml",
+        "ms-vscode-remote.remote-containers",
+        "ms-azuretools.vscode-docker"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.formatting.provider": "black",
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "editor.formatOnSave": true,
+        "files.associations": {
+          "*.yaml": "yaml"
         }
-    },
-    "postCreateCommand": "pip install homeassistant",
-    "forwardPorts": [8123],
-    "portsAttributes": {
-        "8123": {
-            "label": "Home Assistant",
-            "onAutoForward": "notify"
-        }
-    },
-    "remoteUser": "vscode"
+      }
+    }
+  },
+  "postCreateCommand": "bash -c 'npm install && pip install --upgrade pip && pip install homeassistant homeassistant-debugpy 2>/dev/null || true'",
+  "onCreateCommand": "mkdir -p /tmp/vscode-devcontainers && chmod 755 /tmp/vscode-devcontainers 2>/dev/null || true",
+  "forwardPorts": [8123],
+  "portsAttributes": {
+    "8123": {
+      "label": "Home Assistant",
+      "onAutoForward": "notify"
+    }
+  },
+  "remoteUser": "vscode"
 }

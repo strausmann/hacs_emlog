@@ -1,13 +1,13 @@
 # Home Assistant Test Configuration für Emlog Integration
 homeassistant:
-  name: "Emlog Development"
+  name: 'Emlog Development'
   latitude: 50.0
   longitude: 10.0
   elevation: 0
   unit_system: metric
-  time_zone: "Europe/Berlin"
-  external_url: "http://localhost:8123"
-  internal_url: "http://localhost:8123"
+  time_zone: 'Europe/Berlin'
+  external_url: 'http://localhost:8123'
+  internal_url: 'http://localhost:8123'
 
 # Alle Standard Komponenten laden
 default_config:
@@ -22,19 +22,19 @@ http:
   trusted_proxies:
     # RFC 1918 private IPv4 ranges
     - 10.0.0.0/8
-    - 172.16.0.0/12        # Alle 172.16.x.x - 172.31.x.x
+    - 172.16.0.0/12 # Alle 172.16.x.x - 172.31.x.x
     - 192.168.0.0/16
     # Loopback
     - 127.0.0.0/8
     - ::1/128
     # IPv6 private
     - fc00::/7
-  ip_ban_enabled: false  # Disable IP banning for development
-  login_attempts_threshold: -1  # Disable login attempt limiting
+  ip_ban_enabled: false # Disable IP banning for development
+  login_attempts_threshold: -1 # Disable login attempt limiting
   cors_allowed_origins:
-    - "http://localhost:8123"
-    - "http://127.0.0.1:8123"
-    - "https://glowing-space-goggles-65pgrpx69jc5577-8123.app.github.dev"
+    - 'http://localhost:8123'
+    - 'http://127.0.0.1:8123'
+    - 'https://glowing-space-goggles-65pgrpx69jc5577-8123.app.github.dev'
 
 # Logging
 logger:
@@ -47,18 +47,18 @@ logger:
 # Zusätzliche Test-Komponenten
 input_text:
   test_host:
-    name: "Test Host"
-    initial: "emlog-mock"
+    name: 'Test Host'
+    initial: 'emlog-mock'
 
 input_number:
   test_strom_index:
-    name: "Test Strom Index"
+    name: 'Test Strom Index'
     min: 1
     max: 3
     initial: 1
 
   test_gas_index:
-    name: "Test Gas Index"
+    name: 'Test Gas Index'
     min: 1
     max: 3
     initial: 2

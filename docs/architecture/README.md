@@ -50,6 +50,7 @@ Technische Übersicht des HACS-Integration-Designs.
 ## 🔄 Datenfluss
 
 ### 1. Initialization
+
 ```
 Home Assistant Start
     ↓
@@ -63,6 +64,7 @@ Polling starten (coordinator.async_config_entry_first_refresh)
 ```
 
 ### 2. Polling Loop
+
 ```
 30 Sekunden Interval (konfigurierbar)
     ↓
@@ -78,6 +80,7 @@ Home Assistant State aktualisieren
 ```
 
 ### 3. Error Handling
+
 ```
 API Request fehlgeschlagen?
     ↓ (Timeout/HTTP Error/JSON Error)
@@ -92,23 +95,28 @@ Nächster Poll-Versuch nach 30s
 ## 📦 Komponenten-Details
 
 ### config_flow.py
+
 **Aufgabe:** Konfigurationsfluss (Setup & Optionen)
 
 **Funktionen:**
+
 - User Input Formular (Host, Indizes)
 - Validierung (Connectivity Check)
 - Config Storage
 - Options Flow (Scan Interval ändern)
 
 **Data Flow:**
+
 ```
 User Input → Validation → ConfigEntry → coordinator → sensor
 ```
 
 ### coordinator.py
+
 **Aufgabe:** Zentrale Daten-Verwaltung
 
 **Funktionen:**
+
 - HTTP Requests zu Emlog API
 - JSON Parsing
 - Fehlerbehandlung
@@ -116,6 +124,7 @@ User Input → Validation → ConfigEntry → coordinator → sensor
 - Automatische Updates (async_refresh)
 
 **Key Classes:**
+
 ```python
 class EmlogCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
@@ -125,14 +134,17 @@ class EmlogCoordinator(DataUpdateCoordinator):
 ```
 
 ### sensor.py
+
 **Aufgabe:** Entity Factories und Sensor-Definitionen
 
 **Funktionen:**
+
 - Sensor-Klasse-Subklassen
 - Datentyp-Mapping
 - Attribute Management (unit, device_class, state_class)
 
 **Key Classes:**
+
 ```python
 @dataclass
 class EmlogSensorDef:
@@ -149,31 +161,34 @@ async def async_setup_entry(hass, entry, async_add_entities):
 ## 🔌 Emlog API Integration
 
 ### Endpoint
+
 ```
 GET http://{host}:80/pages/getinformation.php?export&meterindex={index}
 ```
 
 ### Response Structure
+
 ```json
 {
   "product": "Emlog - Electronic Meter Log",
   "version": 1.16,
   "Zaehlerstand_Bezug": {
-    "Stand180": 12345.67,  // Zählerstand
+    "Stand180": 12345.67, // Zählerstand
     "Stand181": 12346.78,
     "Stand182": 12347.89
   },
   "Wirkleistung_Bezug": {
-    "Leistung170": 1500,   // Aktuelle Leistung (W)
+    "Leistung170": 1500, // Aktuelle Leistung (W)
     "Leistung171": 1600,
     "Leistung172": 1700,
     "Leistung173": 1500
-  },
+  }
   // ... weitere Felder
 }
 ```
 
 ### Data Mapping
+
 ```python
 # Extrahiere aus JSON:
 def get_value(data, category, key, default=0):
@@ -187,6 +202,7 @@ leistung = get_value(data, "Wirkleistung_Bezug", "Leistung173")
 ## 🧪 Testing-Architektur
 
 ### Mock Server
+
 ```
 Flask App (tests/mock/mock_server.py)
     ↓
@@ -198,6 +214,7 @@ JSON Response (identisch zu echtem Emlog)
 ```
 
 ### Docker Integration
+
 ```
 tools/docker/compose.yml
     ├── homeassistant (port 8123)
@@ -208,6 +225,7 @@ tools/docker/compose.yml
 ## 🔐 Daten & State Management
 
 ### Unique ID Convention
+
 ```python
 unique_id = f"emlog_{host}_{channel}_{sensor_key}".replace(".", "_")
 
@@ -216,15 +234,17 @@ unique_id = f"emlog_{host}_{channel}_{sensor_key}".replace(".", "_")
 ```
 
 ### State Classes
+
 ```python
 # SensorStateClass.TOTAL_INCREASING
 # Für Zählerstände (nie fallend, nur steigende Werte)
 
-# SensorStateClass.MEASUREMENT  
+# SensorStateClass.MEASUREMENT
 # Für Momentanwerte (Leistung, Temperatur)
 ```
 
 ### Device Classes
+
 ```python
 SensorDeviceClass.ENERGY        # kWh
 SensorDeviceClass.POWER         # W
@@ -234,6 +254,7 @@ SensorDeviceClass.MONETARY      # EUR, etc
 ## 🌐 Multi-Language Support
 
 ### Translation System
+
 ```
 custom_components/emlog/translations/
     ├── de.json      # German
@@ -241,6 +262,7 @@ custom_components/emlog/translations/
 ```
 
 ### Flüsse:
+
 - config_flow Strings
 - Options Flow Labels
 - Sensor Names & Descriptions
@@ -249,12 +271,14 @@ custom_components/emlog/translations/
 ## 📈 Monitoring & Diagnostics
 
 ### Health Checks
+
 - Connection Status (available/unavailable)
 - Last Update Timestamp
 - Poll Frequency
 - Error Logging
 
 ### Logging
+
 ```python
 _LOGGER = logging.getLogger(__name__)
 
@@ -268,6 +292,7 @@ _LOGGER.error("API error")
 ## 🚀 Deployment
 
 ### HACS Installation
+
 ```
 1. User installiert HACS
 2. Sucht "Emlog"
@@ -277,6 +302,7 @@ _LOGGER.error("API error")
 ```
 
 ### Package (Legacy)
+
 ```
 1. package/emlog.yaml in packages/ kopieren
 2. In configuration.yaml includen:
@@ -288,7 +314,7 @@ _LOGGER.error("API error")
 ## 📚 Weitere Dokumentation
 
 - [Sensor Reference](./sensors.md) (ToDo)
-- [API Reference](../api/) 
+- [API Reference](../api/)
 - [Contributing Guide](../guides/CONTRIBUTING.md)
 - [Codespaces Setup](../guides/README-Codespaces.md)
 

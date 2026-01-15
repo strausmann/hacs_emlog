@@ -26,6 +26,7 @@ Praktische Anleitungen für Installation und Entwicklung der Emlog Integration.
 ## 🎯 Schnelleinstieg
 
 ### Benutzer: Integration installieren
+
 ```
 1. Home Assistant öffnen
 2. HACS → Integration → Suche "Emlog"
@@ -35,6 +36,7 @@ Praktische Anleitungen für Installation und Entwicklung der Emlog Integration.
 ```
 
 ### Entwickler: Entwicklungs-Umgebung
+
 ```bash
 # Repository klonen
 git clone https://github.com/strausmann/hacs_emlog.git

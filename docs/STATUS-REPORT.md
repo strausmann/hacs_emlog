@@ -4,14 +4,14 @@
 
 ### Prüfungsergebnisse
 
-| Komponente | Status | Bemerkung |
-|---|---|---|
-| **Frontend UI** | ✅ Lädt vollständig | HTTP 200 - alle Menüpunkte vorhanden |
-| **HTTP Server** | ✅ Funktioniert | Port 8123 antwortet |
-| **Websocket API** | ✅ Funktioniert | Real-time Kommunikation aktiv |
-| **Authentication** | ✅ Konfiguriert | Auth System funktioniert |
-| **default_config** | ✅ Alle Komponenten geladen | Climate, Weather, Energy, etc. |
-| **Docker Container** | ✅ Stabil | Seit >30 min ohne Fehler |
+| Komponente           | Status                      | Bemerkung                            |
+| -------------------- | --------------------------- | ------------------------------------ |
+| **Frontend UI**      | ✅ Lädt vollständig         | HTTP 200 - alle Menüpunkte vorhanden |
+| **HTTP Server**      | ✅ Funktioniert             | Port 8123 antwortet                  |
+| **Websocket API**    | ✅ Funktioniert             | Real-time Kommunikation aktiv        |
+| **Authentication**   | ✅ Konfiguriert             | Auth System funktioniert             |
+| **default_config**   | ✅ Alle Komponenten geladen | Climate, Weather, Energy, etc.       |
+| **Docker Container** | ✅ Stabil                   | Seit >30 min ohne Fehler             |
 
 ### Geladen Komponenten
 
@@ -29,6 +29,7 @@ Die folgenden wichtigen Komponenten sind aktiv:
 ### Warum Menüpunkte nicht sichtbar waren
 
 **Ursache:** Die Konfiguration verwendete zu minimale Komponenten (`default_config` war entfernt)
+
 - Ohne `default_config` waren Climate, Automation, Settings und andere Menüs nicht geladen
 - Das Frontend zeigt nur Menüpunkte für geladene Komponenten an
 
@@ -37,6 +38,7 @@ Die folgenden wichtigen Komponenten sind aktiv:
 ### Warum Climate Dashboard nicht geladen wurde
 
 **Ursache:** Climate-Komponente war nicht geladen (fehlte in minimaler Konfiguration)
+
 - Ohne `default_config` → keine Climate-Domain
 - Kein Climate-Domain → kein Climate-Dashboard möglich
 
@@ -45,14 +47,14 @@ Die folgenden wichtigen Komponenten sind aktiv:
 ### Aktuelle Konfiguration
 
 ```yaml
-default_config:  # ← WICHTIG: Lädt alle Standard-Komponenten
+default_config: # ← WICHTIG: Lädt alle Standard-Komponenten
 
 http:
   use_x_forwarded_for: true
   trusted_proxies:
-    - 172.18.0.0/16  # Docker
-    - 172.19.0.0/16  # Codespaces
-    - 127.0.0.1      # Localhost
+    - 172.18.0.0/16 # Docker
+    - 172.19.0.0/16 # Codespaces
+    - 127.0.0.1 # Localhost
 ```
 
 ### Prüf-Kommando
@@ -77,6 +79,7 @@ EOF
 ✅ **API funktioniert (Auth-System aktiv)**
 
 **Nächste Schritte:**
+
 1. Öffne `http://localhost:8123` im Browser
 2. Melde dich an mit Bjoern / Bjoern
 3. Alle Menüpunkte sollten jetzt sichtbar sein

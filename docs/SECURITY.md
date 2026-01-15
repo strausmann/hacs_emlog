@@ -3,12 +3,14 @@
 ## NPM Audit Vulnerabilities
 
 ### Current Status
+
 - **6 low-severity vulnerabilities** found in development dependencies
 - **0 vulnerabilities** in runtime/production code
 
 ### Vulnerability Details
 
 #### tmp Package Vulnerability (GHSA-52f5-9888-hmc6)
+
 - **Severity:** Low
 - **Type:** Arbitrary temporary file/directory write via symbolic link
 - **Affected:** `tmp@<=0.2.3`
@@ -36,16 +38,19 @@
 ### Remediation Plan
 
 #### Short Term
+
 - ✅ Enabled Dependabot for automatic updates
 - ✅ Added `.npmrc` configuration for audit reporting
 - ✅ Created security documentation
 
 #### Medium Term
+
 - Monitor for `commitizen@5.x` release (removes this dependency chain)
 - Update once available
 - Consider alternatives: `cz-cli` or native git hooks
 
 #### Long Term
+
 - Evaluate moving to simpler commit tools
 - Consider GitHub Actions native semantic versioning
 - Reduce dev dependency footprint
@@ -53,6 +58,7 @@
 ### Monitoring
 
 Dependabot is configured to:
+
 - ✅ Check weekly for updates
 - ✅ Auto-create PRs for security fixes
 - ✅ Alert on new vulnerabilities

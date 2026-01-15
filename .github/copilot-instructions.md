@@ -1,17 +1,19 @@
 # Emlog Home Assistant Integration - AI Coding Guidelines
 
-**Sprache / Language:** Mit Entwickler *strausmann* stets auf Deutsch kommunizieren.
+**Sprache / Language:** Mit Entwickler _strausmann_ stets auf Deutsch kommunizieren.
 
 ## Architecture Overview
 
 This is a Home Assistant custom component for polling energy meter data from Emlog devices (Electronic Meter Log). The integration uses a **coordinator pattern** with local HTTP polling to fetch JSON data from meter endpoints.
 
 **Migration Context:**
+
 - Originally implemented as a YAML package (`package/emlog.yaml`)
 - Now being migrated to a proper HACS custom component (`custom_components/emlog/`)
 - The package version remains for backward compatibility and advanced features
 
 **Key Components:**
+
 - `coordinator.py`: Handles HTTP polling and data coordination
 - `sensor.py`: Creates sensor entities from polled data
 - `config_flow.py`: User configuration UI
@@ -20,6 +22,7 @@ This is a Home Assistant custom component for polling energy meter data from Eml
 ## Data Flow & API Integration
 
 **Emlog API Structure (Complete):**
+
 - Endpoint: `http://{host}/pages/getinformation.php?export&meterindex={index}`
 - Returns comprehensive JSON with all meter data:
 
@@ -40,16 +43,40 @@ This is a Home Assistant custom component for polling energy meter data from Eml
 ```
 
 **Data Mapping Pattern:**
+
 ```python
 # From coordinator.py - extract values from nested JSON
 return float(data.get("Zaehlerstand_Bezug", {}).get("Stand180", 0) or 0)
 ```
 
 **Unique ID Convention:**
+
 ```python
 # From sensor.py - consistent entity identification
 self._attr_unique_id = f"emlog_{host}_{channel}_{definition.key}".replace(".", "_")
 ```
+
+## Code Style & Formatting
+
+**⚠️ MANDATORY: Prettier Code Formatting**
+
+Alle Dateien müssen mit Prettier formatiert sein BEVOR sie committed werden. Dies ist NICHT optional!
+
+```bash
+# Code-Stil überprüfen
+npm run prettier
+
+# Code-Stil automatisch korrigieren (VOR dem Commit!)
+npm run prettier-fix
+```
+
+**WICHTIG für Copilot:**
+
+- Immer `npm run prettier-fix` ausführen BEVOR Änderungen committed werden
+- Keine Commits mit Formatierungsfehlern erstellen
+- Prettier wird automatisch bei Git Hooks ausgeführt (nach husky install)
+
+Formatierungsprobleme werden vom Prettier-Linter erkannt und müssen behoben werden.
 
 ## Commit Conventions & Semantic Release
 
@@ -58,6 +85,7 @@ self._attr_unique_id = f"emlog_{host}_{channel}_{definition.key}".replace(".", "
 Dieses Projekt verwendet **Semantic Release** für automatisierte Versionierung. Alle Commits müssen dem Conventional Commits Standard entsprechen:
 
 ### Commit Format mit Scopes
+
 ```
 type(scope): description
 
@@ -71,6 +99,7 @@ type(scope): description
 Der Scope gibt an, welche Komponente betroffen ist. **Commits OHNE Scope sind nicht akzeptabel!**
 
 ### Erlaubte Scopes für dieses Projekt
+
 - `coordinator:` - Änderungen an `coordinator.py` (Daten-Polling)
 - `sensor:` - Änderungen an `sensor.py` (Sensor-Entities)
 - `config:` - Änderungen an `config_flow.py` (UI-Konfiguration)
@@ -86,8 +115,9 @@ Der Scope gibt an, welche Komponente betroffen ist. **Commits OHNE Scope sind ni
 - `chore:` - Allgemeine Wartung (Cleanup, Refactoring ohne Funktionsänderung)
 
 ### Erlaubte Commit-Typen (aus .releaserc.json)
+
 - `feat:` - Neue Features (erhöht MINOR version)
-- `fix:` - Bugfixes (erhöht PATCH version)  
+- `fix:` - Bugfixes (erhöht PATCH version)
 - `docs:` - Dokumentation
 - `style:` - Code-Formatierung (keine Funktionalität)
 - `refactor:` - Code-Refaktorierung (keine Funktionalität)
@@ -98,7 +128,9 @@ Der Scope gibt an, welche Komponente betroffen ist. **Commits OHNE Scope sind ni
 - `ci:` - CI/CD-Konfiguration
 
 ### Breaking Changes
+
 Für Breaking Changes:
+
 ```
 feat!: breaking change description
 
@@ -106,6 +138,7 @@ BREAKING CHANGE: detailed explanation
 ```
 
 ### Beispiele
+
 ```
 feat(sensor): add new gas consumption sensor entity
 fix(coordinator): resolve timeout in API polling
@@ -118,6 +151,7 @@ BREAKING CHANGE: host configuration now requires protocol prefix
 ```
 
 ### Automatische Versionierung
+
 - Semantic Release analysiert Commit-Typen automatisch
 - Erstellt Releases, Tags und CHANGELOG.md
 - Release-Commits verwenden: `chore(release): ${nextRelease.version}`
@@ -137,6 +171,7 @@ BREAKING CHANGE: host configuration now requires protocol prefix
    - Jede Test-Datei-Änderung → eigener `test(scope):` Commit
 
 3. **Standard-Pattern für zusammenhängende Änderungen:**
+
    ```
    fix(__init__): remove broken async_setup_utility_meter import          [Commit 1]
    feat(const): add base price constants for electricity and gas          [Commit 2]
@@ -164,6 +199,7 @@ BREAKING CHANGE: host configuration now requires protocol prefix
    - Fehlschlagende Commits werden abgelehnt
 
 **Beispiel für FALSCHE Commits (unakzeptabel):**
+
 ```
 feat: add new sensor                           ❌ Kein Scope!
 feat(config): refactor all components          ❌ Sammel-Commit!
@@ -172,6 +208,7 @@ docs: update docs                              ❌ Kein Scope!
 ```
 
 **Beispiel für KORREKTE Commits (akzeptabel):**
+
 ```
 feat(sensor): add new gas consumption sensor               ✅
 fix(coordinator): resolve timeout in API polling          ✅
@@ -182,6 +219,7 @@ chore(manifest): bump version to 0.2.0                    ✅
 ```
 
 **Commits sollten die Frage beantworten:**
+
 - Was wurde genau geändert? (spezifisch)
 - Welche Komponente? (Scope)
 - Warum? (Commit-Message Body bei komplexen Änderungen)
@@ -189,12 +227,14 @@ chore(manifest): bump version to 0.2.0                    ✅
 ## Configuration & Setup
 
 **Integration Config:**
+
 - `host`: IP address (without http://)
 - `strom_index` & `gas_index`: Meter indices (default 1/2)
 - `scan_interval`: Polling frequency in seconds (default 30)
 
 **Package Enhancement (Legacy):**
 The companion `package/emlog.yaml` provides advanced features but remains as the original YAML package implementation:
+
 - Cost calculations with tariff switching
 - Utility meters for daily/monthly/yearly consumption
 - Gas conversion factors (Brennwert/Zustandszahl)
@@ -205,6 +245,7 @@ The companion `package/emlog.yaml` provides advanced features but remains as the
 ## Development Patterns
 
 **Sensor Definition Pattern:**
+
 ```python
 @dataclass
 class EmlogSensorDef:
@@ -221,6 +262,7 @@ STROM_SENSORS = [
 ```
 
 **Error Handling:**
+
 ```python
 # From coordinator.py - consistent error patterns
 try:
@@ -233,24 +275,28 @@ except asyncio.TimeoutError as err:
 ```
 
 **Translation Support:**
+
 - German primary language with English fallback
 - Keys match configuration constants from `const.py`
 
 ## Testing & Validation
 
 **Integration Testing (HACS):**
+
 - Integration requires running Emlog device on network
 - Test with actual meter indices and host IP
 - Validate JSON response structure matches expected nesting
 - Focus on core sensor functionality
 
 **Package Testing (Legacy):**
+
 - YAML package uses `resource_template` for dynamic URLs
 - Test tariff switching with `input_datetime` entities
 - Validate cost calculations against utility meter cycles
 - Maintains backward compatibility for existing users
 
 **Development Testing:**
+
 - Use `./test.sh` to start mock server and test API endpoints
 - Mock server provides realistic JSON responses for both electricity and gas meters
 - Docker Compose setup (`docker-compose.test.yml`) for isolated testing
@@ -273,4 +319,4 @@ except asyncio.TimeoutError as err:
 - `.releaserc.json`: Semantic Release configuration (CRITICAL für Commit-Format!)
 - `.commitlintrc.json`: Commitlint configuration (muss bei allen Commits befolgt werden!)
 - `package.json`: Node.js dependencies for tooling (Prettier, Commitlint, Husky)</content>
-<parameter name="filePath">/workspaces/hacs_emlog/.github/copilot-instructions.md
+  <parameter name="filePath">/workspaces/hacs_emlog/.github/copilot-instructions.md

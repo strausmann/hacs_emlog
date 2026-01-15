@@ -35,11 +35,13 @@ https://<codespace-name>-8123.app.github.dev
 ## 📍 URLs
 
 ### Lokal (im Codespaces Terminal) - EMPFOHLEN ✓
+
 - UI: `http://localhost:8123` - **Direkt, schnell, keine Auth-Komplexität**
 - API: `http://localhost:8123/api/`
 - **Beste Option für Development!**
 
 ### Extern (über Browser/Netzwerk) - OPTIONAL
+
 - URL wird automatisch generiert: `https://<codespace-name>-8123.app.github.dev`
 - ⚠️ Codespaces Tunnel erfordert PKI-Authentifizierung
 - API-Zugriff erfordert Bearer Token
@@ -48,10 +50,12 @@ https://<codespace-name>-8123.app.github.dev
 ## 🔐 Authentifizierung
 
 ### Benutzer
+
 - **Benutzername:** `bjoern`
 - **Passwort:** `bjoern`
 
 ### API Token
+
 1. Öffne `https://<codespace-name>-8123.app.github.dev`
 2. Melde dich an
 3. Gehe zu: Einstellungen → Developer Tools → API
@@ -98,11 +102,12 @@ Die Konfiguration wird automatisch generiert. Falls manuelle Anpassungen nötig 
 
 ```yaml
 homeassistant:
-  external_url: "https://glowing-space-goggles-65pgrpx69jc5577-8123.app.github.dev"  # Auto-generiert
-  internal_url: "http://localhost:8123"
+  external_url: 'https://glowing-space-goggles-65pgrpx69jc5577-8123.app.github.dev' # Auto-generiert
+  internal_url: 'http://localhost:8123'
 ```
 
 ### Manuelle URL-Erkennung
+
 Falls `update_ha_config.py` nicht automatisch läuft:
 
 ```bash
@@ -134,21 +139,26 @@ docker-compose -f tools/docker/compose.yml restart homeassistant
 ## 📝 Troubleshooting
 
 ### 400 Bad Request bei `https://...app.github.dev`
+
 → **Lösung:** Das ist die Codespaces Tunnel-Auth. Nutze stattdessen `http://localhost:8123`
 → Siehe [CODESPACES-ACCESS.md](CODESPACES-ACCESS.md) für externe Zugriffs-Optionen
 
 ### Auth-Fehler bei `https://...app.github.dev`
+
 → Codespaces Tunnel erfordert PKI-Auth. Verwende Bearer Token für API-Zugriffe
 → Oder: Nutze localhost (`http://localhost:8123`)
 
 ### HA lädt nicht richtig
+
 → Container neu starten: `docker-compose -f tools/docker/compose.yml restart homeassistant`
 
 ### Mock Server antwortet nicht
+
 → Prüfe ob Container läuft: `docker ps | grep emlog-mock`
 → Falls nicht: `make mock-up`
 
 ### Ports konflikt
+
 → Andere Prozesse auf Port 8123 oder 8080 beenden
 → Oder Ports in `tools/docker/compose.yml` anpassen
 

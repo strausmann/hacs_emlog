@@ -1,62 +1,62 @@
 version: 2
 updates:
   # NPM Dependencies
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "04:00"
+      interval: 'weekly'
+      day: 'monday'
+      time: '04:00'
     open-pull-requests-limit: 10
     reviewers:
-      - "strausmann"
+      - 'strausmann'
     labels:
-      - "dependencies"
-      - "npm"
+      - 'dependencies'
+      - 'npm'
     commit-message:
-      prefix: "chore(deps):"
-      include: "scope"
+      prefix: 'chore(deps):'
+      include: 'scope'
     pull-request-branch-name:
-      separator: "/"
+      separator: '/'
     allow:
-      - dependency-type: "all"
+      - dependency-type: 'all'
     ignore:
       # Keep commitizen at v4 (v5 doesn't exist yet)
-      - dependency-name: "commitizen"
-        versions: ["5.x", "6.x"]
+      - dependency-name: 'commitizen'
+        versions: ['5.x', '6.x']
       # Keep semantic-release stable
-      - dependency-name: "semantic-release"
-        versions: ["26.x"]
+      - dependency-name: 'semantic-release'
+        versions: ['26.x']
 
   # Python Dependencies (Mock Server)
-  - package-ecosystem: "pip"
-    directory: "/mock"
+  - package-ecosystem: 'pip'
+    directory: '/mock'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "05:00"
+      interval: 'weekly'
+      day: 'monday'
+      time: '05:00'
     open-pull-requests-limit: 5
     reviewers:
-      - "strausmann"
+      - 'strausmann'
     labels:
-      - "dependencies"
-      - "python"
+      - 'dependencies'
+      - 'python'
     commit-message:
-      prefix: "chore(deps):"
-      include: "scope"
+      prefix: 'chore(deps):'
+      include: 'scope'
 
   # GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "06:00"
+      interval: 'weekly'
+      day: 'monday'
+      time: '06:00'
     reviewers:
-      - "strausmann"
+      - 'strausmann'
     labels:
-      - "dependencies"
-      - "ci"
+      - 'dependencies'
+      - 'ci'
     commit-message:
-      prefix: "ci(deps):"
-      include: "scope"
+      prefix: 'ci(deps):'
+      include: 'scope'

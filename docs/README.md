@@ -5,6 +5,7 @@ Willkommen zur Dokumentation der Emlog HACS Integration. Diese Seite bietet eine
 ## 📖 Dokumentationsbereiche
 
 ### 🚀 [Guides](./guides/)
+
 Praktische Anleitungen für Anfänger und Entwickler:
 
 - **[Getting Started](./guides/README.md)** - Erste Schritte mit der Integration
@@ -12,6 +13,7 @@ Praktische Anleitungen für Anfänger und Entwickler:
 - **[Zugriff & Konfiguration](./guides/CODESPACES-ACCESS.md)** - Konfigurationsübersicht
 
 ### 🏗️ [Architektur](./architecture/)
+
 Technische Dokumentation und Design-Entscheidungen:
 
 - Systemarchitektur und Datenfluss
@@ -19,6 +21,7 @@ Technische Dokumentation und Design-Entscheidungen:
 - API-Integration mit Emlog Geräten
 
 ### 🔌 [API-Referenz](./api/)
+
 Vollständige API-Dokumentation:
 
 - Emlog API Endpoints
@@ -70,6 +73,7 @@ hacs_emlog/
 Für Entwicklung und Testing stehen diese Tools bereit:
 
 ### Quick Start
+
 ```bash
 # Dev-Umgebung starten
 make dev-up
@@ -85,6 +89,7 @@ make dev-down
 ```
 
 ### Verfügbare Make-Targets
+
 ```bash
 make help              # Zeige alle Befehle
 make mock-up           # Nur Mock Server

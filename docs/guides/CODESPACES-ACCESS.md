@@ -5,6 +5,7 @@
 GitHub Codespaces nutzt einen **Tunnel mit PKI-Authentifizierung**, der den Zugriff auf `https://<name>-8123.app.github.dev` schützt.
 
 ### Root Cause
+
 - Codespaces leitet zur GitHub Authentifizierung um
 - Der Tunnel erfordert spezielle Headers/Auth
 - Home Assistant und der Tunnel kommunizieren nicht gut miteinander
@@ -17,6 +18,7 @@ http://localhost:8123
 ```
 
 **Vorteile:**
+
 - ✓ Direkter Zugriff ohne Tunnel-Umleitung
 - ✓ Schneller
 - ✓ Keine Auth-Komplexität
@@ -27,6 +29,7 @@ http://localhost:8123
 Falls du die Codespaces URL brauchst (z.B. für externe API-Tests):
 
 ### Option 1: Token-basierter Zugriff
+
 ```bash
 # 1. Hole dir einen Bearer Token aus test_config/test_token.txt
 export TOKEN="<your_token>"
@@ -37,6 +40,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 ```
 
 ### Option 2: Tunnel Debug-Modus
+
 ```bash
 # Öffne in Browser (mit Tunnel-Auth):
 https://glowing-space-goggles-65pgrpx69jc5577-8123.app.github.dev
@@ -75,6 +79,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 ## 🔑 Token Management
 
 Siehe [test_config/test_token.txt](../test_config/test_token.txt) für:
+
 - Token Generierung (docker command)
 - API Zugriff Beispiele
 - Python/Bash Code Snippets
