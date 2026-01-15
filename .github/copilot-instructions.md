@@ -97,7 +97,7 @@ type(scope): description
 **⚠️ MANDATORY: Alle drei Teile sind erforderlich!**
 
 - **type** - Art der Änderung (feat, fix, docs, etc.)
-- **scope** - Komponente (aus 16 erlaubten Scopes)
+- **scope** - Komponente (aus 12 erlaubten Scopes)
 - **description** - Kurzbeschreibung in imperativem Modus
 
 **Automatic Validation durch Commitlint + Husky:**
@@ -110,25 +110,12 @@ Fehlende oder ungültige Commits werden automatisch blockiert:
 
 ### Erlaubte Scopes für dieses Projekt
 
-**WICHTIG:** Siehe `.github/SCOPES.md` für **vollständige Dokumentation aller Scopes mit Beispielen!**
+**WICHTIG:** Siehe [`.github/SCOPES.md#erlaubte-scopes`](.github/SCOPES.md#erlaubte-scopes) für **vollständige Dokumentation aller Scopes mit Beispielen!**
 
-**Kurzübersicht:**
+**Es sind genau 12 Scopes definiert:**
+coordinator, sensor, config, template, utility-meter, const, manifest, translations, mock, architecture, init, deps
 
-- `coordinator:` - Änderungen an `coordinator.py` (Daten-Polling)
-- `sensor:` - Änderungen an `sensor.py` (Sensor-Entities)
-- `config:` - Änderungen an `config_flow.py` (UI-Konfiguration)
-- `template:` - Änderungen an `template.py` (Kostenberechnung)
-- `utility-meter:` - Änderungen an `utility_meter.py`
-- `const:` - Änderungen an `const.py` (Konstanten)
-- `manifest:` - Änderungen an `manifest.json` (Integration-Metadaten)
-- `translations:` - Änderungen an Übersetzungsdateien (de.json, en.json)
-- `mock:` - Änderungen am Mock-Server (`tests/mock/`)
-- `test:` - Test-bezogene Änderungen
-- `docs:` - Dokumentationsänderungen (README, docs/)
-- `ci:` - CI/CD-Konfiguration (`.github/workflows/`)
-- `build:` - Build-System (Makefile, package.json)
-- `chore:` - Allgemeine Wartung
-- `deps:` - Dependency-Updates
+Alle weiteren Scopes werden von Commitlint blockiert. Mehr Details: [Decision Tree](.github/SCOPES.md#-decision-tree-welcher-scope)
 
 ### Erlaubte Commit-Typen (aus .releaserc.json)
 
@@ -139,7 +126,6 @@ Fehlende oder ungültige Commits werden automatisch blockiert:
 - `refactor:` - Code-Refaktorierung (keine Funktionalität)
 - `perf:` - Performance-Verbesserungen
 - `test:` - Tests hinzufügen/korrigieren
-- `chore:` - Wartungsarbeiten (Semantic Release verwendet diesen für Releases)
 - `build:` - Build-System/Dependencies
 - `ci:` - CI/CD-Konfiguration
 
@@ -158,9 +144,9 @@ BREAKING CHANGE: detailed explanation
 ```
 feat(sensor): add new gas consumption sensor entity
 fix(coordinator): resolve timeout in API polling
-docs(readme): update installation instructions
-chore(deps): update semantic-release to v25.0.2
-ci(workflow): add automated testing to GitHub Actions
+docs(architecture): update initialization documentation
+deps: update semantic-release to v25.0.2
+test: update test configuration and mock data
 feat(config)!: change host validation logic
 
 BREAKING CHANGE: host configuration now requires protocol prefix

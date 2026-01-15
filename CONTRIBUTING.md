@@ -224,7 +224,7 @@ type(scope): description
 **⚠️ MANDATORY - Alle drei Teile sind erforderlich:**
 
 - **type** - Art der Änderung (feat, fix, docs, etc.) - wird von Commitlint validiert
-- **scope** - Komponente (aus 16 erlaubten Scopes) - wird von Commitlint validiert
+- **scope** - Komponente (aus 12 erlaubten Scopes) - wird von Commitlint validiert
 - **description** - Kurzbeschreibung in imperativem Modus - wird von Commitlint validiert
 
 **Validation durch Commitlint + Husky:**
@@ -236,25 +236,26 @@ Commitlint prüft automatisch alle Commits und blockiert sie, wenn:
 - ❌ Ungültiger Type → `type must be one of [...]`
 - ❌ Ungültiger Scope → `scope must be one of [coordinator, sensor, config, ...]`
 
-### Erlaubte Scopes (Kurzübersicht)
+### Erlaubte Scopes
 
-Siehe [`.github/SCOPES.md`](.github/SCOPES.md) für detaillierte Erklärungen:
+**Detaillierte Dokumentation:** Siehe [`.github/SCOPES.md#erlaubte-scopes`](.github/SCOPES.md#erlaubte-scopes)
 
-- `coordinator:` - Änderungen an `coordinator.py` (Daten-Polling)
-- `sensor:` - Änderungen an `sensor.py` (Sensor-Entities)
-- `config:` - Änderungen an `config_flow.py` (UI-Konfiguration)
-- `template:` - Änderungen an `template.py` (Kosten-Sensoren)
-- `utility-meter:` - Änderungen an `utility_meter.py`
-- `const:` - Änderungen an `const.py` (Konstanten)
-- `manifest:` - Änderungen an `manifest.json` (Integration-Metadaten)
-- `translations:` - Änderungen an Übersetzungsdateien
-- `mock:` - Änderungen am Mock-Server
-- `test:` - Test-bezogene Änderungen
-- `docs:` - Dokumentationsänderungen
-- `ci:` - CI/CD-Konfiguration
-- `build:` - Build-System (Makefile, package.json)
-- `chore:` - Allgemeine Wartung
-- `deps:` - Dependency-Updates
+Es sind genau **12 Scopes** definiert:
+
+- `coordinator` - Daten-Polling
+- `sensor` - Sensor-Entities
+- `config` - Config Flow
+- `template` - Kostenberechnung
+- `utility-meter` - Utility-Meter Konfiguration
+- `const` - Konstanten
+- `manifest` - Integration-Metadaten
+- `translations` - Übersetzungsdateien
+- `mock` - Mock-Server
+- `architecture` - Architektur-Dokumentation
+- `init` - Integration-Initialisierung
+- `deps` - Dependency-Updates
+
+Alle weiteren Scopes werden von Commitlint blockiert. Hilfe bei der Scope-Wahl: [Decision Tree](.github/SCOPES.md#-decision-tree-welcher-scope)
 
 ### ⚠️ WICHTIG: Granulare Commits (KEINE Sammel-Commits!)
 
@@ -284,9 +285,10 @@ Nutze `git add -p` für selective staging wenn Änderungen gemischt sind.
 - `refactor:` - Code-Refaktorierung (keine Funktionalität)
 - `perf:` - Performance-Verbesserungen
 - `test:` - Tests hinzufügen/korrigieren
-- `chore:` - Wartungsarbeiten
 - `build:` - Build-System/Dependencies
 - `ci:` - CI/CD-Konfiguration
+
+**WICHTIG:** Scopes sind **IMMER** erforderlich. Commits ohne Scope werden blockiert!
 
 ### Commit-Beispiele
 
@@ -298,13 +300,13 @@ git commit -m "feat(sensor): add new gas consumption sensor entity"
 git commit -m "fix(coordinator): resolve timeout in API polling"
 
 # Dokumentation
-git commit -m "docs(readme): update installation instructions"
+git commit -m "docs(architecture): document initialization logic"
 
 # Dependency
-git commit -m "chore(deps): update semantic-release to v25.0.2"
+git commit -m "deps: update semantic-release to v25.0.2"
 
-# CI/CD
-git commit -m "ci(workflow): add automated testing to GitHub Actions"
+# Initialization Fix
+git commit -m "fix(init): remove broken async_setup_utility_meter import"
 
 # Breaking Change
 git commit -m "feat(config)!: change host validation logic

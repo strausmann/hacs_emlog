@@ -1,58 +1,58 @@
 version: 2
 updates:
   # npm package dependencies
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "03:00"
+      interval: 'weekly'
+      day: 'monday'
+      time: '03:00'
     open-pull-requests-limit: 5
     commit-message:
-      prefix: "chore(deps):"
-      prefix-development: "chore(deps):"
-      include: "scope"
+      prefix: 'chore(deps):'
+      prefix-development: 'chore(deps):'
+      include: 'scope'
     reviewers:
-      - "strausmann"
+      - 'strausmann'
     assignees:
-      - "strausmann"
+      - 'strausmann'
     labels:
-      - "dependencies"
-      - "npm"
+      - 'dependencies'
+      - 'npm'
 
   # GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "04:00"
+      interval: 'weekly'
+      day: 'monday'
+      time: '04:00'
     open-pull-requests-limit: 5
     commit-message:
-      prefix: "ci(deps):"
-      prefix-development: "ci(deps):"
-      include: "scope"
+      prefix: 'ci(deps):'
+      prefix-development: 'ci(deps):'
+      include: 'scope'
     reviewers:
-      - "strausmann"
+      - 'strausmann'
     assignees:
-      - "strausmann"
+      - 'strausmann'
     labels:
-      - "dependencies"
-      - "github-actions"
+      - 'dependencies'
+      - 'github-actions'
 
   # Docker images
-  - package-ecosystem: "docker"
-    directory: "/tools/docker"
+  - package-ecosystem: 'docker'
+    directory: '/tools/docker'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "05:00"
+      interval: 'weekly'
+      day: 'monday'
+      time: '05:00'
     open-pull-requests-limit: 3
     commit-message:
-      prefix: "chore(deps):"
-      include: "scope"
+      prefix: 'chore(deps):'
+      include: 'scope'
     reviewers:
-      - "strausmann"
+      - 'strausmann'
     labels:
-      - "dependencies"
-      - "docker"
+      - 'dependencies'
+      - 'docker'

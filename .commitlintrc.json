@@ -35,12 +35,8 @@
         "manifest",
         "translations",
         "mock",
-        "test",
-        "docs",
         "architecture",
-        "ci",
-        "build",
-        "chore",
+        "init",
         "deps"
       ]
     ],

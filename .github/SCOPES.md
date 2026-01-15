@@ -29,6 +29,12 @@ Scopes sollten:
 | `template`      | Template-Sensoren, Kostenberechnung | `template.py`      | `feat(template): add cost sensor class with consumption calculation` |
 | `utility-meter` | Utility-Meter Konfiguration         | `utility_meter.py` | `fix(utility-meter): correct meter reset logic`                      |
 
+### � Integration & Initialization
+
+| Scope  | Anwendungsfall              | Betrifft      | Beispiel                                                    |
+| ------ | --------------------------- | ------------- | ----------------------------------------------------------- |
+| `init` | Integration-Initialisierung | `__init__.py` | `fix(init): remove broken async_setup_utility_meter import` |
+
 ### 📋 Metadata & Configuration
 
 | Scope          | Anwendungsfall                   | Betrifft                                       | Beispiel                                                          |
@@ -39,31 +45,44 @@ Scopes sollten:
 
 ### 🧪 Testing & Mocking
 
-| Scope  | Anwendungsfall                   | Betrifft      | Beispiel                                                    |
-| ------ | -------------------------------- | ------------- | ----------------------------------------------------------- |
-| `mock` | Mock-Server für Tests            | `tests/mock/` | `feat(mock): add realistic meter response data for testing` |
-| `test` | Test-Dateien, Test-Konfiguration | `tests/`      | `test: update test configuration and mock data`             |
+| Scope  | Anwendungsfall        | Betrifft      | Beispiel                                                    |
+| ------ | --------------------- | ------------- | ----------------------------------------------------------- |
+| `mock` | Mock-Server für Tests | `tests/mock/` | `feat(mock): add realistic meter response data for testing` |
 
 ### 📚 Documentation
 
 | Scope          | Anwendungsfall            | Betrifft                                                            | Beispiel                                                      |
 | -------------- | ------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------- |
-| `docs`         | Dokumentation, READMEs    | `README.md`, `docs/`                                                | `docs(readme): update installation instructions`              |
 | `architecture` | Architektur-Dokumentation | `.github/ARCHITECTURE_DECISIONS.md`, `.github/DEVELOPMENT_GUIDE.md` | `docs(architecture): document helper entity fallback pattern` |
 
 ### 🔐 CI/CD & Git
 
-| Scope   | Anwendungsfall                       | Betrifft                                       | Beispiel                                                           |
-| ------- | ------------------------------------ | ---------------------------------------------- | ------------------------------------------------------------------ |
-| `ci`    | GitHub Actions, CI-Pipelines         | `.github/workflows/`                           | `ci(workflow): add automated testing to GitHub Actions`            |
-| `build` | Build-System, Makefile, Dependencies | `Makefile`, `package.json`, `requirements.txt` | `build(makefile): add check-logs target for pre-commit validation` |
+### 📦 Dependencies & Maintenance
 
-### 🔄 Maintenance & Refactoring
+| Scope  | Anwendungsfall     | Betrifft                           | Beispiel                                   |
+| ------ | ------------------ | ---------------------------------- | ------------------------------------------ |
+| `deps` | Dependency-Updates | `package.json`, `requirements.txt` | `deps: update semantic-release to v25.0.2` |
 
-| Scope   | Anwendungsfall              | Betrifft                           | Beispiel                                                         |
-| ------- | --------------------------- | ---------------------------------- | ---------------------------------------------------------------- |
-| `chore` | Allgemeine Wartung, Cleanup | Misc                               | `chore: fix gitignore to properly track custom_components/emlog` |
-| `deps`  | Dependency-Updates          | `package.json`, `requirements.txt` | `deps: update semantic-release to v25.0.2`                       |
+---
+
+## 📝 Dokumentations-Commits (ohne "docs" Scope!)
+
+**WICHTIG:** `docs` ist KEIN Scope, sondern ein Commit-Type!
+
+Dokumentations-Commits nutzen den Type `docs` mit einem spezifischen Scope:
+
+```
+docs(architecture): document new feature
+docs(init): document initialization logic
+docs(deps): explain dependency requirements
+docs(manifest): document manifest fields
+```
+
+**NICHT erlaubt:**
+
+```
+docs(docs): ...          ❌ Redundant!
+```
 
 ---
 
