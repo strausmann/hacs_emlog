@@ -5,6 +5,20 @@ All notable changes to the **Emlog Home Assistant Integration** will be document
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0](https://github.com/strausmann/hacs_emlog/compare/v0.7.0...v0.8.0) (2026-01-15)
+
+### Features
+
+* **config:** add UI fields for tariff changes and feed-in sensor toggle ([d43b86b](https://github.com/strausmann/hacs_emlog/commit/d43b86b284d0f9049afc845d502345aa8f056c2e))
+* **const:** add constants for tariff change and price updates ([5de8342](https://github.com/strausmann/hacs_emlog/commit/5de83428486e7b62e9420574706d833e8606fdff))
+* **sensor:** add optional feed-in power sensors for solar installations ([3718533](https://github.com/strausmann/hacs_emlog/commit/37185333f0df98ee9ec624fd7d90da8d0f401eab))
+* **template:** implement complete cost calculation with tariff change support ([a182f6b](https://github.com/strausmann/hacs_emlog/commit/a182f6b449a84f00fe94e6a308d901e4cc2286a9))
+
+### Bug Fixes
+
+* **build:** use npx to execute semantic-release command ([0a24c79](https://github.com/strausmann/hacs_emlog/commit/0a24c794e76c1308e7b128e76cd881708b2453fc))
+* **sensor:** correct brennwert and zustandszahl sensor key names ([5897345](https://github.com/strausmann/hacs_emlog/commit/589734538650ee1c2885f80dfde97941b81d1323))
+
 ## [0.7.0](https://github.com/strausmann/hacs_emlog/compare/v0.6.0...v0.7.0) (2026-01-14)
 
 ### Features
