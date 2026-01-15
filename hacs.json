@@ -1,5 +1,4 @@
 {
   "name": "Emlog",
-  "render_readme": true,
-  "render_changelog": true
+  "render_readme": true
 }
