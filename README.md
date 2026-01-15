@@ -46,6 +46,8 @@ Diese Integration liest Energie- und Gaszählerdaten direkt vom Emlog-Gerät und
 
 ## 🚀 Installation
 
+> **ℹ️ Status:** Diese Integration befindet sich derzeit im Prozess der HACS-Katalog-Genehmigung. Bis zur vollständigen Aufnahme im HACS-Verzeichnis kann die Integration als **Custom Repository** installiert werden.
+
 ### Schritt 1: HACS Integration hinzufügen
 
 1. Öffne **Einstellungen → Geräte & Dienste → Integrationen**
