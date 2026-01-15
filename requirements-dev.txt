@@ -1,0 +1,15 @@
+# Home Assistant Development Dependencies
+# Für lokale Entwicklung und Tests
+
+# Core Home Assistant
+homeassistant>=2024.1.0
+
+# Required for config_flow and integrations
+aiohttp>=3.9.0
+voluptuous>=0.13.1
+pyyaml>=6.0
+
+# Type checking and linting
+pylint>=3.0
+mypy>=1.8
+pyright>=1.1.400

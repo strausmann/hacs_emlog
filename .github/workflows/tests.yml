@@ -30,20 +30,25 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pylint mypy
+          pip install -r requirements-dev.txt
+          # Suppress warnings for missing dependencies
+          pip install --upgrade pip setuptools wheel 2>&1 | grep -v "already satisfied" || true
 
       - name: Lint with pylint
         run: |
-          # Prüfe Python-Dateien auf Syntaxfehler
-          # Home Assistant Dependencies sind nicht verfügbar, aber Syntax wird geprüft
-          pylint --errors-only custom_components/emlog/*.py 2>&1 | grep -v "E0401" || true
+          # Prüfe Python-Dateien auf Fehler (nur errors, keine warnings)
+          pylint --errors-only custom_components/emlog/*.py || true
         continue-on-error: true
 
       - name: Type check with mypy
         run: |
-          # mypy mit Home Assistant Stubs
-          mypy custom_components/emlog/*.py --ignore-missing-imports \
-            --disable-error-code=call-arg || true
+          mypy custom_components/emlog/*.py --ignore-missing-imports || true
+        continue-on-error: true
+
+      - name: Type check with pyright
+        run: |
+          pyright custom_components/emlog/ --outputjson > /tmp/pyright.json 2>&1 || true
+          cat /tmp/pyright.json || echo "No pyright output"
         continue-on-error: true
 
   mock-server-test:
