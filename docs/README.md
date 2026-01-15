@@ -101,7 +101,7 @@ make lint              # Code-Qualität prüfen
 ## 📝 Sicherheit
 
 - **[Security Policy](../SECURITY.md)** - Vulnerability Reporting
-- **[Dependabot Config](./.github/dependabot.yml)** - Automatische Updates
+- **[Dependabot Config](./.github/dependabot.yml)** - Automatische Dependency-Updates (npm, GitHub Actions, Docker)
 - **[Security Advisories](../SECURITY.md#known-vulnerabilities)** - Bekannte Schwachstellen
 
 ## 📋 Contributing

@@ -39,7 +39,7 @@
 
 #### Short Term
 
-- ✅ Enabled Dependabot for automatic updates
+- ✅ Enabled Dependabot for automatic updates (npm, GitHub Actions, Docker)
 - ✅ Added `.npmrc` configuration for audit reporting
 - ✅ Created security documentation
 
@@ -59,10 +59,10 @@
 
 Dependabot is configured to:
 
-- ✅ Check weekly for updates
-- ✅ Auto-create PRs for security fixes
+- ✅ Check weekly for updates (Monday 03:00 UTC)
+- ✅ Auto-create PRs with `chore(deps)` commit scope
 - ✅ Alert on new vulnerabilities
-- ✅ Track npm, pip, and GitHub Actions
+- ✅ Track npm, GitHub Actions, and Docker images
 
 ### References
 
