@@ -3,6 +3,25 @@
   "parserPreset": "conventional-changelog-conventionalcommits",
   "helpUrl": "https://github.com/conventional-changelog/commitlint/#what-is-commitlint",
   "rules": {
+    "type-empty": [2, "never"],
+    "type-enum": [
+      2,
+      "always",
+      [
+        "feat",
+        "fix",
+        "docs",
+        "style",
+        "refactor",
+        "perf",
+        "test",
+        "build",
+        "ci",
+        "chore",
+        "revert"
+      ]
+    ],
+    "scope-empty": [2, "never"],
     "scope-enum": [
       2,
       "always",
@@ -24,7 +43,10 @@
         "chore",
         "deps"
       ]
-    ]
+    ],
+    "subject-empty": [2, "never"],
+    "subject-full-stop": [2, "never"],
+    "body-leading-blank": [2, "always"]
   },
   "prompt": {
     "messages": {
