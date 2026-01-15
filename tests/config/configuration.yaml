@@ -44,21 +44,76 @@ logger:
 
 # Emlog Integration wird über UI konfiguriert (nicht YAML)
 
-# Zusätzliche Test-Komponenten
-input_text:
-  test_host:
-    name: 'Test Host'
-    initial: 'emlog-mock'
-
+# Dynamische Helfer für Tests - werden über UI der Integration konfiguriert
+# (können als input_number Entities angelegt werden und in Integrations-Optionen verlinkt werden)
 input_number:
-  test_strom_index:
-    name: 'Test Strom Index'
-    min: 1
-    max: 3
-    initial: 1
+  strom_preis_kwh:
+    name: 'Strompreis (€/kWh)'
+    min: 0
+    max: 5
+    step: 0.0001
+    unit_of_measurement: 'EUR/kWh'
+    icon: 'mdi:currency-eur'
+    initial: 0.3850
 
-  test_gas_index:
-    name: 'Test Gas Index'
-    min: 1
-    max: 3
-    initial: 2
+  strom_grundpreis_monat:
+    name: 'Stromgrundpreis (€/Monat)'
+    min: 0
+    max: 200
+    step: 0.01
+    unit_of_measurement: 'EUR'
+    icon: 'mdi:currency-eur'
+    initial: 50.00
+
+  strom_abschlag_monat:
+    name: 'Strom Abschlagszahlung (€/Monat)'
+    min: 0
+    max: 500
+    step: 0.01
+    unit_of_measurement: 'EUR'
+    icon: 'mdi:currency-eur'
+    initial: 120.00
+
+  gas_preis_kwh:
+    name: 'Gaspreis (€/kWh)'
+    min: 0
+    max: 5
+    step: 0.0001
+    unit_of_measurement: 'EUR/kWh'
+    icon: 'mdi:currency-eur'
+    initial: 0.1200
+
+  gas_grundpreis_monat:
+    name: 'Gasgrundpreis (€/Monat)'
+    min: 0
+    max: 200
+    step: 0.01
+    unit_of_measurement: 'EUR'
+    icon: 'mdi:currency-eur'
+    initial: 15.00
+
+  gas_abschlag_monat:
+    name: 'Gas Abschlagszahlung (€/Monat)'
+    min: 0
+    max: 200
+    step: 0.01
+    unit_of_measurement: 'EUR'
+    icon: 'mdi:currency-eur'
+    initial: 80.00
+
+  gas_brennwert:
+    name: 'Gasbrennwert'
+    min: 0
+    max: 20
+    step: 0.001
+    unit_of_measurement: 'kWh/m³'
+    icon: 'mdi:fire'
+    initial: 11.58
+
+  gas_zustandszahl:
+    name: 'Gaszustandszahl'
+    min: 0
+    max: 2
+    step: 0.0001
+    icon: 'mdi:gauge'
+    initial: 0.95
