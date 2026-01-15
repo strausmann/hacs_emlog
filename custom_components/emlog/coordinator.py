@@ -11,7 +11,6 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import DOMAIN, EMLOG_EXPORT_PATH
 
-
 _LOGGER = logging.getLogger(__name__)
 
 

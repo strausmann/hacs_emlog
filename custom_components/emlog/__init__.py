@@ -6,7 +6,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import ConfigEntryNotReady
 
-from .utility_meter import async_setup_utility_meters, async_remove_utility_meters
+from .utility_meter import async_remove_utility_meters, async_setup_utility_meters
 
 _LOGGER = logging.getLogger(__name__)
 

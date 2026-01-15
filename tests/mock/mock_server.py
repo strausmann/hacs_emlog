@@ -4,15 +4,16 @@ Mock Emlog Server für Entwicklung und Tests
 Simuliert die Emlog API Endpunkte
 """
 
-from flask import Flask, jsonify, request
-from flask_cors import CORS
 import json
+import math
 import os
+import random
 import threading
 import time
-import random
-import math
 from datetime import datetime
+
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)

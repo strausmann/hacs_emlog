@@ -4,8 +4,8 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from homeassistant.components.sensor import (
-    SensorEntity,
     SensorDeviceClass,
+    SensorEntity,
     SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
@@ -13,20 +13,20 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
-    CONF_HOST,
-    CONF_METER_TYPE,
-    CONF_METER_INDEX,
-    CONF_SCAN_INTERVAL,
-    CONF_PRICE_KWH,
     CONF_GAS_BRENNWERT,
-    CONF_GAS_ZUSTANDSZAHL,
-    CONF_PRICE_HELPER,
     CONF_GAS_BRENNWERT_HELPER,
+    CONF_GAS_ZUSTANDSZAHL,
     CONF_GAS_ZUSTANDSZAHL_HELPER,
+    CONF_HOST,
     CONF_INCLUDE_FEED_IN_SENSORS,
-    DEFAULT_PRICE_KWH,
+    CONF_METER_INDEX,
+    CONF_METER_TYPE,
+    CONF_PRICE_HELPER,
+    CONF_PRICE_KWH,
+    CONF_SCAN_INTERVAL,
     DEFAULT_GAS_BRENNWERT,
     DEFAULT_GAS_ZUSTANDSZAHL,
+    DEFAULT_PRICE_KWH,
     METER_TYPE_STROM,
 )
 from .coordinator import EmlogCoordinator
