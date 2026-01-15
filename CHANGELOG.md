@@ -5,6 +5,16 @@ All notable changes to the **Emlog Home Assistant Integration** will be document
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0](https://github.com/strausmann/hacs_emlog/compare/v0.8.0...v0.9.0) (2026-01-15)
+
+### Features
+
+* **translations:** add feed-in sensor descriptions ([607c113](https://github.com/strausmann/hacs_emlog/commit/607c113ffc33d42629f7385d12765e65a2ede004))
+
+### Bug Fixes
+
+* **const:** add missing METER_TYPE constants and defaults ([d2667da](https://github.com/strausmann/hacs_emlog/commit/d2667da9e644b34ec9806be72edbedf1a3650459))
+
 ## [0.8.0](https://github.com/strausmann/hacs_emlog/compare/v0.7.0...v0.8.0) (2026-01-15)
 
 ### Features
