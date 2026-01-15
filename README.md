@@ -200,6 +200,73 @@ entities:
     name: Dieser Monat
 ```
 
+## ⚡ Home Assistant Energie Dashboard Integration
+
+Das Energie Dashboard in Home Assistant kann direkt mit den Emlog-Sensoren verknüpft werden für eine vollständige Energie-Übersicht.
+
+### Setup für Strom und Gas
+
+1. **Öffne das Energie Dashboard:**
+   - Gehe zu: **Übersicht → Energie**
+
+2. **Strom hinzufügen (Electricity):**
+   - Klicke auf **"Verbrauch hinzufügen"**
+   - Wähle: `sensor.emlog_strom_1_zaehlerstand_kwh`
+   - Die Entity wird automatisch erkannt (Device Class: Energy, State Class: Total Increasing)
+
+3. **Gas hinzufügen (Gas):**
+   - Klicke auf **"Verbrauch hinzufügen"**
+   - **Wähle eine der beiden Optionen:**
+     - `sensor.emlog_gas_2_zaehlerstand_m3` (Verbrauch in Kubikmetern)
+     - `sensor.emlog_gas_2_zaehlerstand_kwh` (Verbrauch in kWh mit Brennwert-Umrechnung) **← Empfohlen**
+
+4. **Speichern** ✅
+
+### Richtige Entitäten pro Meter-Typ
+
+**Beispiel Entity-Namen basierend auf Ihrer Konfiguration:**
+
+| Meter-Typ | Meter-Index | Empfohlene Entity                       | Einheit | Beschreibung                          |
+| --------- | ----------- | --------------------------------------- | ------- | ------------------------------------- |
+| Strom     | 1           | `sensor.emlog_strom_1_zaehlerstand_kwh` | kWh     | Elektrizität (ganz)                   |
+| Gas       | 2           | `sensor.emlog_gas_2_zaehlerstand_kwh`   | kWh     | Gas in kWh (mit Brennwert-Umrechnung) |
+| Gas       | 2           | `sensor.emlog_gas_2_zaehlerstand_m3`    | m³      | Gas in Kubikmetern (alternativ)       |
+
+**💡 Hinweis:** Die Nummern (1, 2, etc.) entsprechen den **Meter-Indizes** aus der Integration-Konfiguration.
+
+### Troubleshooting
+
+**Sensoren werden im Dashboard nicht angeboten?**
+
+1. Überprüfe, ob die Sensoren in **Einstellungen → Geräte & Dienste → Emlog Integration** sichtbar sind
+2. Stelle sicher, dass mindestens **ein Wert vom Emlog-Gerät abgerufen** wurde (check `Letztes Update`)
+3. Starte Home Assistant neu: **Einstellungen → System → Herunterfahren → Neu starten**
+
+**Falsche Werte im Dashboard?**
+
+1. Überprüfe die **Brennwert** und **Zustandszahl** Einstellungen in den Integrations-Optionen
+2. Für Gas in kWh wird automatisch umgerechnet: `Verbrauch (m³) × Brennwert × Zustandszahl`
+
+### Automatisierung
+
+Das Energie Dashboard ermöglicht automatische Auswertungen:
+
+```yaml
+# Beispiel: Tägliche Benachrichtigung mit Energieverbrauch
+automation:
+  - alias: 'Täglicher Energiebericht'
+    trigger:
+      platform: time
+      at: '22:00:00'
+    action:
+      - service: notify.notify
+        data:
+          title: '📊 Heute verbrauchte Energie'
+          message: |
+            Strom: {{ states('sensor.emlog_strom_1_verbrauch_tag') }} kWh
+            Gas: {{ states('sensor.emlog_gas_2_verbrauch_tag') }} m³
+```
+
 ### Automatisierung - Hoher Stromverbrauch
 
 ```yaml
