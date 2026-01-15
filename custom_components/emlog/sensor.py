@@ -453,9 +453,9 @@ class EmlogSensorEntity(SensorEntity):
                 return float(meter_data.get("Betrag_Bezug", {}).get("Betrag180", 0) or 0)
             elif key == "preis_eur_kwh":
                 return float(self._price_kwh)
-            elif key == "gas_brennwert":
+            elif key == "brennwert":
                 return float(self._gas_brennwert)
-            elif key == "gas_zustandszahl":
+            elif key == "zustandszahl":
                 return float(self._gas_zustandszahl)
             
             return None
