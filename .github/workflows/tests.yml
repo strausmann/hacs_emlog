@@ -91,24 +91,24 @@ jobs:
                   'product',
                   'version'
               ]
-              
+
               for key in required_keys:
                   if key not in data:
                       print(f"✗ {meter_type}: Missing key '{key}'")
                       return False
-              
+
               # Prüfe Zaehlerstand_Bezug Struktur
               zaehler = data.get('Zaehlerstand_Bezug', {})
               if 'Stand180' not in zaehler:
                   print(f"✗ {meter_type}: Missing Stand180 in Zaehlerstand_Bezug")
                   return False
-              
+
               # Prüfe Betrag_Bezug hat Waehrung
               betrag = data.get('Betrag_Bezug', {})
               if 'Waehrung' not in betrag:
                   print(f"✗ {meter_type}: Missing Waehrung in Betrag_Bezug")
                   return False
-              
+
               print(f"✓ {meter_type} JSON structure is valid")
               return True
 
@@ -186,7 +186,7 @@ jobs:
           import json
           with open('custom_components/emlog/manifest.json') as f:
               manifest = json.load(f)
-              
+
           # Prüfe erforderliche Felder
           required = ['domain', 'name', 'codeowners', 'config_flow', 'documentation', 'version']
           for field in required:
