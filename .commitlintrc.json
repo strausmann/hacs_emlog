@@ -38,7 +38,8 @@
         "architecture",
         "init",
         "deps",
-        "ci"
+        "ci",
+        "brands"
       ]
     ],
     "subject-empty": [2, "never"],
