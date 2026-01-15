@@ -1,0 +1,48 @@
+name: Megalinter
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**/*.py'
+      - '**/*.yaml'
+      - '**/*.yml'
+      - '**/*.json'
+      - '**/*.md'
+      - 'Dockerfile'
+      - '.sh'
+      - '.megalintrc.json'
+  pull_request:
+    branches: [main]
+    paths:
+      - '**/*.py'
+      - '**/*.yaml'
+      - '**/*.yml'
+      - '**/*.json'
+      - '**/*.md'
+      - 'Dockerfile'
+      - '.sh'
+      - '.megalintrc.json'
+
+jobs:
+  megalinter:
+    name: Megalinter Quality Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Megalinter
+        uses: oxsecurity/megalinter/actions/full@v8
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MEGALINTER_FAIL_IF_FOUND_DEFECT_LEVEL: notice
+
+      - name: Upload Megalinter reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: megalinter-reports
+          path: |
+            megalinter-reports/
+            mega-linter.log
