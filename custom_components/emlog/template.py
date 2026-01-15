@@ -1,14 +1,12 @@
 """Template sensors for cost calculation in Emlog integration."""
+
 from __future__ import annotations
 
 from datetime import datetime
 
-from homeassistant.components.template import DOMAIN as TEMPLATE_DOMAIN
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.template import Template
-from homeassistant.helpers.template_entity import TemplateEntity
 from homeassistant.components.sensor import SensorEntity, SensorDeviceClass, SensorStateClass
 
 from .const import (
@@ -37,7 +35,6 @@ from .const import (
     DEFAULT_MONTHLY_ADVANCE_STROM,
     DEFAULT_MONTHLY_ADVANCE_GAS,
     METER_TYPE_STROM,
-    METER_TYPE_GAS,
 )
 
 
@@ -80,13 +77,9 @@ class EmlogCostSensor(SensorEntity):
         """Return unit of measurement (currency)."""
         return self._currency
 
-    def _get_value_from_helper_or_config(
-        self, helper_key: str, config_key: str, default_value: float
-    ) -> float:
+    def _get_value_from_helper_or_config(self, helper_key: str, config_key: str, default_value: float) -> float:
         """Get value from helper entity or config with fallback."""
-        helper_id = self._entry.options.get(
-            helper_key, self._entry.data.get(helper_key, "")
-        )
+        helper_id = self._entry.options.get(helper_key, self._entry.data.get(helper_key, ""))
 
         if helper_id:
             state = self.hass.states.get(helper_id)
@@ -96,11 +89,7 @@ class EmlogCostSensor(SensorEntity):
                 except (ValueError, TypeError):
                     pass
 
-        return float(
-            self._entry.options.get(
-                config_key, self._entry.data.get(config_key, default_value)
-            )
-        )
+        return float(self._entry.options.get(config_key, self._entry.data.get(config_key, default_value)))
 
     def _get_config_for_meter_type(self, config_type: str) -> tuple:
         """Get configuration keys for current meter type."""
@@ -142,9 +131,7 @@ class EmlogCostSensor(SensorEntity):
                 )
         return ()
 
-    def _get_effective_value_with_tariff_change(
-        self, config_type: str, default_value: float = 0.0
-    ) -> float:
+    def _get_effective_value_with_tariff_change(self, config_type: str, default_value: float = 0.0) -> float:
         """Get effective value considering tariff change date."""
         config = self._get_config_for_meter_type(config_type)
         change_date_key = config[0]
@@ -155,25 +142,19 @@ class EmlogCostSensor(SensorEntity):
         default = config[5] if len(config) > 5 else default_value
 
         # Check if tariff change date has passed
-        change_date_str = self._entry.options.get(
-            change_date_key, self._entry.data.get(change_date_key, "")
-        )
+        change_date_str = self._entry.options.get(change_date_key, self._entry.data.get(change_date_key, ""))
 
         if change_date_str:
             try:
                 change_date = datetime.strptime(change_date_str, "%Y-%m-%d").date()
                 if datetime.now().date() >= change_date:
                     # Use new value
-                    return self._get_value_from_helper_or_config(
-                        new_helper_key, new_key, 0.0
-                    )
+                    return self._get_value_from_helper_or_config(new_helper_key, new_key, 0.0)
             except ValueError:
                 pass
 
         # Use current value
-        return self._get_value_from_helper_or_config(
-            current_helper_key, current_key, default
-        )
+        return self._get_value_from_helper_or_config(current_helper_key, current_key, default)
 
     def _get_effective_price(self) -> float:
         """Get effective price considering tariff change date."""
@@ -332,9 +313,7 @@ class EmlogAdvanceDifferenceSensor(SensorEntity):
             config_key = CONF_MONTHLY_ADVANCE_GAS
             default = DEFAULT_MONTHLY_ADVANCE_GAS
 
-        helper_id = self._entry.options.get(
-            helper_key, self._entry.data.get(helper_key, "")
-        )
+        helper_id = self._entry.options.get(helper_key, self._entry.data.get(helper_key, ""))
         if helper_id:
             state = self.hass.states.get(helper_id)
             if state and state.state not in ("unknown", "unavailable"):
@@ -343,11 +322,7 @@ class EmlogAdvanceDifferenceSensor(SensorEntity):
                 except (ValueError, TypeError):
                     pass
 
-        return float(
-            self._entry.options.get(
-                config_key, self._entry.data.get(config_key, default)
-            )
-        )
+        return float(self._entry.options.get(config_key, self._entry.data.get(config_key, default)))
 
     @property
     def native_value(self) -> float | None:
@@ -377,9 +352,7 @@ class EmlogAdvanceDifferenceSensor(SensorEntity):
             return None
 
 
-async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
-) -> None:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> None:
     """Set up Emlog cost and advance sensors from a config entry."""
     meter_type = entry.data.get("meter_type")
     meter_index = entry.data.get("meter_index")

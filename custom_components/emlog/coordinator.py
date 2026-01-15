@@ -18,6 +18,7 @@ _LOGGER = logging.getLogger(__name__)
 @dataclass
 class EmlogData:
     """Data from Emlog API for a single meter."""
+
     meter_data: dict  # Raw JSON data from API
     api_status: str = "connected"  # "connected" oder "failed" oder "initializing"
     last_error: str | None = None  # Fehlerbeschreibung bei Fehler
@@ -27,7 +28,7 @@ class EmlogData:
 
 class EmlogCoordinator(DataUpdateCoordinator[EmlogData]):
     """Coordinator für einen einzelnen Emlog-Zähler (Strom ODER Gas)."""
-    
+
     def __init__(
         self,
         hass: HomeAssistant,
@@ -54,7 +55,7 @@ class EmlogCoordinator(DataUpdateCoordinator[EmlogData]):
 
     async def _fetch_export(self) -> tuple[dict | None, str | None]:
         """Fetch export data from Emlog.
-        
+
         Returns:
             Tuple of (data, error_message)
             - (dict, None): Erfolgreich
@@ -81,13 +82,13 @@ class EmlogCoordinator(DataUpdateCoordinator[EmlogData]):
 
     async def _async_update_data(self) -> EmlogData:
         """Fetch data from API.
-        
+
         Home Assistant Best Practice:
         - Bei temporären Fehlern: Alte Daten beibehalten
         - Entities bleiben 'available' solange möglich
         - UpdateFailed Exception NICHT werfen (graceful degradation)
         - Bei API-Fehlern: status="failed" mit Fehlerdetails zurückgeben
-        
+
         Verhalten:
         - API erreichbar: Neue Daten, api_status="connected", last_error=None
         - API nicht erreichbar: Alte Daten behalten, api_status="failed", last_error=Details
@@ -99,12 +100,12 @@ class EmlogCoordinator(DataUpdateCoordinator[EmlogData]):
             # Fehler beim Abrufen der Daten
             self._failed_updates += 1
             self._last_error = error
-            
+
             # Kürze Fehlermeldung auf 200 Zeichen (HA State Limit: 255)
             last_error = error
             if len(last_error) > 200:
                 last_error = last_error[:197] + "..."
-            
+
             # Gib alte Daten zurück wenn vorhanden
             if self.data is not None:
                 _LOGGER.info(
@@ -118,7 +119,7 @@ class EmlogCoordinator(DataUpdateCoordinator[EmlogData]):
                     last_successful_update=self.data.last_successful_update,
                     currency=self.data.currency,
                 )
-            
+
             # Beim allerersten Fehler: Gib fehlerhafte Daten zurück
             _LOGGER.debug("No previous data available, returning empty data with failed status")
             return EmlogData(
@@ -128,33 +129,32 @@ class EmlogCoordinator(DataUpdateCoordinator[EmlogData]):
                 last_successful_update=None,
                 currency="EUR",
             )
-        
+
         # Erfolgreicher Update - Reset counter
         if self._failed_updates > 0:
-            _LOGGER.info(
-                f"Connection to Emlog API restored after {self._failed_updates} failed attempts"
-            )
+            _LOGGER.info(f"Connection to Emlog API restored after {self._failed_updates} failed attempts")
         self._failed_updates = 0
         self._last_error = None
-        
+
         # Nutze HA Timezone falls verfügbar, sonst UTC
-        if hasattr(self.hass, 'config') and self.hass.config.time_zone:
+        if hasattr(self.hass, "config") and self.hass.config.time_zone:
             from homeassistant.util import dt as dt_util
+
             tz = dt_util.get_time_zone(self.hass.config.time_zone)
             now = datetime.now(tz) if tz else datetime.now(timezone.utc)
         else:
             now = datetime.now(timezone.utc)
-        
+
         # Extrahiere Währung aus API-Response
         currency = "EUR"  # Default
         if meter_data:
             # Versuche Währung aus verschiedenen Positionen zu extrahieren
             currency = (
-                meter_data.get("Betrag_Bezug", {}).get("Waehrung") or
-                meter_data.get("Betrag_Lieferung", {}).get("Waehrung") or
-                "EUR"
+                meter_data.get("Betrag_Bezug", {}).get("Waehrung")
+                or meter_data.get("Betrag_Lieferung", {}).get("Waehrung")
+                or "EUR"
             )
-            
+
         return EmlogData(
             meter_data=meter_data or {},
             api_status="connected",
