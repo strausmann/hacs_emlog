@@ -18,7 +18,7 @@ venv/
 # HA
 .storage/
 .HA_VERSION
-tests/config/custom_components/hacs/
+tests/config/custom_components/
 tests/config/blueprints/
 tests/config/.cloud/
 tests/config/tts/
