@@ -102,20 +102,57 @@ class EmlogCostSensor(SensorEntity):
             )
         )
 
-    def _get_effective_price(self) -> float:
-        """Get effective price considering tariff change date."""
-        if self._meter_type == METER_TYPE_STROM:
-            change_date_key = CONF_PRICE_CHANGE_DATE_STROM
-            new_price_helper_key = CONF_PRICE_KWH_NEW_STROM_HELPER
-            new_price_key = CONF_PRICE_KWH_NEW_STROM
-            current_price_helper_key = CONF_PRICE_HELPER
-            current_price_key = CONF_PRICE_KWH
-        else:
-            change_date_key = CONF_PRICE_CHANGE_DATE_GAS
-            new_price_helper_key = CONF_PRICE_KWH_NEW_GAS_HELPER
-            new_price_key = CONF_PRICE_KWH_NEW_GAS
-            current_price_helper_key = CONF_PRICE_HELPER
-            current_price_key = CONF_PRICE_KWH
+    def _get_config_for_meter_type(self, config_type: str) -> tuple:
+        """Get configuration keys for current meter type."""
+        if config_type == "price":
+            if self._meter_type == METER_TYPE_STROM:
+                return (
+                    CONF_PRICE_CHANGE_DATE_STROM,
+                    CONF_PRICE_KWH_NEW_STROM_HELPER,
+                    CONF_PRICE_KWH_NEW_STROM,
+                    CONF_PRICE_HELPER,
+                    CONF_PRICE_KWH,
+                )
+            else:
+                return (
+                    CONF_PRICE_CHANGE_DATE_GAS,
+                    CONF_PRICE_KWH_NEW_GAS_HELPER,
+                    CONF_PRICE_KWH_NEW_GAS,
+                    CONF_PRICE_HELPER,
+                    CONF_PRICE_KWH,
+                )
+        elif config_type == "base_price":
+            if self._meter_type == METER_TYPE_STROM:
+                return (
+                    CONF_PRICE_CHANGE_DATE_STROM,
+                    CONF_BASE_PRICE_STROM_NEW_HELPER,
+                    CONF_BASE_PRICE_STROM_NEW,
+                    CONF_BASE_PRICE_STROM_HELPER,
+                    CONF_BASE_PRICE_STROM,
+                    DEFAULT_BASE_PRICE_STROM,
+                )
+            else:
+                return (
+                    CONF_PRICE_CHANGE_DATE_GAS,
+                    CONF_BASE_PRICE_GAS_NEW_HELPER,
+                    CONF_BASE_PRICE_GAS_NEW,
+                    CONF_BASE_PRICE_GAS_HELPER,
+                    CONF_BASE_PRICE_GAS,
+                    DEFAULT_BASE_PRICE_GAS,
+                )
+        return ()
+
+    def _get_effective_value_with_tariff_change(
+        self, config_type: str, default_value: float = 0.0
+    ) -> float:
+        """Get effective value considering tariff change date."""
+        config = self._get_config_for_meter_type(config_type)
+        change_date_key = config[0]
+        new_helper_key = config[1]
+        new_key = config[2]
+        current_helper_key = config[3]
+        current_key = config[4]
+        default = config[5] if len(config) > 5 else default_value
 
         # Check if tariff change date has passed
         change_date_str = self._entry.options.get(
@@ -126,55 +163,25 @@ class EmlogCostSensor(SensorEntity):
             try:
                 change_date = datetime.strptime(change_date_str, "%Y-%m-%d").date()
                 if datetime.now().date() >= change_date:
-                    # Use new price
+                    # Use new value
                     return self._get_value_from_helper_or_config(
-                        new_price_helper_key, new_price_key, 0.0
+                        new_helper_key, new_key, 0.0
                     )
             except ValueError:
                 pass
 
-        # Use current price
+        # Use current value
         return self._get_value_from_helper_or_config(
-            current_price_helper_key, current_price_key, 0.0
+            current_helper_key, current_key, default
         )
+
+    def _get_effective_price(self) -> float:
+        """Get effective price considering tariff change date."""
+        return self._get_effective_value_with_tariff_change("price", 0.0)
 
     def _get_effective_base_price(self) -> float:
         """Get effective base price considering tariff change date."""
-        if self._meter_type == METER_TYPE_STROM:
-            change_date_key = CONF_PRICE_CHANGE_DATE_STROM
-            new_base_price_helper_key = CONF_BASE_PRICE_STROM_NEW_HELPER
-            new_base_price_key = CONF_BASE_PRICE_STROM_NEW
-            current_base_price_helper_key = CONF_BASE_PRICE_STROM_HELPER
-            current_base_price_key = CONF_BASE_PRICE_STROM
-            default_base_price = DEFAULT_BASE_PRICE_STROM
-        else:
-            change_date_key = CONF_PRICE_CHANGE_DATE_GAS
-            new_base_price_helper_key = CONF_BASE_PRICE_GAS_NEW_HELPER
-            new_base_price_key = CONF_BASE_PRICE_GAS_NEW
-            current_base_price_helper_key = CONF_BASE_PRICE_GAS_HELPER
-            current_base_price_key = CONF_BASE_PRICE_GAS
-            default_base_price = DEFAULT_BASE_PRICE_GAS
-
-        # Check if tariff change date has passed
-        change_date_str = self._entry.options.get(
-            change_date_key, self._entry.data.get(change_date_key, "")
-        )
-
-        if change_date_str:
-            try:
-                change_date = datetime.strptime(change_date_str, "%Y-%m-%d").date()
-                if datetime.now().date() >= change_date:
-                    # Use new base price
-                    return self._get_value_from_helper_or_config(
-                        new_base_price_helper_key, new_base_price_key, 0.0
-                    )
-            except ValueError:
-                pass
-
-        # Use current base price
-        return self._get_value_from_helper_or_config(
-            current_base_price_helper_key, current_base_price_key, default_base_price
-        )
+        return self._get_effective_value_with_tariff_change("base_price")
 
     @property
     def native_value(self) -> float | None:
@@ -244,16 +251,24 @@ class EmlogAdvanceTotalSensor(SensorEntity):
         """Return currency."""
         return self._currency
 
+    def _get_monthly_advance_config_keys(self) -> tuple:
+        """Get config keys for monthly advance based on meter type."""
+        if self._meter_type == METER_TYPE_STROM:
+            return (
+                CONF_MONTHLY_ADVANCE_STROM_HELPER,
+                CONF_MONTHLY_ADVANCE_STROM,
+                DEFAULT_MONTHLY_ADVANCE_STROM,
+            )
+        else:
+            return (
+                CONF_MONTHLY_ADVANCE_GAS_HELPER,
+                CONF_MONTHLY_ADVANCE_GAS,
+                DEFAULT_MONTHLY_ADVANCE_GAS,
+            )
+
     def _get_advance_value(self) -> float:
         """Get monthly advance value from helper or config."""
-        if self._meter_type == METER_TYPE_STROM:
-            helper_key = CONF_MONTHLY_ADVANCE_STROM_HELPER
-            config_key = CONF_MONTHLY_ADVANCE_STROM
-            default = DEFAULT_MONTHLY_ADVANCE_STROM
-        else:
-            helper_key = CONF_MONTHLY_ADVANCE_GAS_HELPER
-            config_key = CONF_MONTHLY_ADVANCE_GAS
-            default = DEFAULT_MONTHLY_ADVANCE_GAS
+        helper_key, config_key, default = self._get_monthly_advance_config_keys()
 
         helper_id = self._entry.options.get(helper_key, self._entry.data.get(helper_key, ""))
         if helper_id:
@@ -306,6 +321,34 @@ class EmlogAdvanceDifferenceSensor(SensorEntity):
         """Return currency."""
         return self._currency
 
+    def _get_monthly_advance(self) -> float:
+        """Get monthly advance value from helper or config."""
+        if self._meter_type == METER_TYPE_STROM:
+            helper_key = CONF_MONTHLY_ADVANCE_STROM_HELPER
+            config_key = CONF_MONTHLY_ADVANCE_STROM
+            default = DEFAULT_MONTHLY_ADVANCE_STROM
+        else:
+            helper_key = CONF_MONTHLY_ADVANCE_GAS_HELPER
+            config_key = CONF_MONTHLY_ADVANCE_GAS
+            default = DEFAULT_MONTHLY_ADVANCE_GAS
+
+        helper_id = self._entry.options.get(
+            helper_key, self._entry.data.get(helper_key, "")
+        )
+        if helper_id:
+            state = self.hass.states.get(helper_id)
+            if state and state.state not in ("unknown", "unavailable"):
+                try:
+                    return float(state.state)
+                except (ValueError, TypeError):
+                    pass
+
+        return float(
+            self._entry.options.get(
+                config_key, self._entry.data.get(config_key, default)
+            )
+        )
+
     @property
     def native_value(self) -> float | None:
         """Calculate difference: yearly_cost - (monthly_advance × 12).
@@ -324,36 +367,7 @@ class EmlogAdvanceDifferenceSensor(SensorEntity):
                 return None
             yearly_cost = float(yearly_cost_state.state)
 
-            # Get advance value
-            if self._meter_type == METER_TYPE_STROM:
-                helper_key = CONF_MONTHLY_ADVANCE_STROM_HELPER
-                config_key = CONF_MONTHLY_ADVANCE_STROM
-                default = DEFAULT_MONTHLY_ADVANCE_STROM
-            else:
-                helper_key = CONF_MONTHLY_ADVANCE_GAS_HELPER
-                config_key = CONF_MONTHLY_ADVANCE_GAS
-                default = DEFAULT_MONTHLY_ADVANCE_GAS
-
-            helper_id = self._entry.options.get(
-                helper_key, self._entry.data.get(helper_key, "")
-            )
-            if helper_id:
-                state = self.hass.states.get(helper_id)
-                if state and state.state not in ("unknown", "unavailable"):
-                    monthly_advance = float(state.state)
-                else:
-                    monthly_advance = float(
-                        self._entry.options.get(
-                            config_key, self._entry.data.get(config_key, default)
-                        )
-                    )
-            else:
-                monthly_advance = float(
-                    self._entry.options.get(
-                        config_key, self._entry.data.get(config_key, default)
-                    )
-                )
-
+            monthly_advance = self._get_monthly_advance()
             yearly_advance = monthly_advance * 12
             difference = yearly_cost - yearly_advance
 
