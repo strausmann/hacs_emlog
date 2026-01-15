@@ -151,6 +151,41 @@ make dev-setup  # Startet Mock Server + Home Assistant
 make test       # Führt alle Tests durch
 ```
 
+### Test-Helper Entities verwenden
+
+Die Test-Konfiguration (`tests/config/configuration.yaml`) enthält vordefinierte `input_number` Entities für das Testen von Preisen und Faktoren:
+
+#### Verfügbare Helper Entities
+
+**Strom (Electricity):**
+
+- `input_number.strom_preis_kwh` - Strompreis: **0.3850 EUR/kWh**
+- `input_number.strom_grundpreis_monat` - Grundpreis: **50.00 EUR/Monat**
+- `input_number.strom_abschlag_monat` - Abschlag: **120.00 EUR/Monat**
+
+**Gas:**
+
+- `input_number.gas_preis_kwh` - Gaspreis: **0.1200 EUR/kWh**
+- `input_number.gas_grundpreis_monat` - Grundpreis: **15.00 EUR/Monat**
+- `input_number.gas_abschlag_monat` - Abschlag: **80.00 EUR/Monat**
+- `input_number.gas_brennwert` - Brennwert: **11.58 kWh/m³** (aus package/emlog.yaml)
+- `input_number.gas_zustandszahl` - Zustandszahl: **0.95** (aus package/emlog.yaml)
+
+#### So verwendest du diese zum Testen
+
+1. Starten Sie die Entwicklungsumgebung: `make dev-setup`
+2. Öffne Home Assistant: http://localhost:8123
+3. Gehe zu **Einstellungen > Geräte & Dienste > Emlog** (Zahnrad-Icon)
+4. Gehe zu **Optionen**
+5. Bei jedem Feld kannst du die entsprechende `input_number` Entity verlinken:
+   - Preis pro kWh → `input_number.strom_preis_kwh` oder `input_number.gas_preis_kwh`
+   - Basis-Preis (€/Monat) → `input_number.strom_grundpreis_monat` oder `input_number.gas_grundpreis_monat`
+   - Gasbrennwert → `input_number.gas_brennwert`
+   - etc.
+
+6. Speichern → Die Sensoren verwenden jetzt die dynamischen Werte!
+7. Ändere die `input_number` Werte in der UI und beobachte, wie sich die Sensor-Berechnungen ändern
+
 ### Mit echter Hardware
 
 ```bash
