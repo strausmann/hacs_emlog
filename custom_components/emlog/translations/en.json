@@ -43,7 +43,8 @@
           "gas_brennwert_helper": "Calorific Value Helper Entity (optional)",
           "gas_brennwert": "Gas calorific value (fallback)",
           "gas_zustandszahl_helper": "Compressibility Helper Entity (optional)",
-          "gas_zustandszahl": "Gas compressibility factor (fallback)"
+          "gas_zustandszahl": "Gas compressibility factor (fallback)",
+          "include_feed_in_sensors": "Enable feed-in sensors for solar installations"
         },
         "data_description": {
           "price_helper": "Select an input_number or sensor entity for dynamic pricing. If empty, fallback value will be used.",
@@ -60,7 +61,8 @@
           "gas_brennwert_helper": "Select an input_number or sensor entity for dynamic calorific value. If empty, fallback value will be used.",
           "gas_brennwert": "Calorific value for m³ → kWh conversion, used when no helper entity is configured.",
           "gas_zustandszahl_helper": "Select an input_number or sensor entity for dynamic compressibility. If empty, fallback value will be used.",
-          "gas_zustandszahl": "Compressibility factor for m³ → kWh conversion, used when no helper entity is configured."
+          "gas_zustandszahl": "Compressibility factor for m³ → kWh conversion, used when no helper entity is configured.",
+          "include_feed_in_sensors": "Enables optional sensors for electricity feed-in from solar installations (feed-in counter, feed-in power, daily feed-in, feed-in amount). These sensors are only created for electricity meters."
         }
       }
     }

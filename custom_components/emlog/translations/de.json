@@ -43,7 +43,8 @@
           "gas_brennwert_helper": "Brennwert Helper Entity (optional)",
           "gas_brennwert": "Gas Brennwert (Fallback)",
           "gas_zustandszahl_helper": "Zustandszahl Helper Entity (optional)",
-          "gas_zustandszahl": "Gas Zustandszahl (Fallback)"
+          "gas_zustandszahl": "Gas Zustandszahl (Fallback)",
+          "include_feed_in_sensors": "Feed-in Sensoren für Solaranlagen aktivieren"
         },
         "data_description": {
           "price_helper": "Wähle eine input_number oder sensor Entity für dynamische Preise. Wenn leer, wird der Fallback-Wert verwendet.",
@@ -60,7 +61,8 @@
           "gas_brennwert_helper": "Wähle eine input_number oder sensor Entity für dynamischen Brennwert. Wenn leer, wird der Fallback-Wert verwendet.",
           "gas_brennwert": "Brennwert für m³ → kWh Umrechnung, wird verwendet wenn keine Helper Entity konfiguriert ist.",
           "gas_zustandszahl_helper": "Wähle eine input_number oder sensor Entity für dynamische Zustandszahl. Wenn leer, wird der Fallback-Wert verwendet.",
-          "gas_zustandszahl": "Zustandszahl für m³ → kWh Umrechnung, wird verwendet wenn keine Helper Entity konfiguriert ist."
+          "gas_zustandszahl": "Zustandszahl für m³ → kWh Umrechnung, wird verwendet wenn keine Helper Entity konfiguriert ist.",
+          "include_feed_in_sensors": "Aktiviert optionale Sensoren für Stromeinspeisung von Solaranlagen (Stand Lieferung, Leistung Lieferung, tägliche Einspeitung, Betrag Lieferung). Diese Sensoren werden nur für Stromzähler erstellt."
         }
       }
     }
