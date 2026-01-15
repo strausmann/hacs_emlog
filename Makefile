@@ -1,4 +1,4 @@
-.PHONY: help mock-up mock-down mock-logs ha-up ha-down ha-logs ha-reload test test-api clean full-clean dev-up dev-down dev-logs lint status version release-dry-run release-notes release release-github
+.PHONY: help mock-up mock-down mock-logs ha-up ha-down ha-logs ha-reload test test-api check-logs clean full-clean dev-up dev-down dev-logs lint status version release-dry-run release-notes release release-github
 
 help:
 	@echo "╔════════════════════════════════════════════════════════════╗"
@@ -31,6 +31,7 @@ help:
 	@echo "  make test                  Führe Tests durch"
 	@echo "  make test-api              Teste Mock API"
 	@echo "  make lint                  Code-Qualität prüfen"
+	@echo "  make check-logs            Prüfe HA Logs auf Fehler (vor Commit)"
 	@echo ""
 	@echo "Release Management:"
 	@echo "  make release-dry-run       Teste Release (ohne zu pushen)"
@@ -101,6 +102,48 @@ test-api:
 lint:
 	@echo "🔍 Prüfe Code..."
 	@find custom_components -name "*.py" -exec python3 -m py_compile {} \; && echo "✅ Python OK"
+
+check-logs:
+	@echo "🔍 Prüfe Home Assistant Logs auf Fehler..."
+	@if [ ! -f "tests/config/home-assistant.log.1" ]; then \
+		echo "⚠️  Keine HA Logs gefunden - Home Assistant läuft möglicherweise nicht"; \
+		exit 1; \
+	fi
+	@echo ""
+	@echo "Suche nach ImportError..."
+	@if tail -500 tests/config/home-assistant.log.1 | grep -i "ImportError\|cannot import"; then \
+		echo "❌ ImportError gefunden!"; \
+		echo ""; \
+		echo "Fehlerdetails:"; \
+		tail -500 tests/config/home-assistant.log.1 | grep -A 5 "ImportError\|cannot import" | head -30; \
+		exit 1; \
+	else \
+		echo "✅ Keine ImportError gefunden"; \
+	fi
+	@echo ""
+	@echo "Suche nach Setup-Fehlern..."
+	@if tail -500 tests/config/home-assistant.log.1 | grep -i "Setup failed for custom integration"; then \
+		echo "❌ Setup Fehler gefunden!"; \
+		echo ""; \
+		echo "Fehlerdetails:"; \
+		tail -500 tests/config/home-assistant.log.1 | grep -B 2 -A 5 "Setup failed for custom integration" | head -30; \
+		exit 1; \
+	else \
+		echo "✅ Kein Setup Fehler gefunden"; \
+	fi
+	@echo ""
+	@echo "Suche nach anderen Modulfehlern..."
+	@if tail -500 tests/config/home-assistant.log.1 | grep -E "ModuleNotFoundError|AttributeError.*module"; then \
+		echo "❌ Modulfehler gefunden!"; \
+		echo ""; \
+		echo "Fehlerdetails:"; \
+		tail -500 tests/config/home-assistant.log.1 | grep -B 2 -A 5 -E "ModuleNotFoundError|AttributeError.*module" | head -30; \
+		exit 1; \
+	else \
+		echo "✅ Keine anderen Modulfehler gefunden"; \
+	fi
+	@echo ""
+	@echo "✅ Alle Log-Checks bestanden!"
 
 clean:
 	@echo "🧹 Cleanup..."
