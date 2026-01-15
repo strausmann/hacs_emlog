@@ -94,9 +94,19 @@ type(scope): description
 [footer]
 ```
 
-**⚠️ MANDATORY: Scope MUSS bei JEDEM Commit verwendet werden!**
+**⚠️ MANDATORY: Alle drei Teile sind erforderlich!**
 
-Der Scope gibt an, welche Komponente betroffen ist. **Commits OHNE Scope sind nicht akzeptabel!**
+- **type** - Art der Änderung (feat, fix, docs, etc.)
+- **scope** - Komponente (aus 16 erlaubten Scopes)
+- **description** - Kurzbeschreibung in imperativem Modus
+
+**Automatic Validation durch Commitlint + Husky:**
+Fehlende oder ungültige Commits werden automatisch blockiert:
+
+- ❌ `type may not be empty` - Type ist pflicht
+- ❌ `scope may not be empty` - Scope ist pflicht
+- ❌ `subject may not be empty` - Description ist pflicht
+- ❌ `scope must be one of [...]` - Nur erlaubte Scopes
 
 ### Erlaubte Scopes für dieses Projekt
 

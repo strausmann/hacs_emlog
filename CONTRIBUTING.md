@@ -221,6 +221,21 @@ type(scope): description
 [footer]
 ```
 
+**⚠️ MANDATORY - Alle drei Teile sind erforderlich:**
+
+- **type** - Art der Änderung (feat, fix, docs, etc.) - wird von Commitlint validiert
+- **scope** - Komponente (aus 16 erlaubten Scopes) - wird von Commitlint validiert
+- **description** - Kurzbeschreibung in imperativem Modus - wird von Commitlint validiert
+
+**Validation durch Commitlint + Husky:**
+Commitlint prüft automatisch alle Commits und blockiert sie, wenn:
+
+- ❌ Type fehlt → `type may not be empty`
+- ❌ Scope fehlt → `scope may not be empty`
+- ❌ Description fehlt → `subject may not be empty`
+- ❌ Ungültiger Type → `type must be one of [...]`
+- ❌ Ungültiger Scope → `scope must be one of [coordinator, sensor, config, ...]`
+
 ### Erlaubte Scopes (Kurzübersicht)
 
 Siehe [`.github/SCOPES.md`](.github/SCOPES.md) für detaillierte Erklärungen:
