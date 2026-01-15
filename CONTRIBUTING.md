@@ -207,8 +207,9 @@ curl "http://localhost:8080/pages/getinformation.php?export&meterindex=2"
 ## � Commit Konventionen
 
 **CRITICAL:** Alle Commits MÜSSEN [Conventional Commits](https://www.conventionalcommits.org/) Format folgen!
-
 Dieses Projekt verwendet **Semantic Release** für automatisierte Versionierung.
+
+**📌 WICHTIG:** Siehe **[`.github/SCOPES.md`](.github/SCOPES.md)** für vollständige Dokumentation aller erlaubten Scopes mit Beispielen und Strategie!
 
 ### Commit Format mit Scopes
 
@@ -220,20 +221,25 @@ type(scope): description
 [footer]
 ```
 
-### Erlaubte Scopes
+### Erlaubte Scopes (Kurzübersicht)
+
+Siehe [`.github/SCOPES.md`](.github/SCOPES.md) für detaillierte Erklärungen:
 
 - `coordinator:` - Änderungen an `coordinator.py` (Daten-Polling)
 - `sensor:` - Änderungen an `sensor.py` (Sensor-Entities)
 - `config:` - Änderungen an `config_flow.py` (UI-Konfiguration)
 - `template:` - Änderungen an `template.py` (Kosten-Sensoren)
-- `manifest:` - Änderungen an `manifest.json` (Integration-Metadaten)
+- `utility-meter:` - Änderungen an `utility_meter.py`
 - `const:` - Änderungen an `const.py` (Konstanten)
+- `manifest:` - Änderungen an `manifest.json` (Integration-Metadaten)
 - `translations:` - Änderungen an Übersetzungsdateien
 - `mock:` - Änderungen am Mock-Server
 - `test:` - Test-bezogene Änderungen
 - `docs:` - Dokumentationsänderungen
 - `ci:` - CI/CD-Konfiguration
+- `build:` - Build-System (Makefile, package.json)
 - `chore:` - Allgemeine Wartung
+- `deps:` - Dependency-Updates
 
 ### ⚠️ WICHTIG: Granulare Commits (KEINE Sammel-Commits!)
 

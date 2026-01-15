@@ -305,18 +305,50 @@ except asyncio.TimeoutError as err:
 
 ## Key Files Reference
 
-- `Makefile`: Development workflow commands and automation
+### 📋 Documentation (LESEN VOR ENTWICKLUNG!)
+
+- **`.github/copilot-instructions.md`**: Diese Datei - Überblick und Grundlagen
+- **`.github/ARCHITECTURE_DECISIONS.md`**: **WICHTIG** - Alle bewussten Architektur-Entscheidungen und Begründungen
+  - Helper-Entity Fallback-Kette
+  - Konditionaler EntitySelector Pattern
+  - Meter-Index Flexibilität
+  - Feed-In Sensoren Feature
+  - Tarifwechsel-Logik
+  - Settlement Month
+  - Pre-Commit Validation
+- **`.github/DEVELOPMENT_GUIDE.md`**: **WICHTIG** - Praktischer Guide für Feature-Entwicklung
+  - Step-by-Step Feature-Pattern (neuen Sensor hinzufügen)
+  - Testing-Checkliste vor Commits
+  - Common Pitfalls & Lösungen
+  - Release-Prozess
+  - Bekannte Limitationen & Gotchas
+  - Debug-Tricks
+
+### 🔧 Development & Integration
+
+- `Makefile`: Development workflow commands and automation (inkl. `make check-logs`, `make ha-reload`)
 - `CONTRIBUTING.md`: Comprehensive development guidelines and workflow
 - `custom_components/emlog/manifest.json`: Integration metadata and requirements
 - `custom_components/emlog/const.py`: All configuration constants and defaults
 - `custom_components/emlog/coordinator.py`: Core data fetching logic
 - `custom_components/emlog/sensor.py`: Entity creation and data mapping
+- `custom_components/emlog/template.py`: Cost calculation sensors
+- `custom_components/emlog/config_flow.py`: User configuration UI (options flow)
 - `package/emlog.yaml`: Legacy YAML package implementation (backward compatibility)
+
+### 🧪 Testing & Infrastructure
+
 - `.devcontainer/devcontainer.json`: Development environment configuration
 - `mock/`: Mock server for testing without physical Emlog device
 - `test.sh`: Test script for running mock server and validation
 - `docker-compose.test.yml`: Docker setup for isolated testing
+- `tests/config/configuration.yaml`: Test configuration
+- `tests/mock/mock_data/`: Realistic test data (meter_1.json, meter_2.json)
+
+### 🔐 CI/CD & Git
+
 - `.releaserc.json`: Semantic Release configuration (CRITICAL für Commit-Format!)
 - `.commitlintrc.json`: Commitlint configuration (muss bei allen Commits befolgt werden!)
+- `.github/workflows/release.yml`: GitHub Actions Release Workflow
 - `package.json`: Node.js dependencies for tooling (Prettier, Commitlint, Husky)</content>
   <parameter name="filePath">/workspaces/hacs_emlog/.github/copilot-instructions.md

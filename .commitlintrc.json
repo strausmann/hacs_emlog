@@ -2,6 +2,30 @@
   "extends": ["@commitlint/config-conventional"],
   "parserPreset": "conventional-changelog-conventionalcommits",
   "helpUrl": "https://github.com/conventional-changelog/commitlint/#what-is-commitlint",
+  "rules": {
+    "scope-enum": [
+      2,
+      "always",
+      [
+        "coordinator",
+        "sensor",
+        "config",
+        "template",
+        "utility-meter",
+        "const",
+        "manifest",
+        "translations",
+        "mock",
+        "test",
+        "docs",
+        "architecture",
+        "ci",
+        "build",
+        "chore",
+        "deps"
+      ]
+    ]
+  },
   "prompt": {
     "messages": {
       "skip": ":überspringen",
@@ -72,7 +96,73 @@
         }
       },
       "scope": {
-        "description": "Welchen Umfang hat diese Änderung (z. B. Komponente oder Dateiname)?"
+        "description": "Welchen Umfang hat diese Änderung (z. B. Komponente oder Dateiname)?",
+        "enum": [
+          {
+            "name": "coordinator",
+            "description": "Änderungen an coordinator.py (Daten-Polling)"
+          },
+          {
+            "name": "sensor",
+            "description": "Änderungen an sensor.py (Sensor-Entities)"
+          },
+          {
+            "name": "config",
+            "description": "Änderungen an config_flow.py (UI-Konfiguration)"
+          },
+          {
+            "name": "template",
+            "description": "Änderungen an template.py (Kostenberechnung)"
+          },
+          {
+            "name": "utility-meter",
+            "description": "Änderungen an utility_meter.py"
+          },
+          {
+            "name": "const",
+            "description": "Änderungen an const.py (Konstanten)"
+          },
+          {
+            "name": "manifest",
+            "description": "Änderungen an manifest.json (Integration-Metadaten)"
+          },
+          {
+            "name": "translations",
+            "description": "Änderungen an Übersetzungsdateien (de.json, en.json)"
+          },
+          {
+            "name": "mock",
+            "description": "Änderungen am Mock-Server (tests/mock/)"
+          },
+          {
+            "name": "test",
+            "description": "Test-bezogene Änderungen"
+          },
+          {
+            "name": "docs",
+            "description": "Dokumentationsänderungen (README, docs/)"
+          },
+          {
+            "name": "architecture",
+            "description": "Architektur-Dokumentation (.github/)"
+          },
+          {
+            "name": "ci",
+            "description": "CI/CD-Konfiguration (.github/workflows/)"
+          },
+          {
+            "name": "build",
+            "description": "Build-System (Makefile, package.json)"
+          },
+          {
+            "name": "chore",
+            "description": "Allgemeine Wartung"
+          },
+          {
+            "name": "deps",
+            "description": "Dependency-Updates"
+          }
+        ]
       },
       "subject": {
         "description": "Schreiben Sie eine kurze, imperative Beschreibung der Änderung"
