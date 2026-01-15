@@ -70,20 +70,73 @@ jobs:
 
       - name: Test API endpoints
         run: |
-          # Test Strom (Index 1)
-          curl -f http://localhost:8080/pages/getinformation.php?export\&meterindex=1 \
-            | python -m json.tool > /dev/null || exit 1
-          echo "✓ Strom API endpoint works"
+          python3 << 'EOF'
+          import json
+          import urllib.request
+          import sys
 
-          # Test Gas (Index 2)
-          curl -f http://localhost:8080/pages/getinformation.php?export\&meterindex=2 \
-            | python -m json.tool > /dev/null || exit 1
-          echo "✓ Gas API endpoint works"
+          def validate_json_structure(data, meter_type):
+              """Prüfe die erwartete JSON-Struktur"""
+              required_keys = [
+                  'Zaehlerstand_Bezug',
+                  'Wirkleistung_Bezug',
+                  'Kwh_Bezug',
+                  'Betrag_Bezug',
+                  'Betrag_Lieferung',
+                  'DiffBezugLieferung',
+                  'product',
+                  'version'
+              ]
+              
+              for key in required_keys:
+                  if key not in data:
+                      print(f"✗ {meter_type}: Missing key '{key}'")
+                      return False
+              
+              # Prüfe Zaehlerstand_Bezug Struktur
+              zaehler = data.get('Zaehlerstand_Bezug', {})
+              if 'Stand180' not in zaehler:
+                  print(f"✗ {meter_type}: Missing Stand180 in Zaehlerstand_Bezug")
+                  return False
+              
+              # Prüfe Betrag_Bezug hat Waehrung
+              betrag = data.get('Betrag_Bezug', {})
+              if 'Waehrung' not in betrag:
+                  print(f"✗ {meter_type}: Missing Waehrung in Betrag_Bezug")
+                  return False
+              
+              print(f"✓ {meter_type} JSON structure is valid")
+              return True
 
-          # Test invalid endpoint (sollte 400 zurückgeben)
-          curl -s http://localhost:8080/pages/getinformation.php \
-            | grep -q "Export parameter required" || exit 1
-          echo "✓ Error handling works"
+          try:
+              # Test Strom (Index 1)
+              with urllib.request.urlopen('http://localhost:8080/pages/getinformation.php?export&meterindex=1') as response:
+                  data = json.loads(response.read().decode())
+                  if not validate_json_structure(data, 'Strom'):
+                      sys.exit(1)
+
+              # Test Gas (Index 2)
+              with urllib.request.urlopen('http://localhost:8080/pages/getinformation.php?export&meterindex=2') as response:
+                  data = json.loads(response.read().decode())
+                  if not validate_json_structure(data, 'Gas'):
+                      sys.exit(1)
+
+              # Test invalid endpoint
+              try:
+                  urllib.request.urlopen('http://localhost:8080/pages/getinformation.php')
+                  print("✗ Error handling: Should have failed without export parameter")
+                  sys.exit(1)
+              except urllib.error.HTTPError as e:
+                  if e.code == 400:
+                      print("✓ Error handling works (400 Bad Request)")
+                  else:
+                      print(f"✗ Expected 400 but got {e.code}")
+                      sys.exit(1)
+
+          except Exception as e:
+              print(f"✗ Test failed: {e}")
+              sys.exit(1)
+          EOF
 
   docker-build:
     name: Docker Build Test
