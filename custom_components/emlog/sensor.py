@@ -28,7 +28,6 @@ from .const import (
     DEFAULT_GAS_BRENNWERT,
     DEFAULT_GAS_ZUSTANDSZAHL,
     METER_TYPE_STROM,
-    METER_TYPE_GAS,
 )
 from .coordinator import EmlogCoordinator
 
@@ -213,9 +212,7 @@ GAS_SENSORS: list[EmlogSensorDef] = [
 ]
 
 
-async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
-) -> None:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> None:
     """Set up Emlog sensors from a config entry."""
     host = entry.data[CONF_HOST]
     meter_type = entry.data[CONF_METER_TYPE]
@@ -226,7 +223,7 @@ async def async_setup_entry(
     def get_value_from_helper_or_config(helper_key: str, config_key: str, default_value: float) -> float:
         """Get value from helper entity state or fallback to config/options/default."""
         helper_entity_id = entry.options.get(helper_key, entry.data.get(helper_key, ""))
-        
+
         if helper_entity_id:
             # Try to get state from helper entity
             state = hass.states.get(helper_entity_id)
@@ -235,20 +232,25 @@ async def async_setup_entry(
                     return float(state.state)
                 except (ValueError, TypeError):
                     hass.logger.warning(
-                        f"Could not convert helper entity {helper_entity_id} state '{state.state}' to float, using config value"
+                        f"Could not convert helper entity {helper_entity_id} state '{state.state}' "
+                        f"to float, using config value"
                     )
-        
+
         # Fallback to options/data/default
         return float(entry.options.get(config_key, entry.data.get(config_key, default_value)))
 
     # Get values with priority: Helper state > Options > Data > Default
     price_kwh = get_value_from_helper_or_config(CONF_PRICE_HELPER, CONF_PRICE_KWH, DEFAULT_PRICE_KWH)
-    gas_brennwert = get_value_from_helper_or_config(CONF_GAS_BRENNWERT_HELPER, CONF_GAS_BRENNWERT, DEFAULT_GAS_BRENNWERT)
-    gas_zustandszahl = get_value_from_helper_or_config(CONF_GAS_ZUSTANDSZAHL_HELPER, CONF_GAS_ZUSTANDSZAHL, DEFAULT_GAS_ZUSTANDSZAHL)
+    gas_brennwert = get_value_from_helper_or_config(
+        CONF_GAS_BRENNWERT_HELPER, CONF_GAS_BRENNWERT, DEFAULT_GAS_BRENNWERT
+    )
+    gas_zustandszahl = get_value_from_helper_or_config(
+        CONF_GAS_ZUSTANDSZAHL_HELPER, CONF_GAS_ZUSTANDSZAHL, DEFAULT_GAS_ZUSTANDSZAHL
+    )
 
     # Erstelle den Coordinator für diesen einen Zähler
     coordinator = EmlogCoordinator(hass, host, meter_type, meter_index, scan_interval, entry)
-    
+
     # Versuche den Coordinator zu initialisieren, aber ignoriere Fehler beim Start
     try:
         await coordinator.async_config_entry_first_refresh()
@@ -257,12 +259,12 @@ async def async_setup_entry(
         hass.logger.warning(f"Initial Emlog coordinator refresh failed (will retry): {err}")
 
     entities: list[SensorEntity] = []
-    
+
     # Bestimme Meter-Namen einmal
     meter_name = "Strom" if meter_type == METER_TYPE_STROM else "Gas"
 
     # Preise und Faktoren aus Config (removed duplicates)
-    
+
     # Gemeinsame Info-Sensoren (Produkt, Version)
     for sensor_def in COMMON_SENSORS:
         entities.append(
@@ -278,10 +280,10 @@ async def async_setup_entry(
                 gas_zustandszahl,
             )
         )
-    
+
     # Wähle die richtigen Sensoren basierend auf meter_type
     sensor_defs = STROM_SENSORS if meter_type == METER_TYPE_STROM else GAS_SENSORS
-    
+
     for sensor_def in sensor_defs:
         entities.append(
             EmlogSensorEntity(
@@ -296,7 +298,7 @@ async def async_setup_entry(
                 gas_zustandszahl,
             )
         )
-    
+
     # Lieferungs-Sensoren (Einspeitung) nur hinzufügen, wenn aktiviert (nur für Strom)
     include_feed_in = entry.options.get(CONF_INCLUDE_FEED_IN_SENSORS, False)
     if meter_type == METER_TYPE_STROM and include_feed_in:
@@ -365,7 +367,7 @@ class EmlogSensorEntity(SensorEntity):
     def _price_kwh(self) -> float:
         """Get current price from coordinator's config entry."""
         try:
-            if hasattr(self.coordinator, 'config_entry'):
+            if hasattr(self.coordinator, "config_entry"):
                 entry = self.coordinator.config_entry
                 helper_id = entry.options.get(CONF_PRICE_HELPER, entry.data.get(CONF_PRICE_HELPER, ""))
                 if helper_id:
@@ -380,7 +382,7 @@ class EmlogSensorEntity(SensorEntity):
     @property
     def _currency(self) -> str:
         """Get currency from coordinator."""
-        if self.coordinator.data and hasattr(self.coordinator.data, 'currency'):
+        if self.coordinator.data and hasattr(self.coordinator.data, "currency"):
             return self.coordinator.data.currency or "EUR"
         return "EUR"
 
@@ -399,14 +401,18 @@ class EmlogSensorEntity(SensorEntity):
     def _gas_brennwert(self) -> float:
         """Get current brennwert from coordinator's config entry."""
         try:
-            if hasattr(self.coordinator, 'config_entry'):
+            if hasattr(self.coordinator, "config_entry"):
                 entry = self.coordinator.config_entry
                 helper_id = entry.options.get(CONF_GAS_BRENNWERT_HELPER, entry.data.get(CONF_GAS_BRENNWERT_HELPER, ""))
                 if helper_id:
                     state = self.coordinator.hass.states.get(helper_id)
                     if state and state.state not in ("unknown", "unavailable"):
                         return float(state.state)
-                return float(entry.options.get(CONF_GAS_BRENNWERT, entry.data.get(CONF_GAS_BRENNWERT, self._initial_gas_brennwert)))
+                return float(
+                    entry.options.get(
+                        CONF_GAS_BRENNWERT, entry.data.get(CONF_GAS_BRENNWERT, self._initial_gas_brennwert)
+                    )
+                )
         except Exception:
             pass
         return self._initial_gas_brennwert
@@ -415,14 +421,20 @@ class EmlogSensorEntity(SensorEntity):
     def _gas_zustandszahl(self) -> float:
         """Get current zustandszahl from coordinator's config entry."""
         try:
-            if hasattr(self.coordinator, 'config_entry'):
+            if hasattr(self.coordinator, "config_entry"):
                 entry = self.coordinator.config_entry
-                helper_id = entry.options.get(CONF_GAS_ZUSTANDSZAHL_HELPER, entry.data.get(CONF_GAS_ZUSTANDSZAHL_HELPER, ""))
+                helper_id = entry.options.get(
+                    CONF_GAS_ZUSTANDSZAHL_HELPER, entry.data.get(CONF_GAS_ZUSTANDSZAHL_HELPER, "")
+                )
                 if helper_id:
                     state = self.coordinator.hass.states.get(helper_id)
                     if state and state.state not in ("unknown", "unavailable"):
                         return float(state.state)
-                return float(entry.options.get(CONF_GAS_ZUSTANDSZAHL, entry.data.get(CONF_GAS_ZUSTANDSZAHL, self._initial_gas_zustandszahl)))
+                return float(
+                    entry.options.get(
+                        CONF_GAS_ZUSTANDSZAHL, entry.data.get(CONF_GAS_ZUSTANDSZAHL, self._initial_gas_zustandszahl)
+                    )
+                )
         except Exception:
             pass
         return self._initial_gas_zustandszahl
@@ -433,9 +445,9 @@ class EmlogSensorEntity(SensorEntity):
         try:
             # Konvertiere zu String und zähle Dezimalstellen
             value_str = str(value)
-            if '.' in value_str:
+            if "." in value_str:
                 # Entferne trailing zeros und zähle
-                decimal_part = value_str.split('.')[1].rstrip('0')
+                decimal_part = value_str.split(".")[1].rstrip("0")
                 return len(decimal_part) if decimal_part else 0
             return 0
         except Exception:
@@ -461,10 +473,10 @@ class EmlogSensorEntity(SensorEntity):
             value = self.native_value
             if value is None or not isinstance(value, (int, float)):
                 return None
-            
+
             # Berechne Nachkommastellen aus dem aktuellen Wert
             decimal_places = self._get_decimal_places(value)
-            
+
             # Mindestens 2, maximal 6 Nachkommastellen
             return max(2, min(decimal_places, 6))
         except Exception:
@@ -476,20 +488,20 @@ class EmlogSensorEntity(SensorEntity):
         try:
             if self.coordinator.data is None:
                 return None
-            
+
             meter_data = self.coordinator.data.meter_data
             if not meter_data:
                 return None
-            
+
             # Extrahiere Wert basierend auf Sensor-Typ
             key = self._definition.key
-            
+
             # Gemeinsame Info-Sensoren
             if key == "product":
                 return str(meter_data.get("product", "Unknown"))
             elif key == "version":
                 return float(meter_data.get("version", 0) or 0)
-            
+
             # Meter-spezifische Sensoren
             elif key == "zaehlerstand_kwh":
                 # Strom: Stand180 bereits kWh
@@ -521,7 +533,7 @@ class EmlogSensorEntity(SensorEntity):
                 return float(meter_data.get("Kwh_Lieferung", {}).get("Kwh280", 0) or 0)
             elif key == "betrag_lieferung_eur":
                 return float(meter_data.get("Betrag_Lieferung", {}).get("Betrag280", 0) or 0)
-            
+
             return None
         except Exception:
             return None
@@ -529,9 +541,7 @@ class EmlogSensorEntity(SensorEntity):
     async def async_added_to_hass(self) -> None:
         """When entity is added to hass."""
         try:
-            self.async_on_remove(
-                self.coordinator.async_add_listener(self.async_write_ha_state)
-            )
+            self.async_on_remove(self.coordinator.async_add_listener(self.async_write_ha_state))
         except Exception:
             pass
 
