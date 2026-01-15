@@ -20,23 +20,16 @@ CONF_MONTHLY_ADVANCE_GAS_HELPER = "monthly_advance_gas_helper"
 CONF_SETTLEMENT_MONTH = "settlement_month"
 CONF_METER_TYPE = "meter_type"  # "strom" oder "gas"
 CONF_SCAN_INTERVAL = "scan_interval"
+CONF_INCLUDE_FEED_IN_SENSORS = "include_feed_in_sensors"
 
-# Meter Types
-METER_TYPE_STROM = "strom"
-METER_TYPE_GAS = "gas"
-
-# Meter Indices (1-4 möglich)
-METER_INDICES = [1, 2, 3, 4]
-
-# Defaults
-DEFAULT_SCAN_INTERVAL = 30  # Sekunden
-DEFAULT_PRICE_KWH = 0.0
-DEFAULT_GAS_BRENNWERT = 11.58
-DEFAULT_GAS_ZUSTANDSZAHL = 0.95
-DEFAULT_BASE_PRICE_STROM = 0.0  # EUR/Monat
-DEFAULT_BASE_PRICE_GAS = 0.0    # EUR/Monat
-DEFAULT_MONTHLY_ADVANCE_STROM = 0.0  # EUR/Monat
-DEFAULT_MONTHLY_ADVANCE_GAS = 0.0    # EUR/Monat
-DEFAULT_SETTLEMENT_MONTH = 12  # Dezember (Monat 12)
-
-EMLOG_EXPORT_PATH = "/pages/getinformation.php"
+# Tarifwechsel (für Preisänderungen)
+CONF_PRICE_CHANGE_DATE_STROM = "price_change_date_strom"
+CONF_PRICE_CHANGE_DATE_GAS = "price_change_date_gas"
+CONF_PRICE_KWH_NEW_STROM = "price_kwh_new_strom"
+CONF_PRICE_KWH_NEW_GAS = "price_kwh_new_gas"
+CONF_PRICE_KWH_NEW_STROM_HELPER = "price_kwh_new_strom_helper"
+CONF_PRICE_KWH_NEW_GAS_HELPER = "price_kwh_new_gas_helper"
+CONF_BASE_PRICE_STROM_NEW = "base_price_strom_new"
+CONF_BASE_PRICE_GAS_NEW = "base_price_gas_new"
+CONF_BASE_PRICE_STROM_NEW_HELPER = "base_price_strom_new_helper"
+CONF_BASE_PRICE_GAS_NEW_HELPER = "base_price_gas_new_helper"
