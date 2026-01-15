@@ -100,16 +100,15 @@ make lint              # Code-Qualität prüfen
 
 ## 📝 Sicherheit
 
-- **[Security Policy](../SECURITY.md)** - Vulnerability Reporting
-- **[Dependabot Config](./.github/dependabot.yml)** - Automatische Dependency-Updates (npm, GitHub Actions, Docker)
-- **[Security Advisories](../SECURITY.md#known-vulnerabilities)** - Bekannte Schwachstellen
+- **[Security Policy](../SECURITY.md)** - Vulnerability Reporting (Hauptverzeichnis)
+- Automatische Dependency-Updates über GitHub Actions
 
 ## 📋 Contributing
 
 Wenn du zum Projekt beitragen möchtest:
 
-1. Lies [CONTRIBUTING.md](./guides/CONTRIBUTING.md)
-2. Befolge das [Commit Format](./guides/CONTRIBUTING.md#commit-format)
+1. Folge den Contributing Guidelines im Repository
+2. Verwende Conventional Commits Format
 3. Starte mit `make dev-up` zur Entwicklung
 4. Schreibe Tests für neue Features
 5. Öffne einen Pull Request
@@ -136,7 +135,6 @@ Siehe [.releaserc.json](../.releaserc.json) für Konfiguration.
 
 - 💬 GitHub Discussions für Fragen
 - 🐛 GitHub Issues für Bug Reports
-- 📖 Siehe [FAQ](./guides/FAQ.md) (in Arbeit)
 
 ---
 
