@@ -140,7 +140,7 @@ release:
 	@echo ""
 	@read -p "Fortfahren? (y/N): " confirm; \
 	if [ "$$confirm" = "y" ] || [ "$$confirm" = "Y" ]; then \
-		CI=true semantic-release; \
+		CI=true npx semantic-release; \
 	else \
 		echo "Release abgebrochen."; \
 	fi
