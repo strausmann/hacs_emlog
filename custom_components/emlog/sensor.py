@@ -23,6 +23,7 @@ from .const import (
     CONF_PRICE_HELPER,
     CONF_GAS_BRENNWERT_HELPER,
     CONF_GAS_ZUSTANDSZAHL_HELPER,
+    CONF_INCLUDE_FEED_IN_SENSORS,
     DEFAULT_PRICE_KWH,
     DEFAULT_GAS_BRENNWERT,
     DEFAULT_GAS_ZUSTANDSZAHL,
@@ -104,6 +105,42 @@ STROM_SENSORS: list[EmlogSensorDef] = [
         SensorDeviceClass.MONETARY,
         None,
         "mdi:tag",
+    ),
+]
+
+# Lieferungs-Sensoren (Einspeitung für Solaranlagen) - nur optional hinzufügen
+STROM_FEED_IN_SENSORS: list[EmlogSensorDef] = [
+    EmlogSensorDef(
+        "zaehlerstand_lieferung_kwh",
+        "Zählerstand Lieferung (kWh)",
+        "kWh",
+        SensorDeviceClass.ENERGY,
+        SensorStateClass.TOTAL_INCREASING,
+        "mdi:flash-export",
+    ),
+    EmlogSensorDef(
+        "wirkleistung_lieferung_w",
+        "Wirkleistung Lieferung (W)",
+        "W",
+        SensorDeviceClass.POWER,
+        SensorStateClass.MEASUREMENT,
+        "mdi:flash-export-outline",
+    ),
+    EmlogSensorDef(
+        "verbrauch_lieferung_tag_kwh",
+        "Einspeitung Heute (kWh)",
+        "kWh",
+        SensorDeviceClass.ENERGY,
+        SensorStateClass.TOTAL,
+        "mdi:counter",
+    ),
+    EmlogSensorDef(
+        "betrag_lieferung_eur",
+        "Betrag Lieferung Heute",
+        None,  # Wird dynamisch vom Coordinator gesetzt
+        SensorDeviceClass.MONETARY,
+        SensorStateClass.TOTAL,
+        "mdi:currency-eur",
     ),
 ]
 
@@ -259,6 +296,24 @@ async def async_setup_entry(
                 gas_zustandszahl,
             )
         )
+    
+    # Lieferungs-Sensoren (Einspeitung) nur hinzufügen, wenn aktiviert (nur für Strom)
+    include_feed_in = entry.options.get(CONF_INCLUDE_FEED_IN_SENSORS, False)
+    if meter_type == METER_TYPE_STROM and include_feed_in:
+        for sensor_def in STROM_FEED_IN_SENSORS:
+            entities.append(
+                EmlogSensorEntity(
+                    coordinator,
+                    host,
+                    meter_type,
+                    meter_index,
+                    meter_name,
+                    sensor_def,
+                    price_kwh,
+                    gas_brennwert,
+                    gas_zustandszahl,
+                )
+            )
 
     # Status-Entitäten (für alle Meter-Typen)
     entities.append(EmlogStatusEntity(coordinator, host, meter_type, meter_index, meter_name))
@@ -457,6 +512,15 @@ class EmlogSensorEntity(SensorEntity):
                 return float(self._gas_brennwert)
             elif key == "zustandszahl":
                 return float(self._gas_zustandszahl)
+            # Lieferungs-Sensoren (Einspeitung)
+            elif key == "zaehlerstand_lieferung_kwh":
+                return float(meter_data.get("Zaehlerstand_Lieferung", {}).get("Stand280", 0) or 0)
+            elif key == "wirkleistung_lieferung_w":
+                return float(meter_data.get("Wirkleistung_Lieferung", {}).get("Leistung270", 0) or 0)
+            elif key == "verbrauch_lieferung_tag_kwh":
+                return float(meter_data.get("Kwh_Lieferung", {}).get("Kwh280", 0) or 0)
+            elif key == "betrag_lieferung_eur":
+                return float(meter_data.get("Betrag_Lieferung", {}).get("Betrag280", 0) or 0)
             
             return None
         except Exception:
