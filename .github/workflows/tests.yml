@@ -36,7 +36,7 @@ jobs:
 
       - name: Lint with pylint
         run: |
-          # Prüfe Python-Dateien auf Fehler (nur errors, keine warnings)
+          # Prüfe nur Fehler (E), nicht Warnings
           pylint --errors-only custom_components/emlog/*.py || true
         continue-on-error: true
 
@@ -47,8 +47,7 @@ jobs:
 
       - name: Type check with pyright
         run: |
-          pyright custom_components/emlog/ --outputjson > /tmp/pyright.json 2>&1 || true
-          cat /tmp/pyright.json || echo "No pyright output"
+          pyright custom_components/emlog/ || true
         continue-on-error: true
 
   mock-server-test:
@@ -194,7 +193,7 @@ jobs:
               if field not in manifest:
                   print(f'✗ Missing required field: {field}')
                   exit(1)
-          
+
           print('✓ Manifest has all required fields')
           print(f'✓ Version: {manifest[\"version\"]}')
           print(f'✓ Domain: {manifest[\"domain\"]}')
@@ -217,7 +216,7 @@ jobs:
           python -c "
           import sys
           import ast
-          
+
           files = [
               'custom_components/emlog/__init__.py',
               'custom_components/emlog/config_flow.py',
@@ -225,7 +224,7 @@ jobs:
               'custom_components/emlog/sensor.py',
               'custom_components/emlog/template.py',
           ]
-          
+
           for file in files:
               with open(file) as f:
                   try:

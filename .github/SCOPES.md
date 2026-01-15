@@ -63,9 +63,9 @@ Scopes sollten:
 
 ### 🎨 Branding & Assets
 
-| Scope    | Anwendungsfall                  | Betrifft    | Beispiel                                                        |
-| -------- | ------------------------------- | ----------- | --------------------------------------------------------------- |
-| `brands` | HACS Branding Assets (Icons)    | `brands/`   | `feat(brands): add emlog integration icon and logo for HACS`    |
+| Scope    | Anwendungsfall               | Betrifft  | Beispiel                                                     |
+| -------- | ---------------------------- | --------- | ------------------------------------------------------------ |
+| `brands` | HACS Branding Assets (Icons) | `brands/` | `feat(brands): add emlog integration icon and logo for HACS` |
 
 ### 📦 Dependencies & Maintenance
 

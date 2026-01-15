@@ -17,8 +17,8 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app)
 
-MOCK_DATA_DIR = os.environ.get('MOCK_DATA_DIR', './mock_data')
-STATE_FILE = os.environ.get('STATE_FILE', '/app/state.json')
+MOCK_DATA_DIR = os.environ.get("MOCK_DATA_DIR", "./mock_data")
+STATE_FILE = os.environ.get("STATE_FILE", "/app/state.json")
 
 # Globale Zustände pro Zähler (1=Strom, 2=Gas)
 STATE = {}
@@ -37,12 +37,13 @@ GAS_INC_KWH = GAS_DAILY_KWH / (86400 / TICK_SECONDS)
 GAS_KWH_PER_M3 = 10.0
 GAS_INC_M3 = GAS_INC_KWH / GAS_KWH_PER_M3
 
+
 def load_initial_data(meter_index):
     """Lädt Initialdaten direkt aus mock_data (ohne dynamik)."""
     filename = f"meter_{meter_index}.json"
     filepath = os.path.join(MOCK_DATA_DIR, filename)
     if os.path.exists(filepath):
-        with open(filepath, 'r') as f:
+        with open(filepath, "r") as f:
             return json.load(f)
     # Fallback: generiere Basisdaten
     return generate_dynamic_data(meter_index)
@@ -52,7 +53,7 @@ def save_state():
     """Persistiert den Zustand auf Disk, damit ein Restart überlebt wird."""
     with STATE_LOCK:
         try:
-            with open(STATE_FILE, 'w') as f:
+            with open(STATE_FILE, "w") as f:
                 json.dump(STATE, f)
         except Exception as e:
             print(f"Failed to save state: {e}")
@@ -63,7 +64,7 @@ def load_state():
     global STATE
     if os.path.exists(STATE_FILE):
         try:
-            with open(STATE_FILE, 'r') as f:
+            with open(STATE_FILE, "r") as f:
                 STATE = json.load(f)
                 return
         except Exception as e:
@@ -75,6 +76,7 @@ def load_state():
         "2": load_initial_data(2),
     }
     save_state()
+
 
 def generate_dynamic_data(meter_index):
     """Generiert dynamische Mock-Daten basierend auf der vollständigen Emlog API"""
@@ -88,116 +90,61 @@ def generate_dynamic_data(meter_index):
         return {
             "product": "Emlog - Electronic Meter Log",
             "version": 1.16,
-            "Zaehlerstand_Bezug": {
-                "Stand180": base_consumption + consumption_offset,
-                "Stand181": 0,
-                "Stand182": 0
-            },
-            "Zaehlerstand_Lieferung": {
-                "Stand280": 0,
-                "Stand281": 0,
-                "Stand282": 0
-            },
+            "Zaehlerstand_Bezug": {"Stand180": base_consumption + consumption_offset, "Stand181": 0, "Stand182": 0},
+            "Zaehlerstand_Lieferung": {"Stand280": 0, "Stand281": 0, "Stand282": 0},
             "Wirkleistung_Bezug": {
                 "Leistung170": 2.5 + random.uniform(-0.5, 0.5),
                 "Leistung171": 0,
                 "Leistung172": 0,
-                "Leistung173": 0
+                "Leistung173": 0,
             },
-            "Wirkleistung_Lieferung": {
-                "Leistung270": 0,
-                "Leistung271": 0,
-                "Leistung272": 0,
-                "Leistung273": 0
-            },
-            "Kwh_Bezug": {
-                "Kwh180": 15.7 + random.uniform(-2, 2),
-                "Kwh181": 0,
-                "Kwh182": 0
-            },
-            "Kwh_Lieferung": {
-                "Kwh280": 0,
-                "Kwh281": 0,
-                "Kwh282": 0
-            },
+            "Wirkleistung_Lieferung": {"Leistung270": 0, "Leistung271": 0, "Leistung272": 0, "Leistung273": 0},
+            "Kwh_Bezug": {"Kwh180": 15.7 + random.uniform(-2, 2), "Kwh181": 0, "Kwh182": 0},
+            "Kwh_Lieferung": {"Kwh280": 0, "Kwh281": 0, "Kwh282": 0},
             "Betrag_Bezug": {
                 "Betrag180": 3.25 + random.uniform(-0.5, 0.5),
                 "Betrag181": 0,
                 "Betrag182": 0,
-                "Waehrung": "EUR"
+                "Waehrung": "EUR",
             },
-            "Betrag_Lieferung": {
-                "Betrag280": 0,
-                "Betrag281": 0,
-                "Betrag282": 0,
-                "Waehrung": "EUR"
-            },
-            "DiffBezugLieferung": {
-                "Betrag": -(3.25 + random.uniform(-0.5, 0.5))
-            }
+            "Betrag_Lieferung": {"Betrag280": 0, "Betrag281": 0, "Betrag282": 0, "Waehrung": "EUR"},
+            "DiffBezugLieferung": {"Betrag": -(3.25 + random.uniform(-0.5, 0.5))},
         }
     else:  # Gas
         return {
             "product": "Emlog - Electronic Meter Log",
             "version": 1.16,
-            "Zaehlerstand_Bezug": {
-                "Stand180": base_consumption + consumption_offset,
-                "Stand181": 0,
-                "Stand182": 0
-            },
-            "Zaehlerstand_Lieferung": {
-                "Stand280": 0,
-                "Stand281": 0,
-                "Stand282": 0
-            },
+            "Zaehlerstand_Bezug": {"Stand180": base_consumption + consumption_offset, "Stand181": 0, "Stand182": 0},
+            "Zaehlerstand_Lieferung": {"Stand280": 0, "Stand281": 0, "Stand282": 0},
             "Wirkleistung_Bezug": {
                 "Leistung170": 0.8 + random.uniform(-0.1, 0.1),
                 "Leistung171": 0,
                 "Leistung172": 0,
-                "Leistung173": 0
+                "Leistung173": 0,
             },
-            "Wirkleistung_Lieferung": {
-                "Leistung270": 0,
-                "Leistung271": 0,
-                "Leistung272": 0,
-                "Leistung273": 0
-            },
-            "Kwh_Bezug": {
-                "Kwh180": 8.3 + random.uniform(-1, 1),
-                "Kwh181": 0,
-                "Kwh182": 0
-            },
-            "Kwh_Lieferung": {
-                "Kwh280": 0,
-                "Kwh281": 0,
-                "Kwh282": 0
-            },
+            "Wirkleistung_Lieferung": {"Leistung270": 0, "Leistung271": 0, "Leistung272": 0, "Leistung273": 0},
+            "Kwh_Bezug": {"Kwh180": 8.3 + random.uniform(-1, 1), "Kwh181": 0, "Kwh182": 0},
+            "Kwh_Lieferung": {"Kwh280": 0, "Kwh281": 0, "Kwh282": 0},
             "Betrag_Bezug": {
                 "Betrag180": 1.85 + random.uniform(-0.2, 0.2),
                 "Betrag181": 0,
                 "Betrag182": 0,
-                "Waehrung": "EUR"
+                "Waehrung": "EUR",
             },
-            "Betrag_Lieferung": {
-                "Betrag280": 0,
-                "Betrag281": 0,
-                "Betrag282": 0,
-                "Waehrung": "EUR"
-            },
-            "DiffBezugLieferung": {
-                "Betrag": -(1.85 + random.uniform(-0.2, 0.2))
-            }
+            "Betrag_Lieferung": {"Betrag280": 0, "Betrag281": 0, "Betrag282": 0, "Waehrung": "EUR"},
+            "DiffBezugLieferung": {"Betrag": -(1.85 + random.uniform(-0.2, 0.2))},
         }
 
-@app.route('/pages/getinformation.php')
+
+@app.route("/pages/getinformation.php")
 def get_information():
     """Haupt-API-Endpunkt"""
     try:
-        meter_index = str(int(request.args.get('meterindex', 1)))
+        meter_index = str(int(request.args.get("meterindex", 1)))
     except (ValueError, TypeError):
         return jsonify({"error": "Invalid meterindex"}), 400
 
-    if 'export' in request.args:
+    if "export" in request.args:
         with STATE_LOCK:
             data = STATE.get(meter_index)
             # Sicherstellen, dass wir immer ein Dict liefern
@@ -211,11 +158,13 @@ def get_information():
                     return jsonify({"error": "Failed to load meter data"}), 500
             # Erstelle eine Kopie, um Lock-Probleme zu vermeiden
             import copy
+
             return jsonify(copy.deepcopy(data))
 
     return jsonify({"error": "Export parameter required"}), 400
 
-@app.route('/')
+
+@app.route("/")
 def index():
     """Einfache Status-Seite"""
     return f"""
@@ -227,6 +176,7 @@ def index():
         <li><a href="/pages/getinformation.php?export&meterindex=2">Gas (Index 2)</a></li>
     </ul>
     """
+
 
 def update_loop():
     """Erhöht alle 10s die Werte realistisch und persistiert den Zustand."""
@@ -240,10 +190,12 @@ def update_loop():
                 s = STATE.get("1")
                 if s:
                     # Zählerstand (kWh) - monoton steigend
-                    s["Zaehlerstand_Bezug"]["Stand180"] = float(s["Zaehlerstand_Bezug"]["Stand180"]) + ELECTRICITY_INC_KWH
+                    s["Zaehlerstand_Bezug"]["Stand180"] = (
+                        float(s["Zaehlerstand_Bezug"]["Stand180"]) + ELECTRICITY_INC_KWH
+                    )
                     # Tagesverbrauch (kWh) - monoton steigend
                     s["Kwh_Bezug"]["Kwh180"] = float(s["Kwh_Bezug"]["Kwh180"]) + ELECTRICITY_INC_KWH
-                    
+
                     # Wirkleistung (W) - realistische Haushalts-Leistung (150-300W durchschnittlich)
                     # Berechne durchschnittliche Watt: (kWh/Tag) / 24h
                     # Aber: kWh/Tag ist schon in kWh, also: (kWh/24) * 1000 W/kW = Watt
@@ -264,7 +216,7 @@ def update_loop():
                     # Kleine Schwankungen hinzufügen (±10%)
                     fluctuation = random.uniform(-10, 10)
                     s["Wirkleistung_Bezug"]["Leistung170"] = max(0.0, base_power + fluctuation)
-                    
+
                     # Betrag (angenommen 0.30 EUR/kWh)
                     s["Betrag_Bezug"]["Betrag180"] = float(s["Betrag_Bezug"]["Betrag180"]) + ELECTRICITY_INC_KWH * 0.30
                     s["DiffBezugLieferung"]["Betrag"] = -abs(float(s["Betrag_Bezug"]["Betrag180"]))
@@ -276,7 +228,7 @@ def update_loop():
                     g["Zaehlerstand_Bezug"]["Stand180"] = float(g["Zaehlerstand_Bezug"]["Stand180"]) + GAS_INC_M3
                     # Tagesverbrauch (kWh) - monoton steigend
                     g["Kwh_Bezug"]["Kwh180"] = float(g["Kwh_Bezug"]["Kwh180"]) + GAS_INC_KWH
-                    
+
                     # Wirkleistung (W) - für Gas, typisch viel niedriger (Heizung hat weniger momentane Spitzen)
                     # Bei 75 kWh/Tag Gas: realistische durchschnittliche Leistung ~150-200W
                     realistic_avg_w_gas = 150.0
@@ -287,14 +239,15 @@ def update_loop():
                     # Kleine Schwankungen hinzufügen (±5%)
                     fluctuation_gas = random.uniform(-7, 7)
                     g["Wirkleistung_Bezug"]["Leistung170"] = max(0.0, base_power_gas + fluctuation_gas)
-                    
+
                     # Betrag (angenommen 0.11 EUR/kWh)
                     g["Betrag_Bezug"]["Betrag180"] = float(g["Betrag_Bezug"]["Betrag180"]) + GAS_INC_KWH * 0.11
                     g["DiffBezugLieferung"]["Betrag"] = -abs(float(g["Betrag_Bezug"]["Betrag180"]))
         except Exception as e:
             print(f"Error in update_loop: {e}")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     # Erstelle Mock-Daten-Verzeichnis falls nicht vorhanden
     os.makedirs(MOCK_DATA_DIR, exist_ok=True)
 
@@ -311,4 +264,4 @@ if __name__ == '__main__':
     t = threading.Thread(target=update_loop, daemon=True)
     t.start()
 
-    app.run(host='0.0.0.0', port=8080, debug=False, threaded=True)
+    app.run(host="0.0.0.0", port=8080, debug=False, threaded=True)
