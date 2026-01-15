@@ -131,6 +131,7 @@ release:
 	@echo "🚀 Führe Semantic Release aus..."
 	@echo ""
 	@echo "⚠️  Dies wird:"
+	@echo "   • Git Tags synchronisieren"
 	@echo "   • Commits analysieren"
 	@echo "   • Version berechnen"
 	@echo "   • CHANGELOG.md aktualisieren"
@@ -140,6 +141,10 @@ release:
 	@echo ""
 	@read -p "Fortfahren? (y/N): " confirm; \
 	if [ "$$confirm" = "y" ] || [ "$$confirm" = "Y" ]; then \
+		echo "📥 Synchronisiere Git Tags..."; \
+		git fetch --all --tags --force; \
+		echo "✅ Git Tags synchronisiert"; \
+		echo ""; \
 		CI=true npx semantic-release; \
 	else \
 		echo "Release abgebrochen."; \
