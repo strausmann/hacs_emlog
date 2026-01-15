@@ -146,6 +146,23 @@ Beispiele: `sensor.emlog_strom_1_zaehlerstand_kwh`, `sensor.emlog_gas_2_wirkleis
 | `emlog_strom_1_betrag_tag_eur`    | Betrag Heute          | [Währung]     | `monetary`   | **Heutige Stromkosten** aus Emlog-API (berechneter Tagesbetrag)           |
 | `emlog_strom_1_preis_eur_kwh`     | Preis (kWh)           | [Währung]/kWh | `monetary`   | **Konfigurierter Strompreis** (nutzt Helfer wenn verlinkt)                |
 
+#### ☀️ Feed-in Sensoren (Einspeitung) - Optional für Solaranlagen
+
+Diese Sensoren sind **optional** und können in den Integrations-Optionen aktiviert werden (nur für Stromzähler). Sie sind nützlich, wenn du eine Solaranlage mit Rückspeisung hast:
+
+| Entity-Name                                | Name                        | Unit      | Device Class | Beschreibung                                                      |
+| ------------------------------------------ | --------------------------- | --------- | ------------ | ----------------------------------------------------------------- |
+| `emlog_strom_1_zaehlerstand_lieferung_kwh` | Zählerstand Lieferung (kWh) | kWh       | `energy`     | **Gesamter Strom eingespeist** ins Netz seit Inbetriebnahme       |
+| `emlog_strom_1_wirkleistung_lieferung_w`   | Wirkleistung Lieferung (W)  | W         | `power`      | **Aktuelle Einspeiseleistung** (Strom vom Dach ins Netz)          |
+| `emlog_strom_1_einspeitung_heute_kwh`      | Einspeitung Heute (kWh)     | kWh       | `energy`     | **Heute eingespiesener Strom** (setzt sich täglich zurück)        |
+| `emlog_strom_1_betrag_lieferung_eur`       | Betrag Lieferung Heute      | [Währung] | `monetary`   | **Heutige Einspeisevergütung** aus Emlog-API (berechneter Betrag) |
+
+**🔧 So aktivierst du Feed-in Sensoren:**
+
+1. Öffne die Integration: **Einstellungen → Geräte & Dienste → Emlog → Zahnrad-Icon (⚙️)**
+2. Aktiviere: **"Feed-in Sensoren für Solaranlagen (kWh)"**
+3. Speichern → Neue Sensoren erscheinen automatisch
+
 ### Gas (Gas) - Meter-Sensoren
 
 | Entity-Name                     | Name                  | Unit          | Device Class | Beschreibung                                                              |
