@@ -240,7 +240,7 @@ Commitlint prüft automatisch alle Commits und blockiert sie, wenn:
 
 **Detaillierte Dokumentation:** Siehe [`.github/SCOPES.md#erlaubte-scopes`](.github/SCOPES.md#erlaubte-scopes)
 
-Es sind genau **13 Scopes** definiert:
+Es sind genau **14 Scopes** definiert:
 
 - `coordinator` - Daten-Polling
 - `sensor` - Sensor-Entities
@@ -255,6 +255,7 @@ Es sind genau **13 Scopes** definiert:
 - `init` - Integration-Initialisierung
 - `deps` - Dependency-Updates
 - `ci` - GitHub Actions & CI-Workflows
+- `brands` - HACS Branding Assets
 
 Alle weiteren Scopes werden von Commitlint blockiert. Hilfe bei der Scope-Wahl: [Decision Tree](.github/SCOPES.md#-decision-tree-welcher-scope)
 

@@ -61,6 +61,12 @@ Scopes sollten:
 | ----- | ---------------------------- | -------------------- | --------------------------------------------------------- |
 | `ci`  | GitHub Actions, CI-Workflows | `.github/workflows/` | `build(ci): add HACS validation workflow for integration` |
 
+### 🎨 Branding & Assets
+
+| Scope    | Anwendungsfall                  | Betrifft    | Beispiel                                                        |
+| -------- | ------------------------------- | ----------- | --------------------------------------------------------------- |
+| `brands` | HACS Branding Assets (Icons)    | `brands/`   | `feat(brands): add emlog integration icon and logo for HACS`    |
+
 ### 📦 Dependencies & Maintenance
 
 | Scope  | Anwendungsfall     | Betrifft                           | Beispiel                                   |
