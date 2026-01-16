@@ -64,6 +64,8 @@ Falls die Integration nicht angezeigt wird:
 - Speichern → **Installieren**
 - Home Assistant **neu starten**
 
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=strausmann&repository=hacs_emlog&category=integration)
+
 ### Schritt 2: Integration konfigurieren
 
 Nach dem Neustart öffne wieder **Einstellungen → Geräte & Dienste → Integration hinzufügen → Emlog**
