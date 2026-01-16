@@ -5,6 +5,28 @@ All notable changes to the **Emlog Home Assistant Integration** will be document
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0](https://github.com/strausmann/hacs_emlog/compare/v0.9.0...v0.10.0) (2026-01-16)
+
+### Features
+
+* **brands:** add dark mode variant branding assets for HACS ([604a8ed](https://github.com/strausmann/hacs_emlog/commit/604a8ede9c7f39488da24b46db63f162abcc9d47))
+* **brands:** add emlog integration icon and logo for HACS ([f67ee59](https://github.com/strausmann/hacs_emlog/commit/f67ee59368af9dc1c07cdc9ac252d5e0bc730bf7))
+* **manifest:** add hacs.json configuration for HACS catalog ([fc7dc45](https://github.com/strausmann/hacs_emlog/commit/fc7dc45f467bfc57fbc1a02726e1454898063387))
+
+### Bug Fixes
+
+* **architecture:** fix broken markdown links and remove non-existent references ([cf9f9fd](https://github.com/strausmann/hacs_emlog/commit/cf9f9fd16eb5ae3635a44ef01fddf6cc2adedf32))
+* **architecture:** remove dead internal links in documentation ([b1266a6](https://github.com/strausmann/hacs_emlog/commit/b1266a6bf054aea3bf9bda72608a49c6a8a73708))
+* **ci:** correct megalinter action path ([7560877](https://github.com/strausmann/hacs_emlog/commit/7560877643b588aa13adf3acd1373c5e36eb364b))
+* **ci:** improve test workflow by handling missing dependencies ([36578a9](https://github.com/strausmann/hacs_emlog/commit/36578a9f66659051c5cd0bbc0e5c34434e28aebd))
+* **deps:** remove non-existent npm label from dependabot configuration ([8461f85](https://github.com/strausmann/hacs_emlog/commit/8461f851ee32b59ad9fee4656606dbfb1c43bea5))
+* **manifest:** correct homeassistant field format for Home Assistant validation ([797154a](https://github.com/strausmann/hacs_emlog/commit/797154a64770b294d49adcd1ab0352b937f212c1))
+* **manifest:** remove deprecated homeassistant version fields and add integration_type ([abccd71](https://github.com/strausmann/hacs_emlog/commit/abccd7130ce66b2a8c017e6b1918d25f21a64a5d))
+* **manifest:** remove invalid domains field from hacs.json ([28e2b8b](https://github.com/strausmann/hacs_emlog/commit/28e2b8bcf40abbd37f1e3dcb7f79f9490a081b64))
+* **manifest:** remove iot_class from hacs.json (not allowed) ([1e6b73e](https://github.com/strausmann/hacs_emlog/commit/1e6b73e67622e6309fcef54d67d5495f70e6b09c))
+* **manifest:** remove unsupported render_changelog from hacs.json ([a12f4fa](https://github.com/strausmann/hacs_emlog/commit/a12f4fa88842e84b73b3b6e1bac74cfb4a07b25c))
+* **manifest:** sort keys alphabetically per hassfest requirements ([06c2472](https://github.com/strausmann/hacs_emlog/commit/06c2472158aaf8d7d5652f5ab1660fe779286cf8))
+
 ## [0.9.0](https://github.com/strausmann/hacs_emlog/compare/v0.8.0...v0.9.0) (2026-01-15)
 
 ### Features
