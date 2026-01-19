@@ -46,7 +46,7 @@ jobs:
         continue-on-error: true
 
       - name: Run Megalinter
-        uses: oxsecurity/megalinter@v8
+        uses: oxsecurity/megalinter@v9
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MEGALINTER_FAIL_IF_FOUND_DEFECT_LEVEL: error
